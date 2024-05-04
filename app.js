@@ -8,17 +8,15 @@ async function main() {
     const client = new MongoClient(mongoUri, { useNewUrlParser: true, useUnifiedTopology: true });
 
     try {
-        // Connect to the MongoDB cluster
         await client.connect();
 
-        // Make the appropriate DB calls
-        // Example: List databases
+       
         await listDatabases(client);
 
     } catch (e) {
         console.error(e);
     } finally {
-        // Close the connection to the MongoDB cluster
+        
         await client.close();
     }
 }
