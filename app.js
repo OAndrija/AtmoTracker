@@ -10,13 +10,13 @@ async function main() {
     try {
         await client.connect();
 
-       
+    
         await listDatabases(client);
 
     } catch (e) {
         console.error(e);
     } finally {
-        
+        //close
         await client.close();
     }
 }
