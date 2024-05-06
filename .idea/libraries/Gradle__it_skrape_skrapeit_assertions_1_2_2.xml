@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: it.skrape:skrapeit-assertions:1.2.2" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="it.skrape" artifactId="skrapeit-assertions" version="1.2.2" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/it.skrape/skrapeit-assertions/1.2.2/4d5c46366aa5678defa7c3d3d5be5bf70ae7623c/skrapeit-assertions-1.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

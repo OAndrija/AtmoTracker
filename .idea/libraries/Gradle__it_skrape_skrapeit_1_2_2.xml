@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: it.skrape:skrapeit:1.2.2" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="it.skrape" artifactId="skrapeit" version="1.2.2" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/it.skrape/skrapeit/1.2.2/1e76cf39b3e36ae3ba0dfe298665c9417aca703d/skrapeit-1.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

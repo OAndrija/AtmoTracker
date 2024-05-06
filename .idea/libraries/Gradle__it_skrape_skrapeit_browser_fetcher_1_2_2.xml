@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: it.skrape:skrapeit-browser-fetcher:1.2.2" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="it.skrape" artifactId="skrapeit-browser-fetcher" version="1.2.2" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/it.skrape/skrapeit-browser-fetcher/1.2.2/2432c3da3183bfcd2baaabc42186e67d16b11adb/skrapeit-browser-fetcher-1.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

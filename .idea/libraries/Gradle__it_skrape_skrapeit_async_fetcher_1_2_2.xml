@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: it.skrape:skrapeit-async-fetcher:1.2.2" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="it.skrape" artifactId="skrapeit-async-fetcher" version="1.2.2" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/it.skrape/skrapeit-async-fetcher/1.2.2/a4dc54404d8e7d5340954712d17ad10985111ee7/skrapeit-async-fetcher-1.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

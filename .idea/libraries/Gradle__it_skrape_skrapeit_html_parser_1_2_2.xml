@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: it.skrape:skrapeit-html-parser:1.2.2" type="java-imported" external-system-id="GRADLE">
+    <properties groupId="it.skrape" artifactId="skrapeit-html-parser" version="1.2.2" />
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/it.skrape/skrapeit-html-parser/1.2.2/2be76c98a1196434087aa45ab82393fb1a27d80/skrapeit-html-parser-1.2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
