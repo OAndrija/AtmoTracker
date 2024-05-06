@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/AtmoTracker.iml" filepath="$PROJECT_DIR$/.idea/AtmoTracker.iml" />
-      <module fileurl="file://$PROJECT_DIR$/web-scraper/web-scraper.iml" filepath="$PROJECT_DIR$/web-scraper/web-scraper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/web-scraper.iml" filepath="$PROJECT_DIR$/web-scraper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/web-scraper.main.iml" filepath="$PROJECT_DIR$/.idea/modules/web-scraper.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/web-scraper.test.iml" filepath="$PROJECT_DIR$/.idea/modules/web-scraper.test.iml" />
     </modules>
   </component>
 </project>
