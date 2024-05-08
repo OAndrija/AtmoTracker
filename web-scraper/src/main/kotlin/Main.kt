@@ -17,7 +17,7 @@ fun sendDataToAPI(weatherData: WeatherResults, qualityData: QualityResults, apiU
     val jsonWeather = Json.encodeToString(WeatherResults.serializer(), weatherData)
     val jsonQuality = Json.encodeToString(QualityResults.serializer(), qualityData)
 
-    // Sending Weather Data
+      // Sending Weather Data
     val (requestWeather, responseWeather, resultWeather) = apiUrl.httpPost()
         .body(jsonWeather)
         .header("Content-Type" to "application/json")
