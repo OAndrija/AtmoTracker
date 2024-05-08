@@ -2,7 +2,9 @@ package org.example
 
 import java.time.LocalDateTime
 import java.util.*
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AirQuality(
     val city: String,
     val pm10: String,
@@ -12,6 +14,5 @@ data class AirQuality(
     val ozon: String,
     val no2: String,
     val benzen: String,
-    val created: LocalDateTime = LocalDateTime.now(),
-    val id: UUID = UUID.randomUUID()
+
 )

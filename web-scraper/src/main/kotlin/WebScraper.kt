@@ -1,22 +1,26 @@
 package org.example
 
+import kotlinx.serialization.Serializable
+
+
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.HttpFetcher
 import it.skrape.fetcher.extractIt
 import it.skrape.fetcher.skrape
 import it.skrape.selects.html5.*
 
+@Serializable
 data class WeatherResults(val weatherTableRows: MutableList<Weather> = mutableListOf(), var count: Int = 0)
-
+@Serializable
 data class QualityResults(val qualityTableRows: MutableList<AirQuality> = mutableListOf(), var count: Int = 0)
 
 object WebScraper {
-    fun scrapeWeatherData() {
+    fun scrapeWeatherData():WeatherResults {
         val requestUrl =
             "https://meteo.arso.gov.si/uploads/probase/www/observ/surface/text/sl/observationAms_si_latest.html"
-
+        val results = WeatherResults()
         try {
-            val result = skrape(HttpFetcher) {
+             skrape(HttpFetcher) {
                 request {
                     url = requestUrl
                 }
@@ -43,21 +47,24 @@ object WebScraper {
                                 precipitation = cells[8]
                             )
                             results.weatherTableRows.add(weather)
-                            println("Added: $weather")
+
                         }
                     }
                 }
             }
-            println("Scraping completed with ${result.weatherTableRows.size} entries fetched.")
+
+            return results
         } catch (e: Exception) {
             println("An error occurred: ${e.message}")
+            return results
         }
     }
-    fun scrapeQualityData() {
+    fun scrapeQualityData():QualityResults {
         val requestUrl = "https://www.arso.gov.si/zrak/kakovost%20zraka/podatki/dnevne_koncentracije.html"
-
+val results=QualityResults()
         try {
-            val result = skrape(HttpFetcher) {
+
+            skrape(HttpFetcher) {
                 request {
                     url = requestUrl
                 }
@@ -87,14 +94,16 @@ object WebScraper {
                                 benzen = cells[7]
                             )
                             results.qualityTableRows.add(quality)
-                            println("Added: $quality")
+
                         }
                     }
                 }
             }
-            println("Scraping completed with ${result.qualityTableRows.size} entries fetched.")
+            return  results
+
         } catch (e: Exception) {
             println("An error occurred: ${e.message}")
+            return results
         }
     }
 }
