@@ -6,54 +6,48 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.decodeFromString
-import sun.net.www.protocol.http.HttpURLConnection
+import java.net.HttpURLConnection
 import java.io.IOException
+import java.io.OutputStreamWriter
 import java.net.URL
-import com.github.kittinunf.fuel.httpPost
-import com.github.kittinunf.result.Result
-import kotlinx.coroutines.runBlocking
 
-fun sendDataToAPI(weatherData: WeatherResults, qualityData: QualityResults, apiUrl: String) = runBlocking {
-    val jsonWeather = Json.encodeToString(WeatherResults.serializer(), weatherData)
-    val jsonQuality = Json.encodeToString(QualityResults.serializer(), qualityData)
+fun sendPostRequest(urlStr: String, jsonData: String) {
 
-      // Sending Weather Data
-    val (requestWeather, responseWeather, resultWeather) = apiUrl.httpPost()
-        .body(jsonWeather)
-        .header("Content-Type" to "application/json")
-        .response()
+    try {
+        val url = URL(urlStr)
+        val connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = "POST"
+        connection.setRequestProperty("Content-Type", "application/json; utf-8")
+        connection.setRequestProperty("Accept", "application/json")
+        connection.doOutput = true
 
-    // Check response for Weather Data
-    if (resultWeather is Result.Failure) {
-        println("Failed to send Weather Data: ${String(responseWeather.data)}")
-    } else {
-        println("Successfully sent Weather Data")
-    }
+        OutputStreamWriter(connection.outputStream).use { os ->
+            os.write(jsonData)
+            os.flush()
+        }
 
-    // Sending Quality Data
-    val (requestQuality, responseQuality, resultQuality) = apiUrl.httpPost()
-        .body(jsonQuality)
-        .header("Content-Type" to "application/json")
-        .response()
-
-    // Check response for Quality Data
-    if (resultQuality is Result.Failure) {
-        println("Failed to send Quality Data: ${String(responseQuality.data)}")
-    } else {
-        println("Successfully sent Quality Data")
+        if (connection.responseCode == HttpURLConnection.HTTP_OK) {
+            println("Data was sent successfully.")
+        } else {
+            println("POST request failed. Response code: ${connection.responseCode}")
+        }
+    } catch (e: IOException) {
+        e.printStackTrace()
     }
 }
 
 
-
-
 fun main() {
 
+    CoroutineScope(Dispatchers.IO).launch {
+        val weatherData = WebScraper.scrapeWeatherData()
+        val qualityData = WebScraper.scrapeQualityData()
 
-    val weatherData = WebScraper.scrapeWeatherData()
-    val qualityData = WebScraper.scrapeQualityData()
+        val jsonWeather = Json.encodeToString(WeatherResults.serializer(), weatherData)
+        val jsonQuality = Json.encodeToString(QualityResults.serializer(), qualityData)
 
-    val apiUrl = "https://yourapi.com/data"
-    sendDataToAPI(weatherData, qualityData, apiUrl)
+        sendPostRequest("https://api.example.com/weather", jsonWeather)
+        sendPostRequest("https://api.example.com/quality", jsonQuality)
 
+    }
 }
