@@ -51,25 +51,48 @@ module.exports = {
      * weatherController.create()
      */
     create: function (req, res) {
-        var weather = new WeatherModel({
-			city_id : req.body.city_id,
-			timestamp : req.body.timestamp,
-			temperature : req.body.temperature,
-			wind_speed : req.body.wind_speed,
-			wind_gust : req.body.wind_gust,
-			precipitation : req.body.precipitation
+        const weatherDataList = req.body.weatherTableRows;
+    
+        let operationPromises = [];
+    
+        weatherDataList.forEach(weatherData => {
+            // First, find the city by name
+            operationPromises.push(
+                CityModel.findOne({ name: weatherData.city }).exec()
+                .then(city => {
+                    if (!city) {
+                        // If no city is found, throw an error or handle it appropriately
+                        throw new Error(`City not found: ${weatherData.city}`);
+                    }
+    
+                    // Create a new weather model
+                    var weather = new WeatherModel({
+                        city_id : city._id,  // Use the found city's ID
+                        temperature : weatherData.temperature,
+                        wind_speed : weatherData.windSpeed,
+                        wind_gust : weatherData.windGusts,
+                        precipitation : weatherData.precipitation
+                    });
+    
+                    // Save the weather data and return the promise
+                    return weather.save();
+                })
+            );
         });
-
-        weather.save(function (err, weather) {
-            if (err) {
+    
+        // Use Promise.all to handle all operations
+        Promise.all(operationPromises)
+            .then(result => {
+                // All operations have completed successfully
+                return res.status(201).json(result);
+            })
+            .catch(error => {
+                // If any operation failed
                 return res.status(500).json({
                     message: 'Error when creating weather',
-                    error: err
+                    error: error.message || error
                 });
-            }
-
-            return res.status(201).json(weather);
-        });
+            });
     },
 
     /**

@@ -4,9 +4,10 @@ var Schema   = mongoose.Schema;
 var qualitySchema = new Schema({
 	'city_id' : {
 	 	type: Schema.Types.ObjectId,
-	 	ref: 'city'
+	 	ref: 'city',
+		required: 'true'
 	},
-	'timestamp' : Date,
+	'timestamp' : { type: Date, default: Date.now },
 	'pm10' : Number,
 	'pm25' : Number,
 	'so2' : String,

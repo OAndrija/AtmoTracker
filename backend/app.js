@@ -11,6 +11,9 @@ var MongoStore = require('connect-mongo');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/userRoutes');
 var photosRouter = require('./routes/photoRoutes');
+var weatherRouter = require('./routes/weatherRoutes');
+var qualityRouter = require('./routes/qualityRoutes');
+var cityRouter = require('./routes/cityRoutes');
 
 var app = express();
 
@@ -63,6 +66,9 @@ app.use(function (req, res, next) {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/photos', photosRouter);
+app.use('/weather', weatherRouter);
+app.use('/quality', qualityRouter);
+app.use('/city', cityRouter);
 
 // Error handling
 app.use(function(req, res, next) {

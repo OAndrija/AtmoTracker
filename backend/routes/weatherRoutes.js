@@ -16,7 +16,6 @@ router.get('/:id', weatherController.show);
  * POST
  */
 router.post('/', weatherController.create);
-
 /*
  * PUT
  */
