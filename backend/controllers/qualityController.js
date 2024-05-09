@@ -6,7 +6,6 @@ var QualityModel = require('../models/qualityModel.js');
  * @description :: Server-side logic for managing qualitys.
  */
 module.exports = {
-
     /**
      * qualityController.list()
      */
@@ -22,7 +21,6 @@ module.exports = {
             return res.json(qualitys);
         });
     },
-
     /**
      * qualityController.show()
      */
@@ -46,35 +44,61 @@ module.exports = {
             return res.json(quality);
         });
     },
-
     /**
      * qualityController.create()
      */
     create: function (req, res) {
-        var quality = new QualityModel({
-			city_id : req.body.city_id,
-			timestamp : req.body.timestamp,
-			pm10 : req.body.pm10,
-			pm25 : req.body.pm25,
-			so2 : req.body.so2,
-			co : req.body.co,
-			ozon : req.body.ozon,
-			no2 : req.body.no2,
-			benzen : req.body.benzen
+        const qualityDataList = req.body.qualityTableRows;
+        let operationPromises = [];
+    
+        qualityDataList.forEach(qualityData => {
+            operationPromises.push(
+                CityModel.findOne({ name: qualityData.city }).exec()
+                .then(city => {
+                    if (!city) {
+                        throw new Error(`City not found: ${qualityData.city}`);
+                    }
+    
+                    // Create a new weather model
+                    var quality = new QualityModel({
+                        city_id: city._id,
+                        timestamp: qualityData.timestamp,
+                        pm10: qualityData.pm10,
+                        pm25: qualityData.pm25,
+                        so2: qualityData.so2,
+                        co: qualityData.co,
+                        ozon: qualityData.ozon,
+                        no2: qualityData.no2,
+                        benzen: qualityData.benzen
+                    });
+    
+                    // Save the weather data
+                    return quality.save()
+                        .then(savedQuality => {
+                            // Update the city's weather_series array
+                            city.quality_series.push(savedQuality._id);
+                            // Save the updated city
+                            return city.save().then(() => savedQuality);
+                        });
+                })
+            );
         });
-
-        quality.save(function (err, quality) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when creating quality',
-                    error: err
+    
+        // Once all operations are complete, respond to the client
+        Promise.all(operationPromises)
+            .then(results => {
+                res.status(200).json({
+                    message: "Weather data successfully saved and city updated",
+                    data: results
                 });
-            }
-
-            return res.status(201).json(quality);
-        });
+            })
+            .catch(error => {
+                res.status(500).json({
+                    message: "Error saving weather data",
+                    error: error.message
+                });
+            });
     },
-
     /**
      * qualityController.update()
      */

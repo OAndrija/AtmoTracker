@@ -74,8 +74,15 @@ module.exports = {
                         precipitation : weatherData.precipitation
                     });
     
-                    // Save the weather data and return the promise
-                    return weather.save();
+                    // Save the weather data, update the city and return the promise
+                    return weather.save()
+                    .then(savedWeather => {
+                        // Update the city's weather_series array
+                        city.weather_series.push(savedWeather._id);
+                        // Save the updated city
+                        return city.save().then(() => savedWeather);
+                    });
+
                 })
             );
         });
