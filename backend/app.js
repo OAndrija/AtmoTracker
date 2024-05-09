@@ -10,6 +10,8 @@ var MongoStore = require('connect-mongo');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/userRoutes');
+var dataRouter = require('./routes/dataRoutes');
+var dataSeriesRouter = require('./routes/dataSeriesRoutes');
 
 var app = express();
 
@@ -61,7 +63,8 @@ app.use(function (req, res, next) {
 // Routes setup
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
+app.use('/data', dataRouter);
+app.use('/dataSeries', dataSeriesRouter);
 // Error handling
 app.use(function(req, res, next) {
   next(createError(404));
