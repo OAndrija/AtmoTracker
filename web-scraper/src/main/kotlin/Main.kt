@@ -1,53 +1,75 @@
 package org.example
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
+
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.decodeFromString
-import java.net.HttpURLConnection
+import okhttp3.MediaType.Companion.toMediaType
 import java.io.IOException
-import java.io.OutputStreamWriter
-import java.net.URL
 
-fun sendPostRequest(urlStr: String, jsonData: String) {
+fun sendWeatherData(weather: Weather) {
+    val client = OkHttpClient()
 
-    try {
-        val url = URL(urlStr)
-        val connection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = "POST"
-        connection.setRequestProperty("Content-Type", "application/json; utf-8")
-        connection.setRequestProperty("Accept", "application/json")
-        connection.doOutput = true
 
-        OutputStreamWriter(connection.outputStream).use { os ->
-            os.write(jsonData)
-            os.flush()
+    val jsonWeather = Json.encodeToString(Weather.serializer(), weather)
+
+
+    val mediaType = "application/json; charset=utf-8".toMediaType()
+    val body = jsonWeather.toRequestBody(mediaType)
+
+    val request = Request.Builder()
+        .url("http://localhost:3001/data")
+        .post(body)
+        .build()
+
+    client.newCall(request).execute().use { response ->
+        if (!response.isSuccessful) {
+            println("Request failed with code ${response.code}")
+            println("Response message: ${response.message}")
+            println("Response body: ${response.body?.string()}")
+            throw IOException("Unexpected code $response")
         }
-
-        if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-            println("Data was sent successfully.")
-        } else {
-            println("POST request failed. Response code: ${connection.responseCode}")
-        }
-    } catch (e: IOException) {
-        e.printStackTrace()
+        println("Response: ${response.body?.string()}")
     }
 }
 
 
+fun sendQualityData(airQuality: AirQuality) {
+    val client = OkHttpClient()
+
+    val jsonWeather = Json.encodeToString(AirQuality.serializer(), airQuality)
+
+    val mediaType = "application/json; charset=utf-8".toMediaType()
+    val body = jsonWeather.toRequestBody(mediaType)
+
+    val request = Request.Builder()
+        .url("http://localhost:3001/data")
+        .post(body)
+        .build()
+
+    client.newCall(request).execute().use { response ->
+        if (!response.isSuccessful) {
+            println("Request failed with code ${response.code}")
+            println("Response message: ${response.message}")
+            println("Response body: ${response.body?.string()}")
+            throw IOException("Unexpected code $response")
+        }
+        println("Response: ${response.body?.string()}")
+    }
+}
+
 fun main() {
 
-    CoroutineScope(Dispatchers.IO).launch {
-        val weatherData = WebScraper.scrapeWeatherData()
+    val weatherData = WebScraper.scrapeWeatherData()
+    weatherData.weatherTableRows.forEach { weather ->
+        sendWeatherData(weather)
+
+
         val qualityData = WebScraper.scrapeQualityData()
-
-        val jsonWeather = Json.encodeToString(WeatherResults.serializer(), weatherData)
-        val jsonQuality = Json.encodeToString(QualityResults.serializer(), qualityData)
-
-        sendPostRequest("https://api.example.com/weather", jsonWeather)
-        sendPostRequest("https://api.example.com/quality", jsonQuality)
-
+        qualityData.qualityTableRows.forEach { airQuality ->
+            sendQualityData(airQuality)
+        }
     }
 }
