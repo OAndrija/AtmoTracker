@@ -1,5 +1,5 @@
 var DataModel = require('../models/dataModel.js');
-var DataseriesModel = require('../models/dataSeriesModel.js');
+var DataSeriesModel = require('../models/dataSeriesModel.js');
 /**
  * dataController.js
  *
@@ -51,37 +51,57 @@ module.exports = {
      * dataController.create()
      */
     create: function (req, res) {
-    // Find dataSeries by name
-        DataSeries.findOne({ name: req.body.name }, function (err, series) {
+        // Log incoming request data
+        console.log("Received request body:", req.body);
+    
+        // Validate incoming data
+        if (!req.body.name || !req.body.timestamp || !req.body.data) {
+            return res.status(400).json({
+                message: 'Missing required fields'
+            });
+        }
+    
+        // Log the name being searched
+        console.log("Searching for data series with name:", req.body.name);
+    
+        // Find dataSeries by name
+        DataSeriesModel.findOne({ name: req.body.name }, function (err, series) {
             if (err) {
+                console.error('Error when fetching data series:', err);
                 return res.status(500).json({
                     message: 'Error when fetching data series',
                     error: err
                 });
             }
-
+    
             if (!series) {
+                console.log("No data series found with name:", req.body.name);
                 return res.status(404).json({
                     message: 'No such data series exists'
                 });
             }
-
+    
             // Proceed with data creation using the found series _id
             var data = new DataModel({
                 data_series_id: series._id,
-                timestamp: req.body.timestamp,
+                timestamp: new Date(req.body.timestamp), // Ensure timestamp is a Date object
                 data: req.body.data
             });
-
-            data.save(function (err, data) {
+    
+            // Log the data to be saved
+            console.log("Creating new data entry with:", data);
+    
+            data.save(function (err, savedData) {
                 if (err) {
+                    console.error('Error when creating data:', err);
                     return res.status(500).json({
                         message: 'Error when creating data',
                         error: err
                     });
                 }
-
-                return res.status(201).json(data);
+    
+                console.log("Data created successfully:", savedData);
+                return res.status(201).json(savedData);
             });
         });
     },

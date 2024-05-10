@@ -1,4 +1,4 @@
-var DataseriesModel = require('../models/dataSeriesModel.js');
+var DataSeriesModel = require('../models/dataSeriesModel.js');
 var dataModel = require('../models/dataModel.js');
 /**
  * dataSeriesController.js
@@ -11,7 +11,7 @@ module.exports = {
      * dataSeriesController.list()
      */
     list: function (req, res) {
-        DataseriesModel.find(function (err, dataSeriess) {
+        DataSeriesModel.find(function (err, dataSeriess) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting dataSeries.',
@@ -29,7 +29,7 @@ module.exports = {
     show: function (req, res) {
         var id = req.params.id;
 
-        DataseriesModel.findOne({_id: id}, function (err, dataSeries) {
+        DataSeriesModel.findOne({_id: id}, function (err, dataSeries) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting dataSeries.',
@@ -75,7 +75,7 @@ module.exports = {
     update: function (req, res) {
         var id = req.params.id;
 
-        DataseriesModel.findOne({_id: id}, function (err, dataSeries) {
+        DataSeriesModel.findOne({_id: id}, function (err, dataSeries) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting dataSeries',
@@ -112,7 +112,7 @@ module.exports = {
     remove: function (req, res) {
         var id = req.params.id;
 
-        DataseriesModel.findByIdAndRemove(id, function (err, dataSeries) {
+        DataSeriesModel.findByIdAndRemove(id, function (err, dataSeries) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when deleting the dataSeries.',
