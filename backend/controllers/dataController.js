@@ -1,5 +1,5 @@
 var DataModel = require('../models/dataModel.js');
-
+var DataseriesModel = require('../models/dataSeriesModel.js');
 /**
  * dataController.js
  *
@@ -51,21 +51,38 @@ module.exports = {
      * dataController.create()
      */
     create: function (req, res) {
-        var data = new DataModel({
-			data_series_id : req.body.data_series_id,
-			timestamp : req.body.timestamp,
-			data : req.body.data
-        });
-
-        data.save(function (err, data) {
+    // Find dataSeries by name
+        DataSeries.findOne({ name: req.body.name }, function (err, series) {
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when creating data',
+                    message: 'Error when fetching data series',
                     error: err
                 });
             }
 
-            return res.status(201).json(data);
+            if (!series) {
+                return res.status(404).json({
+                    message: 'No such data series exists'
+                });
+            }
+
+            // Proceed with data creation using the found series _id
+            var data = new DataModel({
+                data_series_id: series._id,
+                timestamp: req.body.timestamp,
+                data: req.body.data
+            });
+
+            data.save(function (err, data) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when creating data',
+                        error: err
+                    });
+                }
+
+                return res.status(201).json(data);
+            });
         });
     },
 

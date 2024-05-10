@@ -1,5 +1,5 @@
 var DataseriesModel = require('../models/dataSeriesModel.js');
-
+var dataModel = require('../models/dataModel.js');
 /**
  * dataSeriesController.js
  *
