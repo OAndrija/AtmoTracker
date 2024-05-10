@@ -40,11 +40,12 @@ object WebScraper {
                                 findAll { map { it.text } }
                             }
                             val weather = Weather(
-                                city = cells[0],
-                                temperature = cells[2],
-                                windSpeed = cells[5],
-                                windGusts = cells[6],
-                                precipitation = cells[8]
+                                name = "Weather ${cells[0]}",
+                                data = mapOf(
+                                    "windSpeed" to cells[5],
+                                    "windGusts" to cells[6],
+                                    "precipitation" to cells[8]
+                                )
                             )
                             results.weatherTableRows.add(weather)
 
@@ -84,14 +85,17 @@ val results=QualityResults()
                                 findAll { map { it.text } }
                             }
                             val quality = AirQuality(
-                                city = cells[0],
-                                pm10 = cells[1],
-                                pm25 = cells[2],
-                                so2 = cells[3],
-                                co = cells[4],
-                                ozon = cells[5],
-                                no2 = cells[6],
-                                benzen = cells[7]
+                                name = "AirQuality ${cells[0]}",
+                 data = mapOf(
+                        "pm10" to cells[1],
+                        "pm25" to cells[2],
+                         "so2" to cells[3],
+                        "co" to cells[4],
+                        "ozon" to cells[5],
+                        "no2" to cells[6],
+                        "benzen" to  cells[7])
+
+
                             )
                             results.qualityTableRows.add(quality)
 
