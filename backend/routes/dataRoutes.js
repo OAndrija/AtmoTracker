@@ -7,13 +7,13 @@ var dataController = require('../controllers/dataController.js');
  */
 router.get('/', dataController.list);
 router.get('/all', dataController.listCurrentData);
-router.get('windSpeed', dataController.listCurrentWindSpeedData);
-router.get('windGusts', dataController.listCurrentWindGustsData);
-router.get('precipitation', dataController.listCurrentPrecipitationData);
-router.get('pm10', dataController.listCurrentPm10Data);
-router.get('pm25', dataController.listCurrentPm25Data);
-router.get('ozon', dataController.listCurrentOzonData);
-router.get('no2', dataController.listCurrentNo2Data);
+router.get('/windSpeed', dataController.listCurrentWindSpeedData);
+router.get('/windGusts', dataController.listCurrentWindGustsData);
+router.get('/precipitation', dataController.listCurrentPrecipitationData);
+router.get('/pm10', dataController.listCurrentPm10Data);
+router.get('/pm25', dataController.listCurrentPm25Data);
+router.get('/ozon', dataController.listCurrentOzonData);
+router.get('/no2', dataController.listCurrentNo2Data);
 /*
  * GET
  */

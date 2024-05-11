@@ -41,20 +41,21 @@ module.exports = {
         });
     },
 
-    listCurrentWindSpeedData(req, res) {
+    listCurrentWindSpeedData: function (req, res) {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
         DataModel.find({
-            timestamp: {$gte: oneHourAgo}
-        }).populate('windSpeed').exec(function (err, datas) {
+            timestamp: {$gte: oneHourAgo},
+            'data.windSpeed': {$exists: true} // Check if windSpeed exists under the data object
+        }).select('data.windSpeed').exec(function (err, windSpeedData) {
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when getting data.',
+                    message: 'Error when getting wind speed data.',
                     error: err
                 });
             }
 
-            return res.json(datas);
+            return res.json(windSpeedData);
         });
     },
 
@@ -62,16 +63,17 @@ module.exports = {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
         DataModel.find({
-            timestamp: {$gte: oneHourAgo}
-        }).populate('windGusts').exec(function (err, datas) {
+            timestamp: {$gte: oneHourAgo},
+            'data.windGusts': {$exists: true} // Check if windSpeed exists under the data object
+        }).select('data.windGusts').exec(function (err, windGustsData) {
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when getting data.',
+                    message: 'Error when getting wind speed data.',
                     error: err
                 });
             }
 
-            return res.json(datas);
+            return res.json(windGustsData);
         });
     },
 
@@ -79,16 +81,17 @@ module.exports = {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
         DataModel.find({
-            timestamp: {$gte: oneHourAgo}
-        }).populate('precipitation').exec(function (err, datas) {
+            timestamp: {$gte: oneHourAgo},
+            'data.precipitation': {$exists: true} // Check if windSpeed exists under the data object
+        }).select('data.precipitation').exec(function (err, precipitationData) {
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when getting data.',
+                    message: 'Error when getting wind speed data.',
                     error: err
                 });
             }
 
-            return res.json(datas);
+            return res.json(precipitationData);
         });
     },
 
@@ -96,16 +99,17 @@ module.exports = {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
         DataModel.find({
-            timestamp: {$gte: oneHourAgo}
-        }).populate('pm10').exec(function (err, datas) {
+            timestamp: {$gte: oneHourAgo},
+            'data.pm10': {$exists: true} // Check if windSpeed exists under the data object
+        }).select('data.pm10').exec(function (err, pm10Data) {
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when getting data.',
+                    message: 'Error when getting wind speed data.',
                     error: err
                 });
             }
 
-            return res.json(datas);
+            return res.json(pm10Data);
         });
     },
 
@@ -113,16 +117,17 @@ module.exports = {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
         DataModel.find({
-            timestamp: {$gte: oneHourAgo}
-        }).populate('pm25').exec(function (err, datas) {
+            timestamp: {$gte: oneHourAgo},
+            'data.pm25': {$exists: true} // Check if windSpeed exists under the data object
+        }).select('data.pm25').exec(function (err, pm25Data) {
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when getting data.',
+                    message: 'Error when getting wind speed data.',
                     error: err
                 });
             }
 
-            return res.json(datas);
+            return res.json(pm25Data);
         });
     },
 
@@ -130,16 +135,17 @@ module.exports = {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
         DataModel.find({
-            timestamp: {$gte: oneHourAgo}
-        }).populate('ozon').exec(function (err, datas) {
+            timestamp: {$gte: oneHourAgo},
+            'data.ozon': {$exists: true} // Check if windSpeed exists under the data object
+        }).select('data.ozon').exec(function (err, ozonData) {
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when getting data.',
+                    message: 'Error when getting wind speed data.',
                     error: err
                 });
             }
 
-            return res.json(datas);
+            return res.json(ozonData);
         });
     },
 
@@ -147,16 +153,17 @@ module.exports = {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
         DataModel.find({
-            timestamp: {$gte: oneHourAgo}
-        }).populate('no2').exec(function (err, datas) {
+            timestamp: {$gte: oneHourAgo},
+            'data.no2': {$exists: true} // Check if windSpeed exists under the data object
+        }).select('data.no2').exec(function (err, no2Data) {
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when getting data.',
+                    message: 'Error when getting wind speed data.',
                     error: err
                 });
             }
 
-            return res.json(datas);
+            return res.json(no2Data);
         });
     },
 
