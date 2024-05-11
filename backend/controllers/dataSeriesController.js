@@ -51,7 +51,7 @@ module.exports = {
      * dataSeriesController.create()
      */
     create: function (req, res) {
-        var dataSeries = new DataseriesModel({
+        var dataSeries = new DataSeriesModel({
 			name : req.body.name,
 			tags : req.body.tags,
 			location : req.body.location
