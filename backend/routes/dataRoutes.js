@@ -6,7 +6,7 @@ var dataController = require('../controllers/dataController.js');
  * GET
  */
 router.get('/', dataController.list);
-
+router.get('/all', dataController.listCurrentData);
 /*
  * GET
  */

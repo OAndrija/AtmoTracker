@@ -23,6 +23,24 @@ module.exports = {
         });
     },
 
+    //lists all data and their corresponding data series object in the last hour
+    listCurrentData: function (req, res) {
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    
+        DataModel.find({
+            timestamp: { $gte: oneHourAgo }
+        }).populate('data_series_id').exec(function (err, datas) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting data.',
+                    error: err
+                });
+            }
+    
+            return res.json(datas);
+        });
+    },
+    
     /**
      * dataController.show()
      */
