@@ -47,7 +47,7 @@ module.exports = {
         DataModel.find({
             timestamp: {$gte: oneHourAgo},
             'data.windSpeed': {$exists: true} // Check if windSpeed exists under the data object
-        }).select('data.windSpeed').exec(function (err, windSpeedData) {
+        }).populate('data_series_id').select('data.windSpeed').exec(function (err, windSpeedData) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting wind speed data.',
@@ -65,7 +65,7 @@ module.exports = {
         DataModel.find({
             timestamp: {$gte: oneHourAgo},
             'data.windGusts': {$exists: true} // Check if windSpeed exists under the data object
-        }).select('data.windGusts').exec(function (err, windGustsData) {
+        }).populate('data_series_id').select('data.windGusts').exec(function (err, windGustsData) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting wind speed data.',
@@ -83,7 +83,7 @@ module.exports = {
         DataModel.find({
             timestamp: {$gte: oneHourAgo},
             'data.precipitation': {$exists: true} // Check if windSpeed exists under the data object
-        }).select('data.precipitation').exec(function (err, precipitationData) {
+        }).populate('data_series_id').select('data.precipitation').exec(function (err, precipitationData) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting wind speed data.',
@@ -101,7 +101,7 @@ module.exports = {
         DataModel.find({
             timestamp: {$gte: oneHourAgo},
             'data.pm10': {$exists: true} // Check if windSpeed exists under the data object
-        }).select('data.pm10').exec(function (err, pm10Data) {
+        }).populate('data_series_id').select('data.pm10').exec(function (err, pm10Data) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting wind speed data.',
@@ -119,7 +119,7 @@ module.exports = {
         DataModel.find({
             timestamp: {$gte: oneHourAgo},
             'data.pm25': {$exists: true} // Check if windSpeed exists under the data object
-        }).select('data.pm25').exec(function (err, pm25Data) {
+        }).populate('data_series_id').select('data.pm25').exec(function (err, pm25Data) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting wind speed data.',
@@ -137,7 +137,7 @@ module.exports = {
         DataModel.find({
             timestamp: {$gte: oneHourAgo},
             'data.ozon': {$exists: true} // Check if windSpeed exists under the data object
-        }).select('data.ozon').exec(function (err, ozonData) {
+        }).populate('data_series_id').select('data.ozon').exec(function (err, ozonData) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting wind speed data.',
@@ -155,7 +155,7 @@ module.exports = {
         DataModel.find({
             timestamp: {$gte: oneHourAgo},
             'data.no2': {$exists: true} // Check if windSpeed exists under the data object
-        }).select('data.no2').exec(function (err, no2Data) {
+        }).populate('data_series_id').select('data.no2').exec(function (err, no2Data) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting wind speed data.',
