@@ -14,6 +14,9 @@ router.get('/pm10', dataController.listCurrentPm10Data);
 router.get('/pm25', dataController.listCurrentPm25Data);
 router.get('/ozon', dataController.listCurrentOzonData);
 router.get('/no2', dataController.listCurrentNo2Data);
+router.get('/nearby',dataController.listNearbyData);
+
+
 /*
  * GET
  */
