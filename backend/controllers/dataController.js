@@ -23,11 +23,56 @@ module.exports = {
         });
     },
 
+
+    listNearbyData: function (req, res) {
+        const { longitude, latitude } = req.query;//ce hocemo maxDistance dodamo tu
+
+    if (!longitude || !latitude) {
+        return res.status(400).json({
+            message: 'Please provide both longitude and latitude'
+        });
+    }
+
+    const radius = 5 / 6378.1; // 5 km radius in radians
+
+    DataSeriesModel.find({
+        location: {
+            $geoWithin: {
+                $centerSphere: [
+                    [parseFloat(latitude), parseFloat(longitude)],
+                    radius
+                    //parseFloat(maxDistance)
+                ]
+            }
+        }
+    }).exec(function (err, dataSeries) {
+        if (err) {
+            return res.status(500).json({
+                message: 'Error when getting nearby data series.',
+                error: err
+            });
+        }
+
+        const dataSeriesIds = dataSeries.map(ds => ds._id);
+
+        DataModel.find({
+            data_series_id: { $in: dataSeriesIds }
+        }).populate('data_series_id').exec(function (err, datas) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting data.',
+                    error: err
+                });
+            }
+
+            return res.json(datas);
+        });
+    });
+    },
     //lists all data and their corresponding data series object in the last hour
     listCurrentData: function (req, res) {
-        const now = new Date();
-        const startOfCurrentHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours());
-    
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+
         DataModel.find({
             timestamp: { $gte: startOfCurrentHour }
         }).populate('data_series_id').exec(function (err, datas) {
@@ -41,7 +86,6 @@ module.exports = {
             return res.json(datas);
         });
     },
-    
 
     listCurrentWindSpeedData: function (req, res) {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
@@ -85,7 +129,7 @@ module.exports = {
         DataModel.find({
             timestamp: {$gte: oneHourAgo},
             'data.precipitation': {$exists: true} // Check if windSpeed exists under the data object
-        }).populate('data_series_id').select('data.precipitation').exec(function (err, precipitationData) {
+        }).select('data.precipitation').exec(function (err, precipitationData) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting wind speed data.',
@@ -305,5 +349,11 @@ module.exports = {
 
             return res.status(204).json();
         });
-    }
+    },
+
+
+
+    
+    
+    
 };
