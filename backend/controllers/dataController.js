@@ -71,8 +71,9 @@ module.exports = {
     },
     //lists all data and their corresponding data series object in the last hour
     listCurrentData: function (req, res) {
-        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-
+        const now = new Date();
+        const startOfCurrentHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours());
+    
         DataModel.find({
             timestamp: { $gte: startOfCurrentHour }
         }).populate('data_series_id').exec(function (err, datas) {
@@ -86,6 +87,7 @@ module.exports = {
             return res.json(datas);
         });
     },
+
 
     listCurrentWindSpeedData: function (req, res) {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
