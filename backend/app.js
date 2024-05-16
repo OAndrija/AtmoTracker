@@ -7,6 +7,7 @@ var cors = require('cors');
 var mongoose = require('mongoose');
 var session = require('express-session');
 var MongoStore = require('connect-mongo');
+var WebSocket = require('ws');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/userRoutes');
@@ -70,6 +71,73 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/data', dataRouter);
 app.use('/dataSeries', dataSeriesRouter);
+
+// Setting up the WebSocket server
+const server = require('http').createServer(app);
+const wss = new WebSocket.Server({ server });
+
+wss.on('connection', (ws) => {
+  console.log('Client connected (WebSocket)');
+  broadcastData(ws); // Broadcast data immediately when client connects
+  ws.on('message', (message) => {
+    console.log('Received message from client:', message);
+  });
+  ws.on('close', () => console.log('Client disconnected'));
+});
+
+// Function to fetch and broadcast data to a specific client or all clients
+const broadcastData = async (ws = null) => {
+  try {
+    console.log('Fetching data from API...');
+    const response = await fetch('http://localhost:3001/data/all');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    console.log('Data fetched succesfuly'); // Log the fetched data
+    const dataToSend = JSON.stringify(data);
+
+    if (ws) {
+      // Send data to a specific client
+      if (ws.readyState === WebSocket.OPEN) {
+        console.log('Sending data to connected client');
+        ws.send(dataToSend);
+      }
+    } else {
+      // Send data to all clients
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          console.log('Sending data to client');
+          client.send(dataToSend);
+        }
+      });
+    }
+  } catch (err) {
+    console.error('Error fetching data:', err);
+  }
+};
+
+// Function to calculate the milliseconds until the next whole hour
+const getTimeUntilNextHour = () => {
+  const now = new Date();
+  const nextHour = new Date(now);
+  nextHour.setHours(now.getHours() + 1);
+  nextHour.setMinutes(0, 0, 0);
+  return nextHour - now;
+};
+
+// Set a timeout to broadcast data at the next whole hour
+setTimeout(() => {
+  broadcastData();
+  // Set an interval to broadcast data every subsequent hour
+  setInterval(broadcastData, 60 * 60 * 1000);
+}, getTimeUntilNextHour());
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) {
