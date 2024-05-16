@@ -4,18 +4,31 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="960c9ee2-b552-4804-ba54-d64988bc3f5f" name="Changes" comment="ATMOS-8 # added list functions based on listCurrentData that list data for windSpeed, windGusts, precipitation, pm10, pm25, ozon and no2 in the last hour (fixed)">
+    <list default="true" id="960c9ee2-b552-4804-ba54-d64988bc3f5f" name="Changes" comment="ATMOS-58 # implemented the backend part for JWT authentication">
+      <change afterPath="$PROJECT_DIR$/backend/middlewares/verifyToken.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/node_modules/.package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/controllers/userController.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/controllers/userController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routes/userRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/userRoutes.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="ATMOS-8-Web-Service-Development" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -39,21 +52,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;ATMOS-8-Web-Service-Development&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/FERI RIT/FERI RIT 2 UN/FERI RIT 4 SEM/Projektni Praktikum/GitHub/AtmoTracker&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\marti\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "ATMOS-58-jwt-authentication",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/FERI RIT/FERI RIT 2 UN/FERI RIT 4 SEM/Projektni Praktikum/GitHub/AtmoTracker",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "C:\\Users\\marti\\AppData\\Local\\Programs\\WebStorm\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -72,6 +85,11 @@
       <workItem from="1715434780973" duration="5006000" />
       <workItem from="1715439986786" duration="891000" />
       <workItem from="1715441120554" duration="3727000" />
+      <workItem from="1715524372674" duration="460000" />
+      <workItem from="1715873127480" duration="366000" />
+      <workItem from="1715873743294" duration="11000" />
+      <workItem from="1715873989677" duration="6000" />
+      <workItem from="1715874007544" duration="11660000" />
     </task>
     <task id="LOCAL-00001" summary="ATMOS-8 # added list functions based on listCurrentData that list data for windSpeed, windGusts, precipitation, pm10, pm25, ozon and no2 in the last hour">
       <option name="closed" value="true" />
@@ -89,7 +107,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715442717643</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="ATMOS-8 # added list functions based on listCurrentData that list data for windSpeed, windGusts, precipitation, pm10, pm25, ozon and no2 in the last hour (fixed: added .populate('data_series_id'))">
+      <option name="closed" value="true" />
+      <created>1715524742265</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1715524742265</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -98,6 +124,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="ATMOS-8 # added list functions based on listCurrentData that list data for windSpeed, windGusts, precipitation, pm10, pm25, ozon and no2 in the last hour" />
     <MESSAGE value="ATMOS-8 # added list functions based on listCurrentData that list data for windSpeed, windGusts, precipitation, pm10, pm25, ozon and no2 in the last hour (fixed)" />
-    <option name="LAST_COMMIT_MESSAGE" value="ATMOS-8 # added list functions based on listCurrentData that list data for windSpeed, windGusts, precipitation, pm10, pm25, ozon and no2 in the last hour (fixed)" />
+    <MESSAGE value="ATMOS-8 # added list functions based on listCurrentData that list data for windSpeed, windGusts, precipitation, pm10, pm25, ozon and no2 in the last hour (fixed: added .populate('data_series_id'))" />
+    <MESSAGE value="ATMOS-58 # implemented the backend part for JWT authentication" />
+    <option name="LAST_COMMIT_MESSAGE" value="ATMOS-58 # implemented the backend part for JWT authentication" />
   </component>
 </project>
