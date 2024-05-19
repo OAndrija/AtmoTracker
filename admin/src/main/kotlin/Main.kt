@@ -32,7 +32,7 @@ import kotlinx.coroutines.withContext
 val barColor = Color(0xFFb0c985)
 val secondColor = Color(0xFFd1dfb8)
 val selectedColor = Color(0xFF9ebd68)
-val selectedSecondColor = Color(0xFF9ebd68)
+val selectedSecondColor = Color(0xFFc6d8a7)
 enum class MenuState { DATA, ABOUT_APP, SCRAPER, GENERATOR }
 enum class ScraperChoice { NONE, WEATHER, AIR_QUALITY, SEND_DATA }
 
@@ -98,6 +98,88 @@ fun Menu(menuState: MutableState<MenuState>, modifier: Modifier = Modifier) {
             contentAlignment = Alignment.Center
         ) {
             AboutAppNavbarItem(menuState, modifier)
+        }
+    }
+}
+
+@Composable
+fun ScraperMenu(scraperChoice: ScraperChoice, onScraperChoiceChange: (ScraperChoice) -> Unit, weatherScraped: Boolean, airQualityScraped: Boolean) {
+    val borderColor = Color.Black
+    val borderWidth = 0.2.dp
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(secondColor)
+            .drawBehind {
+                val strokeWidth = borderWidth.toPx()
+                val y = size.height - strokeWidth / 2
+                drawLine(
+                    color = borderColor,
+                    start = Offset(0f, y),
+                    end = Offset(size.width, y),
+                    strokeWidth = strokeWidth
+                )
+            }
+    ) {
+        Box(
+            modifier = Modifier
+                .height(50.dp)
+                .weight(1f)
+                .background(if (scraperChoice == ScraperChoice.WEATHER) selectedSecondColor else secondColor)
+                .clickable { onScraperChoiceChange(ScraperChoice.WEATHER) },
+            contentAlignment = Alignment.Center
+        ) {
+            WeatherScraperNavbarItem(Modifier)
+        }
+
+        Box(
+            modifier = Modifier
+                .height(50.dp)
+                .weight(1f)
+                .background(if (scraperChoice == ScraperChoice.AIR_QUALITY) selectedSecondColor else secondColor)
+                .clickable { onScraperChoiceChange(ScraperChoice.AIR_QUALITY) },
+            contentAlignment = Alignment.Center
+        ) {
+            AirScraperNavbarItem(Modifier)
+        }
+
+        Box(
+            modifier = Modifier
+                .height(50.dp)
+                .weight(1f)
+                .background(if (scraperChoice == ScraperChoice.SEND_DATA) selectedSecondColor else secondColor)
+                .clickable(enabled = weatherScraped || airQualityScraped) { onScraperChoiceChange(ScraperChoice.SEND_DATA) },
+            contentAlignment = Alignment.Center
+        ) {
+            SendNavbarItem(Modifier, enabled = weatherScraped || airQualityScraped)
+        }
+    }
+}
+
+@Composable
+fun DataRow(name: String?, data: Map<String, String?>) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .background(Color.White)
+            .border(
+                width = 0.5.dp,
+                color = Color.LightGray,
+                shape = MaterialTheme.shapes.small
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(8.dp)
+        ) {
+            Text(text = name ?: "Unknown location", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
+            data.forEach { (key, value) ->
+                Text("$key: ${value?.ifEmpty { "N/A" } ?: "N/A"}", modifier = Modifier.padding(bottom = 4.dp))
+            }
         }
     }
 }
@@ -264,7 +346,7 @@ fun ScraperTab(modifier: Modifier = Modifier) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyColumn(state = listState) {
                         items(weatherResults.value.weatherTableRows) { weather ->
-                            ScrapedDataRow(name = weather.name, data = weather.data)
+                            DataRow(name = weather.name, data = weather.data)
                         }
                     }
                     VerticalScrollbar(
@@ -286,7 +368,7 @@ fun ScraperTab(modifier: Modifier = Modifier) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyColumn(state = listState) {
                         items(qualityResults.value.qualityTableRows) { quality ->
-                            ScrapedDataRow(name = quality.name, data = quality.data)
+                            DataRow(name = quality.name, data = quality.data)
                         }
                     }
                     VerticalScrollbar(
@@ -306,88 +388,6 @@ fun ScraperTab(modifier: Modifier = Modifier) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("Select an option to scrape data")
                 }
-            }
-        }
-    }
-}
-
-@Composable
-fun ScraperMenu(scraperChoice: ScraperChoice, onScraperChoiceChange: (ScraperChoice) -> Unit, weatherScraped: Boolean, airQualityScraped: Boolean) {
-    val borderColor = Color.Black
-    val borderWidth = 0.2.dp
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(secondColor)
-            .drawBehind {
-                val strokeWidth = borderWidth.toPx()
-                val y = size.height - strokeWidth / 2
-                drawLine(
-                    color = borderColor,
-                    start = Offset(0f, y),
-                    end = Offset(size.width, y),
-                    strokeWidth = strokeWidth
-                )
-            }
-    ) {
-        Box(
-            modifier = Modifier
-                .height(50.dp)
-                .weight(1f)
-                .background(if (scraperChoice == ScraperChoice.WEATHER) selectedSecondColor else secondColor)
-                .clickable { onScraperChoiceChange(ScraperChoice.WEATHER) },
-            contentAlignment = Alignment.Center
-        ) {
-            WeatherScraperNavbarItem(Modifier)
-        }
-
-        Box(
-            modifier = Modifier
-                .height(50.dp)
-                .weight(1f)
-                .background(if (scraperChoice == ScraperChoice.AIR_QUALITY) selectedSecondColor else secondColor)
-                .clickable { onScraperChoiceChange(ScraperChoice.AIR_QUALITY) },
-            contentAlignment = Alignment.Center
-        ) {
-            AirScraperNavbarItem(Modifier)
-        }
-
-        Box(
-            modifier = Modifier
-                .height(50.dp)
-                .weight(1f)
-                .background(if (scraperChoice == ScraperChoice.SEND_DATA) selectedSecondColor else secondColor)
-                .clickable(enabled = weatherScraped || airQualityScraped) { onScraperChoiceChange(ScraperChoice.SEND_DATA) },
-            contentAlignment = Alignment.Center
-        ) {
-            SendNavbarItem(Modifier, enabled = weatherScraped || airQualityScraped)
-        }
-    }
-}
-
-@Composable
-fun ScrapedDataRow(name: String?, data: Map<String, String?>) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .background(Color.White)
-            .border(
-                width = 0.5.dp,
-                color = Color.LightGray,
-                shape = MaterialTheme.shapes.small
-            ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(8.dp)
-        ) {
-            Text(text = name ?: "Unknown location", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
-            data.forEach { (key, value) ->
-                Text("$key: ${value?.ifEmpty { "N/A" } ?: "N/A"}", modifier = Modifier.padding(bottom = 4.dp))
             }
         }
     }
