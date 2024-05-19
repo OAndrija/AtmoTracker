@@ -28,10 +28,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
+import kotlinx.coroutines.delay
 
 val barColor = Color(0xFFA4BE5C)
 enum class MenuState { DATA, ABOUT_APP, SCRAPER, GENERATOR }
-enum class ScraperChoice { NONE, WEATHER, AIR_QUALITY }
+enum class ScraperChoice { NONE, WEATHER, AIR_QUALITY, SEND_DATA }
 
 @Composable
 fun Menu(menuState: MutableState<MenuState>, modifier: Modifier = Modifier) {
@@ -51,7 +52,8 @@ fun Menu(menuState: MutableState<MenuState>, modifier: Modifier = Modifier) {
                     end = Offset(size.width, y),
                     strokeWidth = strokeWidth
                 )
-            }    ) {
+            }
+    ) {
         Box(
             modifier = Modifier
                 .height(50.dp)
@@ -153,6 +155,7 @@ fun AboutAppNavbarItem(menuState: MutableState<MenuState>, modifier: Modifier) {
         Text(text = "About")
     }
 }
+
 @Composable
 fun DataTab(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -163,27 +166,23 @@ fun DataTab(modifier: Modifier = Modifier) {
 @Composable
 fun ScraperTab(modifier: Modifier = Modifier) {
     var scraperChoice by remember { mutableStateOf(ScraperChoice.NONE) }
+    var weatherScraped by remember { mutableStateOf(false) }
+    var airQualityScraped by remember { mutableStateOf(false) }
     val weatherResults = remember { mutableStateOf(WeatherResults()) }
     val qualityResults = remember { mutableStateOf(QualityResults()) }
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-    Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(onClick = { scraperChoice = ScraperChoice.WEATHER }) {
-                Text("Scrape Weather Data")
-            }
-            Button(onClick = { scraperChoice = ScraperChoice.AIR_QUALITY }) {
-                Text("Scrape Air Quality Data")
-            }
-        }
+    Column(modifier = modifier.fillMaxSize()) {
+        ScraperMenu(scraperChoice, onScraperChoiceChange = { scraperChoice = it })
 
         when (scraperChoice) {
             ScraperChoice.WEATHER -> {
-                LaunchedEffect(Unit) {
+                LaunchedEffect(scraperChoice) {
                     coroutineScope.launch {
                         withContext(Dispatchers.IO) {
                             weatherResults.value = WebScraper.scrapeWeatherData()
+                            weatherScraped = true
                         }
                     }
                 }
@@ -201,10 +200,11 @@ fun ScraperTab(modifier: Modifier = Modifier) {
             }
 
             ScraperChoice.AIR_QUALITY -> {
-                LaunchedEffect(Unit) {
+                LaunchedEffect(scraperChoice) {
                     coroutineScope.launch {
                         withContext(Dispatchers.IO) {
                             qualityResults.value = WebScraper.scrapeQualityData()
+                            airQualityScraped = true
                         }
                     }
                 }
@@ -221,11 +221,86 @@ fun ScraperTab(modifier: Modifier = Modifier) {
                 }
             }
 
+            ScraperChoice.SEND_DATA -> {
+                coroutineScope.launch {
+                    if (weatherScraped) {
+                        weatherResults.value.weatherTableRows.forEach { weather ->
+                            WebScraper.sendWeatherData(weather)
+                        }
+                        delay(2000)  // Show "Sending data..." for 2 seconds
+                        scraperChoice = ScraperChoice.WEATHER  // Return to weather data screen
+                    } else if (airQualityScraped) {
+                        qualityResults.value.qualityTableRows.forEach { airQuality ->
+                            WebScraper.sendQualityData(airQuality)
+                        }
+                        delay(4000)  // Show "Sending data..." for 2 seconds
+                        scraperChoice = ScraperChoice.AIR_QUALITY  // Return to air quality data screen
+                    } else {
+                        println("No data to send")
+                    }
+                }
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Sending data...")
+                }
+            }
+
             else -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("Select an option to scrape data")
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun ScraperMenu(scraperChoice: ScraperChoice, onScraperChoiceChange: (ScraperChoice) -> Unit) {
+    val borderColor = Color.Black
+    val borderWidth = 0.2.dp
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(barColor)
+            .drawBehind {
+                val strokeWidth = borderWidth.toPx()
+                val y = size.height - strokeWidth / 2
+                drawLine(
+                    color = borderColor,
+                    start = Offset(0f, y),
+                    end = Offset(size.width, y),
+                    strokeWidth = strokeWidth
+                )
+            }
+    ) {
+        Box(
+            modifier = Modifier
+                .height(50.dp)
+                .weight(1f)
+                .clickable { onScraperChoiceChange(ScraperChoice.WEATHER) },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = "Scrape Weather Data")
+        }
+
+        Box(
+            modifier = Modifier
+                .height(50.dp)
+                .weight(1f)
+                .clickable { onScraperChoiceChange(ScraperChoice.AIR_QUALITY) },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = "Scrape Air Quality Data")
+        }
+
+        Box(
+            modifier = Modifier
+                .height(50.dp)
+                .weight(1f)
+                .clickable { onScraperChoiceChange(ScraperChoice.SEND_DATA) },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = "Send Scraped Data")
         }
     }
 }
@@ -249,9 +324,9 @@ fun ScrapedDataRow(name: String?, data: Map<String, String?>) {
                 .weight(1f)
                 .padding(8.dp)
         ) {
-            Text(text = name ?: "Unknown location", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 12.dp))
+            Text(text = name ?: "Unknown location", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
             data.forEach { (key, value) ->
-                Text("$key: $value", modifier = Modifier.padding(bottom = 4.dp))
+                Text("$key: ${value?.ifEmpty { "N/A" } ?: "N/A"}", modifier = Modifier.padding(bottom = 4.dp))
             }
         }
     }
