@@ -4,12 +4,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
@@ -25,9 +21,17 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.rememberWindowState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.Button
 
 val barColor = Color(0xFFA4BE5C)
 enum class MenuState { DATA, ABOUT_APP, SCRAPER, GENERATOR }
+enum class ScraperChoice { NONE, WEATHER, AIR_QUALITY }
 
 @Composable
 fun Menu(menuState: MutableState<MenuState>, modifier: Modifier = Modifier) {
@@ -158,10 +162,101 @@ fun DataTab(modifier: Modifier = Modifier) {
 
 @Composable
 fun ScraperTab(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("SCRAPER")
+    var scraperChoice by remember { mutableStateOf(ScraperChoice.NONE) }
+    val weatherResults = remember { mutableStateOf(WeatherResults()) }
+    val qualityResults = remember { mutableStateOf(QualityResults()) }
+    val coroutineScope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+
+    Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = { scraperChoice = ScraperChoice.WEATHER }) {
+                Text("Scrape Weather Data")
+            }
+            Button(onClick = { scraperChoice = ScraperChoice.AIR_QUALITY }) {
+                Text("Scrape Air Quality Data")
+            }
+        }
+
+        when (scraperChoice) {
+            ScraperChoice.WEATHER -> {
+                LaunchedEffect(Unit) {
+                    coroutineScope.launch {
+                        withContext(Dispatchers.IO) {
+                            weatherResults.value = WebScraper.scrapeWeatherData()
+                        }
+                    }
+                }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(state = listState) {
+                        items(weatherResults.value.weatherTableRows) { weather ->
+                            ScrapedDataRow(name = weather.name, data = weather.data)
+                        }
+                    }
+                    VerticalScrollbar(
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        adapter = rememberScrollbarAdapter(scrollState = listState)
+                    )
+                }
+            }
+
+            ScraperChoice.AIR_QUALITY -> {
+                LaunchedEffect(Unit) {
+                    coroutineScope.launch {
+                        withContext(Dispatchers.IO) {
+                            qualityResults.value = WebScraper.scrapeQualityData()
+                        }
+                    }
+                }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(state = listState) {
+                        items(qualityResults.value.qualityTableRows) { quality ->
+                            ScrapedDataRow(name = quality.name, data = quality.data)
+                        }
+                    }
+                    VerticalScrollbar(
+                        modifier = Modifier.align(Alignment.CenterEnd),
+                        adapter = rememberScrollbarAdapter(scrollState = listState)
+                    )
+                }
+            }
+
+            else -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Select an option to scrape data")
+                }
+            }
+        }
     }
 }
+
+@Composable
+fun ScrapedDataRow(name: String?, data: Map<String, String?>) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .background(Color.White)
+            .border(
+                width = 0.5.dp,
+                color = Color.LightGray,
+                shape = MaterialTheme.shapes.small
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(8.dp)
+        ) {
+            Text(text = name ?: "Unknown location", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 12.dp))
+            data.forEach { (key, value) ->
+                Text("$key: $value", modifier = Modifier.padding(bottom = 4.dp))
+            }
+        }
+    }
+}
+
 
 @Composable
 fun GeneratorTab(modifier: Modifier = Modifier) {
