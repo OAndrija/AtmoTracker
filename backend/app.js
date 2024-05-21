@@ -28,7 +28,7 @@ mongoose.connection.on('connected', () => {
 });
 
 // CORS configuration
-var allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
+var allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
 app.use(cors({
   credentials: true,
   origin: function(origin, callback) {
@@ -67,7 +67,7 @@ app.use(function(req, res, next) {
 });
 
 // Routes setup
-app.use('/', indexRouter);
+app.use('/api', indexRouter);
 app.use('/users', usersRouter);
 app.use('/data', dataRouter);
 app.use('/dataSeries', dataSeriesRouter);
@@ -134,7 +134,7 @@ setTimeout(() => {
 }, getTimeUntilNextHour());
 
 // Start the server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3002;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
