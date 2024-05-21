@@ -45,6 +45,7 @@ object WebScraper {
                             val weather = Weather(
                                 name = "Weather ${cells[0]}",
                                 data = mapOf(
+                                    "temperature" to cells[2],
                                     "windSpeed" to cells[5],
                                     "windGusts" to cells[6],
                                     "precipitation" to cells[8]
