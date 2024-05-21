@@ -54,6 +54,7 @@ fun Menu(menuState: MutableState<MenuState>, modifier: Modifier = Modifier) {
                     end = Offset(size.width, y),
                     strokeWidth = strokeWidth
                 )
+
             }
     ) {
         Box(
