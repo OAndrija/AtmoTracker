@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
@@ -158,7 +160,7 @@ fun ScraperMenu(scraperChoice: ScraperChoice, onScraperChoiceChange: (ScraperCho
 }
 
 @Composable
-fun DataRow(name: String?, data: Map<String, String?>) {
+fun DataRow(name: String?, data: Map<String, String?>, onDelete: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -179,6 +181,14 @@ fun DataRow(name: String?, data: Map<String, String?>) {
             Text(text = name ?: "Unknown location", fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 8.dp))
             data.forEach { (key, value) ->
                 Text("$key: ${value?.ifEmpty { "N/A" } ?: "N/A"}", modifier = Modifier.padding(bottom = 4.dp))
+            }
+        }
+        Row(
+            modifier = Modifier.padding(end = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(onClick = onDelete, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)) {
+                Text("Delete")
             }
         }
     }
@@ -298,13 +308,14 @@ fun DataTab(modifier: Modifier = Modifier) {
     }
 }
 
+
 @Composable
 fun ScraperTab(modifier: Modifier = Modifier) {
     var scraperChoice by remember { mutableStateOf(ScraperChoice.NONE) }
     var weatherScraped by remember { mutableStateOf(false) }
     var airQualityScraped by remember { mutableStateOf(false) }
-    val weatherResults = remember { mutableStateOf(WeatherResults()) }
-    val qualityResults = remember { mutableStateOf(QualityResults()) }
+    val weatherResults = remember { mutableStateOf(WeatherResults(mutableListOf())) }
+    val qualityResults = remember { mutableStateOf(QualityResults(mutableListOf())) }
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
@@ -346,7 +357,13 @@ fun ScraperTab(modifier: Modifier = Modifier) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyColumn(state = listState) {
                         items(weatherResults.value.weatherTableRows) { weather ->
-                            DataRow(name = weather.name, data = weather.data)
+                            DataRow(name = weather.name, data = weather.data) {
+                                weatherResults.value = weatherResults.value.copy(
+                                    weatherTableRows = weatherResults.value.weatherTableRows.toMutableList().apply {
+                                        remove(weather)
+                                    }
+                                )
+                            }
                         }
                     }
                     VerticalScrollbar(
@@ -368,7 +385,13 @@ fun ScraperTab(modifier: Modifier = Modifier) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyColumn(state = listState) {
                         items(qualityResults.value.qualityTableRows) { quality ->
-                            DataRow(name = quality.name, data = quality.data)
+                            DataRow(name = quality.name, data = quality.data) {
+                                qualityResults.value = qualityResults.value.copy(
+                                    qualityTableRows = qualityResults.value.qualityTableRows.toMutableList().apply {
+                                        remove(quality)
+                                    }
+                                )
+                            }
                         }
                     }
                     VerticalScrollbar(
