@@ -1,4 +1,3 @@
-import androidx.compose.material.Text
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.window.Window
@@ -9,9 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -160,7 +157,7 @@ fun ScraperMenu(scraperChoice: ScraperChoice, onScraperChoiceChange: (ScraperCho
 }
 
 @Composable
-fun DataRow(name: String?, data: Map<String, String?>, onDelete: () -> Unit) {
+fun DataRow(name: String?, data: Map<String, String?>, onDelete: () -> Unit,onEdit: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -187,9 +184,15 @@ fun DataRow(name: String?, data: Map<String, String?>, onDelete: () -> Unit) {
             modifier = Modifier.padding(end = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Button(onClick = onEdit, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue)) {
+                Text("Edit")
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+
             Button(onClick = onDelete, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)) {
                 Text("Delete")
             }
+
         }
     }
 }
@@ -307,8 +310,105 @@ fun DataTab(modifier: Modifier = Modifier) {
         Text("DATA")
     }
 }
+@Composable
+fun EditWeatherDialog(
+    weather: Weather,
+    onDismiss: () -> Unit,
+    onSave: (Weather) -> Unit
+) {
+    var newName by remember { mutableStateOf(weather.name ?: "") }
+    var newData by remember { mutableStateOf(weather.data.toMutableMap()) }
 
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Edit Weather Data") },
+        text = {
+            Column {
+                TextField(
+                    value = newName,
+                    onValueChange = { newName = it },
+                    label = { Text("Name") }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                newData.forEach { (key, value) ->
+                    var updatedValue by remember { mutableStateOf(value ?: "") }
+                    TextField(
+                        value = updatedValue,
+                        onValueChange = { newValue ->
+                            updatedValue = newValue
+                            newData[key] = newValue
+                        },
+                        label = { Text(key) }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                onSave(weather.copy(name = newName, data = newData))
+                onDismiss()
+            }) {
+                Text("Save")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
 
+@Composable
+fun EditAirQualityDialog(
+    airQuality: AirQuality,
+    onDismiss: () -> Unit,
+    onSave: (AirQuality) -> Unit
+) {
+    var newName by remember { mutableStateOf(airQuality.name ?: "") }
+    var newData by remember { mutableStateOf(airQuality.data.toMutableMap()) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Edit Air Quality Data") },
+        text = {
+            Column {
+                TextField(
+                    value = newName,
+                    onValueChange = { newName = it },
+                    label = { Text("Name") }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                newData.forEach { (key, value) ->
+                    var updatedValue by remember { mutableStateOf(value ?: "") }
+                    TextField(
+                        value = updatedValue,
+                        onValueChange = { newValue ->
+                            updatedValue = newValue
+                            newData[key] = newValue
+                        },
+                        label = { Text(key) }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                onSave(airQuality.copy(name = newName, data = newData))
+                onDismiss()
+            }) {
+                Text("Save")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
 @Composable
 fun ScraperTab(modifier: Modifier = Modifier) {
     var scraperChoice by remember { mutableStateOf(ScraperChoice.NONE) }
@@ -318,6 +418,8 @@ fun ScraperTab(modifier: Modifier = Modifier) {
     val qualityResults = remember { mutableStateOf(QualityResults(mutableListOf())) }
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    var editingWeather by remember { mutableStateOf<Weather?>(null) }
+    var editingAirQuality by remember { mutableStateOf<AirQuality?>(null) }
 
     Column(modifier = modifier.fillMaxSize()) {
         ScraperMenu(scraperChoice, onScraperChoiceChange = { choice ->
@@ -357,13 +459,18 @@ fun ScraperTab(modifier: Modifier = Modifier) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyColumn(state = listState) {
                         items(weatherResults.value.weatherTableRows) { weather ->
-                            DataRow(name = weather.name, data = weather.data) {
-                                weatherResults.value = weatherResults.value.copy(
-                                    weatherTableRows = weatherResults.value.weatherTableRows.toMutableList().apply {
-                                        remove(weather)
-                                    }
-                                )
-                            }
+                            DataRow(
+                                name = weather.name,
+                                data = weather.data,
+                                onDelete = {
+                                    weatherResults.value = weatherResults.value.copy(
+                                        weatherTableRows = weatherResults.value.weatherTableRows.toMutableList().apply {
+                                            remove(weather)
+                                        }
+                                    )
+                                },
+                                onEdit = { editingWeather = weather }
+                            )
                         }
                     }
                     VerticalScrollbar(
@@ -385,13 +492,18 @@ fun ScraperTab(modifier: Modifier = Modifier) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     LazyColumn(state = listState) {
                         items(qualityResults.value.qualityTableRows) { quality ->
-                            DataRow(name = quality.name, data = quality.data) {
-                                qualityResults.value = qualityResults.value.copy(
-                                    qualityTableRows = qualityResults.value.qualityTableRows.toMutableList().apply {
-                                        remove(quality)
-                                    }
-                                )
-                            }
+                            DataRow(
+                                name = quality.name,
+                                data = quality.data,
+                                onDelete = {
+                                    qualityResults.value = qualityResults.value.copy(
+                                        qualityTableRows = qualityResults.value.qualityTableRows.toMutableList().apply {
+                                            remove(quality)
+                                        }
+                                    )
+                                },
+                                onEdit = { editingAirQuality = quality }
+                            )
                         }
                     }
                     VerticalScrollbar(
@@ -413,6 +525,42 @@ fun ScraperTab(modifier: Modifier = Modifier) {
                 }
             }
         }
+    }
+
+    editingWeather?.let { weather ->
+        EditWeatherDialog(
+            weather = weather,
+            onDismiss = { editingWeather = null },
+            onSave = { updatedWeather ->
+                weatherResults.value = weatherResults.value.copy(
+                    weatherTableRows = weatherResults.value.weatherTableRows.toMutableList().apply {
+                        val index = indexOfFirst { it.name == weather.name }
+                        if (index != -1) {
+                            set(index, updatedWeather)
+                        }
+                    }
+                )
+                editingWeather = null
+            }
+        )
+    }
+
+    editingAirQuality?.let { airQuality ->
+        EditAirQualityDialog(
+            airQuality = airQuality,
+            onDismiss = { editingAirQuality = null },
+            onSave = { updatedAirQuality ->
+                qualityResults.value = qualityResults.value.copy(
+                    qualityTableRows = qualityResults.value.qualityTableRows.toMutableList().apply {
+                        val index = indexOfFirst { it.name == airQuality.name }
+                        if (index != -1) {
+                            set(index, updatedAirQuality)
+                        }
+                    }
+                )
+                editingAirQuality = null
+            }
+        )
     }
 }
 
