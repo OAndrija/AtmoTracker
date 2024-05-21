@@ -27,48 +27,49 @@ module.exports = {
     listNearbyData: function (req, res) {
         const { longitude, latitude } = req.query;//ce hocemo maxDistance dodamo tu
 
-    if (!longitude || !latitude) {
-        return res.status(400).json({
-            message: 'Please provide both longitude and latitude'
-        });
-    }
-
-    const radius = 5 / 6378.1; // 5 km radius in radians
-
-    DataSeriesModel.find({
-        location: {
-            $geoWithin: {
-                $centerSphere: [
-                    [parseFloat(latitude), parseFloat(longitude)],
-                    radius
-                    //parseFloat(maxDistance)
-                ]
-            }
-        }
-    }).exec(function (err, dataSeries) {
-        if (err) {
-            return res.status(500).json({
-                message: 'Error when getting nearby data series.',
-                error: err
+        if (!longitude || !latitude) {
+            return res.status(400).json({
+                message: 'Please provide both longitude and latitude'
             });
         }
 
-        const dataSeriesIds = dataSeries.map(ds => ds._id);
+        const radius = 5 / 6378.1; // 5 km radius in radians
 
-        DataModel.find({
-            data_series_id: { $in: dataSeriesIds }
-        }).populate('data_series_id').exec(function (err, datas) {
+        DataSeriesModel.find({
+            location: {
+                $geoWithin: {
+                    $centerSphere: [
+                        [parseFloat(latitude), parseFloat(longitude)],
+                        radius
+                        //parseFloat(maxDistance)
+                    ]
+                }
+            }
+        }).exec(function (err, dataSeries) {
             if (err) {
                 return res.status(500).json({
-                    message: 'Error when getting data.',
+                    message: 'Error when getting nearby data series.',
                     error: err
                 });
             }
 
-            return res.json(datas);
+            const dataSeriesIds = dataSeries.map(ds => ds._id);
+
+            DataModel.find({
+                data_series_id: { $in: dataSeriesIds }
+            }).populate('data_series_id').exec(function (err, datas) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when getting data.',
+                        error: err
+                    });
+                }
+
+                return res.json(datas);
+            });
         });
-    });
     },
+    
     //lists all data and their corresponding data series object in the last hour
     listCurrentData: function (req, res) {
         const now = new Date();
