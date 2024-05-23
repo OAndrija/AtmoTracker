@@ -8,10 +8,10 @@ const FilterButton = ({ icon, text }) => {
     const colorMode = useContext(ColorModeContext);
 
     return (
-        <Box display="flex" alignItems="center" backgroundColor={colors.primary[400]} borderRadius="35px" sx={{ ml:1, width: '50%', height: '35px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.1)'}}>
+        <Box display="flex" alignItems="center" backgroundColor={colors.primary[400]} borderRadius="35px" sx={{ ml:1.5, pr:1, width: '50%', height: '35px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)'}}>
             <IconButton>
                 {icon}
-                <Typography fontSize={13}>
+                <Typography fontSize={13} sx={{ml:0.5}}>
                     {text}
                 </Typography>
             </IconButton>
