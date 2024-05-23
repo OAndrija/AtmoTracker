@@ -1,5 +1,5 @@
 import { Box, IconButton, useTheme, InputBase, Typography } from "@mui/material";
-import { useContext } from "react";
+import { useContext , useState } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import FilterButton from "./FilterButton";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -11,17 +11,25 @@ import AirOutlinedIcon from '@mui/icons-material/AirOutlined';
 import DeviceThermostatOutlinedIcon from '@mui/icons-material/DeviceThermostatOutlined';
 import WaterDropOutlinedIcon from '@mui/icons-material/WaterDropOutlined';
 import SearchIcon from "@mui/icons-material/Search";
+import MasksOutlinedIcon from '@mui/icons-material/MasksOutlined';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 const Topbar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
+    const [showMoreFilters, setShowMoreFilters] = useState(false);
+
+    const toggleShowMoreFilters = () => {
+        setShowMoreFilters(!showMoreFilters);
+    };
 
     return (
         <Box display="flex" justifyContent="space-between" alignItems="center" p={2} sx={{ backgroundColor: 'transparent' }}>
             {/* SEARCH BAR AND FILTERS */}
             <Box display="flex" alignItems="center">
-                <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="35px" sx={{ ml: 5, width: '300px', height: '50px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)' }}>
+                <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="35px" sx={{ ml: 5, width: '300px', height: '45px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)' }}>
                     <InputBase sx={{ ml: 3, flex: 1, fontSize: 17 }} placeholder="Search" />
                     <IconButton type="button" sx={{ p: 1, mr: 2 }}>
                         <SearchIcon />
@@ -31,10 +39,10 @@ const Topbar = () => {
                     <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" />
                     <FilterButton icon={<AirOutlinedIcon />} text="Wind" />
                     <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" />
-                    <FilterButton icon={<WaterDropOutlinedIcon />} text="PM10" />
-                    <FilterButton icon={<WaterDropOutlinedIcon />} text="PM2,5" />
-                    <FilterButton icon={<WaterDropOutlinedIcon />} text="Ozon" />
-                    <FilterButton icon={<WaterDropOutlinedIcon />} text="NO2" />
+                    <FilterButton icon={<MasksOutlinedIcon />} text="PM10" />
+                    <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" />
+                    <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" />
+                    <FilterButton icon={<MasksOutlinedIcon />} text="NO2" />
                 </Box>
             </Box>
 
