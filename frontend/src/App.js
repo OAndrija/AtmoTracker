@@ -8,6 +8,9 @@ import Sidebar from './scenes/global/Sidebar';
 // import Sidebar from './scenes/global/Sidebar';
 // import Map from './scenes/map';
 
+import MapComponent from './scenes/map/MapComponent';
+
+
 function App() {
   const [theme, colorMode] = useMode();
 
@@ -16,8 +19,10 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="App">
+      
           <main className="content">
             <Topbar />
+            <MapComponent />
             <Routes>
               {/* <Route path="/" element={<Dashboard />} /> */}
               {/* <Route path="/map" element={<Map />} /> */}
