@@ -1,11 +1,10 @@
 import { ColorModeContext, useMode } from './theme';
-import { CssBaseline, ThemeProvider } from '@mui/material';
-import { Routes, Route } from "react-router-dom"
+import { CssBaseline, ThemeProvider, Box } from '@mui/material';
+import { Routes, Route } from "react-router-dom";
 import Topbar from './scenes/global/Topbar';
 import Dashboard from './scenes/dashboard';
-import Sidebar from './scenes/global/Sidebar';
+import CustomSidebar from './scenes/global/Sidebar';
 // import WebSocket from './components/WebSocket';
-// import Sidebar from './scenes/global/Sidebar';
 // import Map from './scenes/map';
 
 function App() {
@@ -15,15 +14,18 @@ function App() {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="App">
-          <main className="content">
+        <Box sx={{ display: 'flex', height: '100vh' }}>
+          <CustomSidebar />
+          <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
             <Topbar />
-            <Routes>
-              {/* <Route path="/" element={<Dashboard />} /> */}
-              {/* <Route path="/map" element={<Map />} /> */}
-            </Routes>
-          </main>
-        </div>
+            <Box sx={{ flex: 1}}>
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                {/* <Route path="/map" element={<Map />} /> */}
+              </Routes>
+            </Box>
+          </Box>
+        </Box>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

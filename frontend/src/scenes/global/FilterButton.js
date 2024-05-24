@@ -25,11 +25,11 @@ const FilterButton = ({ icon, text }) => {
                 },
                 transition: 'background-color 0.3s, color 0.3s',
                 cursor: 'pointer',
-                padding: '0 10px'
+                padding: '0 6px'
             }}
         >
             {icon}
-            <Typography fontSize={13} fontWeight='bold' sx={{ ml: 0.5, pr: 1, color: 'inherit'}}>
+            <Typography fontSize={13} fontWeight='600' sx={{ ml: 0.5, pr: 1, color: 'inherit'}}>
                 {text}
             </Typography>
         </Box>

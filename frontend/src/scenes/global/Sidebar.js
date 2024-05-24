@@ -1,23 +1,71 @@
-import { useState } from "react";
-import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from '@mui/material';
-import { Link } from "react-router-dom";
-import { tokens } from "../../theme";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import { Box, Button, Typography } from "@mui/material";
+import React, { useState, useContext } from 'react';
+import { Sidebar, Menu, MenuItem, sidebarClasses } from 'react-pro-sidebar';
+import { Link } from 'react-router-dom';
+import { useTheme } from '@mui/material';
+import StatsIcon from '@mui/icons-material/BarChart';
+import MapIcon from '@mui/icons-material/Map';
+import { ColorModeContext, tokens } from '../../theme';
+import MenuIcon from '@mui/icons-material/Menu';
 
-const Sidebar = () => {
+const CustomSidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const [isCollapsed, setisCollapsed] = useState(false);
-    const [selected, setSelected] = useState('Dashboard');
+    const [collapsed, setCollapsed] = useState(true);
+
+    const handleToggle = () => {
+        setCollapsed(!collapsed);
+    };
 
     return (
-        <Box sx={{ "& .pro-sidebar-inner":{
-        
-        } }}>
-
+        <Box>
+            <Sidebar
+                style={{ borderRight: "0px" }}
+                collapsed={collapsed}
+                width="200px"
+                collapsedWidth="70px"
+                rootStyles={{
+                    [`.${sidebarClasses.container}`]: {
+                        height: '100vh',
+                        backgroundColor: colors.primary[400],
+                        boxShadow: '0px 4px 10px rgba(0,0,0, 0.2) !important',
+                        border: 'none !important'
+                    },
+                }}
+            >
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 1, mt: 2 }}>
+                    <Button onClick={handleToggle}>
+                        <MenuIcon />
+                    </Button>
+                </Box>
+                <Menu
+                    menuItemStyles={{
+                        button: {
+                            [`&.active`]: {
+                                backgroundColor: '#13395e',
+                                color: '#b6c8d9',
+                            },
+                            color: colors.grey[100],
+                            '&:hover': {
+                                backgroundColor: colors.primary[900],
+                                color: theme.palette.text.primary,
+                            },
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center'
+                        },
+                    }}
+                >
+                    <MenuItem style={{marginTop: '12px'}} icon={<StatsIcon />} component={<Link to="/stats" />}>
+                        <Typography>Stats</Typography>
+                    </MenuItem>
+                    <MenuItem style={{marginTop: '18px'}} icon={<MapIcon />} component={<Link to="/map" />}>
+                        <Typography>Map</Typography>
+                    </MenuItem>
+                </Menu>
+            </Sidebar>
         </Box>
     );
-}
+};
 
-export default Sidebar;
+export default CustomSidebar;
