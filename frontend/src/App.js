@@ -7,6 +7,9 @@ import CustomSidebar from './scenes/global/Sidebar';
 // import WebSocket from './components/WebSocket';
 // import Map from './scenes/map';
 
+import MapComponent from './scenes/map/MapComponent';
+
+
 function App() {
   const [theme, colorMode] = useMode();
 
@@ -18,6 +21,7 @@ function App() {
           <CustomSidebar />
           <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
             <Topbar />
+            <MapComponent />
             <Box sx={{ flex: 1}}>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
