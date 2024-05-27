@@ -1,5 +1,5 @@
-import { Box, Button, Typography } from "@mui/material";
-import React, { useState, useContext } from 'react';
+import { Box, IconButton, Button, Typography } from "@mui/material";
+import { useState, useContext } from 'react';
 import { Sidebar, Menu, MenuItem, sidebarClasses } from 'react-pro-sidebar';
 import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material';
@@ -7,10 +7,13 @@ import StatsIcon from '@mui/icons-material/BarChart';
 import MapIcon from '@mui/icons-material/Map';
 import { ColorModeContext, tokens } from '../../theme';
 import MenuIcon from '@mui/icons-material/Menu';
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 
 const CustomSidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const colorMode = useContext(ColorModeContext);
     const [collapsed, setCollapsed] = useState(true);
 
     const handleToggle = () => {
@@ -18,7 +21,7 @@ const CustomSidebar = () => {
     };
 
     return (
-        <Box>
+        <Box sx={{zIndex: 1000}}>
             <Sidebar
                 style={{ borderRight: "0px" }}
                 collapsed={collapsed}
@@ -33,7 +36,7 @@ const CustomSidebar = () => {
                     },
                 }}
             >
-                <Box sx={{ display: 'flex', justifyContent: 'center', p: 1, mt: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', p: 1, mt: 10 }}>
                     <Button onClick={handleToggle}>
                         <MenuIcon />
                     </Button>
@@ -62,6 +65,17 @@ const CustomSidebar = () => {
                     <MenuItem style={{marginTop: '18px'}} icon={<MapIcon />} component={<Link to="/map" />}>
                         <Typography>Map</Typography>
                     </MenuItem>
+                    <MenuItem 
+                        style={{marginTop: '12px'}} 
+                        icon={
+                            <IconButton onClick={colorMode.toggleColorMode}>
+                                {theme.palette.mode === 'dark' ? (
+                                    <DarkModeOutlinedIcon />
+                                ) : (
+                                    <LightModeOutlinedIcon />
+                                )}
+                            </IconButton>}
+                        />
                 </Menu>
             </Sidebar>
         </Box>

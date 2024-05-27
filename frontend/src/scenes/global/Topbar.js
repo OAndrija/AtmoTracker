@@ -19,7 +19,7 @@ const Topbar = () => {
     const colorMode = useContext(ColorModeContext);
 
     return (
-        <Box display="flex" justifyContent="space-between" alignItems="center" p={2} sx={{ backgroundColor: 'transparent',position: 'absolute',top: 0,
+        <Box display="flex" justifyContent="space-between" alignItems="center" p={2} sx={{ backgroundColor: 'transparent',position: 'flex',top: 0,
         left: 0,
         right: 0,
         zIndex: 1000}}>

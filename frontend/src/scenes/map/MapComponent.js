@@ -17,7 +17,7 @@ const MapComponent = () => {
       <MapContainer center={position} zoom={9} style={{ height: '100%', width: '100%' }}>
         <TileLayer
           url={isDarkMode ? darkTileLayer : lightTileLayer}
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          attribution='&copy;'
         />
         
       </MapContainer>
