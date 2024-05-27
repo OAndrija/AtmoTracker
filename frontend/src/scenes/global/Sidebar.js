@@ -59,7 +59,7 @@ const CustomSidebar = () => {
                         },
                     }}
                 >
-                    <MenuItem style={{marginTop: '12px'}} icon={<StatsIcon />} component={<Link to="/stats" />}>
+                    <MenuItem style={{marginTop: '12px'}} icon={<StatsIcon />} component={<Link to="/dashboard" />}>
                         <Typography>Stats</Typography>
                     </MenuItem>
                     <MenuItem style={{marginTop: '18px'}} icon={<MapIcon />} component={<Link to="/map" />}>

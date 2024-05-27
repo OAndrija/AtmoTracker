@@ -1,11 +1,10 @@
 import { Box, IconButton, useTheme, InputBase, Typography } from "@mui/material";
 import { useContext } from "react";
+import { useLocation } from "react-router-dom";
 import { ColorModeContext, tokens } from "../../theme";
 import FilterButton from "./FilterButton";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import AirOutlinedIcon from '@mui/icons-material/AirOutlined';
 import DeviceThermostatOutlinedIcon from '@mui/icons-material/DeviceThermostatOutlined';
@@ -17,12 +16,19 @@ const Topbar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
+    const location = useLocation();
+
+    const isMapPage = location.pathname === '/map';
 
     return (
-        <Box display="flex" justifyContent="space-between" alignItems="center" p={2} sx={{ backgroundColor: 'transparent',position: 'flex',top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000}}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" p={2} sx={{ 
+            backgroundColor: isMapPage ? 'transparent' : colors.primary[900],
+            position: 'flex',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000
+        }}>
             {/* SEARCH BAR AND FILTERS */}
             <Box display="flex" alignItems="center">
                 <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="35px" sx={{ ml: 1, width: '400px', height: '42px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)' }}>
@@ -31,15 +37,18 @@ const Topbar = () => {
                         <SearchIcon />
                     </IconButton>
                 </Box>
-                <Box display="flex" alignItems="center" ml={2}>
-                    <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" />
-                    <FilterButton icon={<AirOutlinedIcon />} text="Wind" />
-                    <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="PM10" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="NO2" />
-                </Box>
+
+                {isMapPage && (
+                    <Box display="flex" alignItems="center" ml={2}>
+                        <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" />
+                        <FilterButton icon={<AirOutlinedIcon />} text="Wind" />
+                        <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" />
+                        <FilterButton icon={<MasksOutlinedIcon />} text="PM10" />
+                        <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" />
+                        <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" />
+                        <FilterButton icon={<MasksOutlinedIcon />} text="NO2" />
+                    </Box>  
+                )}
             </Box>
 
             {/* ICONS */}

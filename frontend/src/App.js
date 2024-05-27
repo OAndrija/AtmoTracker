@@ -21,11 +21,10 @@ function App() {
           <CustomSidebar />
           <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
             <Topbar />
-            <MapComponent />
             <Box sx={{ flex: 1}}>
               <Routes>
-                <Route path="/" element={<Dashboard />} />
-                {/* <Route path="/map" element={<Map />} /> */}
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/map" element={ <MapComponent />} />
               </Routes>
             </Box>
           </Box>
