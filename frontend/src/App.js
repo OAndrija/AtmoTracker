@@ -6,32 +6,38 @@ import Dashboard from './scenes/dashboard';
 import CustomSidebar from './scenes/global/Sidebar';
 // import WebSocket from './components/WebSocket';
 // import Map from './scenes/map';
-
 import MapComponent from './scenes/map/MapComponent';
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Profile from "./components/Profile";
+import Logout from "./components/Logout";
 
 
 function App() {
   const [theme, colorMode] = useMode();
 
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <Box sx={{ display: 'flex', height: '100vh' }}>
-          <CustomSidebar />
-          <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-            <Topbar />
-            <MapComponent />
-            <Box sx={{ flex: 1}}>
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                {/* <Route path="/map" element={<Map />} /> */}
-              </Routes>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Box sx={{ display: 'flex', height: '100vh' }}>
+            <CustomSidebar />
+            <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+              <Topbar />
+              <Box sx={{ flex: 1}}>
+                <Routes>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/map" element={ <MapComponent />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/logout" element={<Logout />} />
+                </Routes>
+              </Box>
             </Box>
           </Box>
-        </Box>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
   );
 }
 

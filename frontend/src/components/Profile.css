@@ -1,0 +1,23 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    padding: 20px;
+    height: 100vh;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 300px;
+    height: 350px;
+}
+
+.rounded-avatar {
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+}

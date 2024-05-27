@@ -1,7 +1,4 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const UserModel = require('../models/userModel.js');
-const {jwtSecretKey} = require('../config.js');
+var UserModel = require('../models/userModel.js');
 
 /**
  * userController.js
@@ -57,7 +54,8 @@ module.exports = {
         var user = new UserModel({
             username: req.body.username,
             password: req.body.password,
-            email: req.body.email
+            path: "/avatars/" + req.file.filename,
+            email: req.body.email,
         });
 
         user.save(function (err, user) {
@@ -95,6 +93,7 @@ module.exports = {
 
             user.username = req.body.username ? req.body.username : user.username;
             user.password = req.body.password ? req.body.password : user.password;
+            user.path = req.body.path ? req.body.path : user.path;
             user.email = req.body.email ? req.body.email : user.email;
 
             user.save(function (err, user) {
@@ -144,35 +143,24 @@ module.exports = {
                 return next(err);
             }
             req.session.userId = user._id;
-            // Generate JWT token
-            const token = jwt.sign({
-                userId: user._id,
-                name: user.username,
-            }, jwtSecretKey, {expiresIn: '1d'});
-
-            // Return token and user information in the response
-            return res.json({ token: token, user: user });
+            //res.redirect('/users/profile');
+            return res.json(user);
         });
     },
 
-    profile: function(req, res, next) {
-        if (!req.userId) {
-            return res.status(401).json({ message: 'Unauthorized: No token provided' });
-        }
-
-        UserModel.findById(req.userId)
-            .exec(function(error, user) {
+    profile: function (req, res, next) {
+        UserModel.findById(req.session.userId)
+            .exec(function (error, user) {
                 if (error) {
                     return next(error);
+                } else if (user === null) {
+                    var err = new Error('Not authorized, go back!');
+                    err.status = 400;
+                    return next(err);
+
                 } else {
-                    if (!user) {
-                        var err = new Error('User not found');
-                        err.status = 404;
-                        return next(err);
-                    } else {
-                        // Pass the token to the template
-                        res.render('profile', { user: user, token: req.headers['authorization'] });
-                    }
+                    user = user.toObject();
+                    return res.json(user);
                 }
             });
     },
