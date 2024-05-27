@@ -1,6 +1,6 @@
 import { Box, IconButton, useTheme, InputBase, Typography } from "@mui/material";
-import { useContext } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useContext } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ColorModeContext, tokens } from "../../theme";
 import FilterButton from "./FilterButton";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -17,23 +17,42 @@ const Topbar = () => {
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const handleSearchClick = () => {
+        if (searchTerm) {
+            navigate(`/search/${searchTerm}`);
+        }
+    };
 
     const isMapPage = location.pathname === '/map';
 
     return (
         <Box display="flex" justifyContent="space-between" alignItems="center" p={2} sx={{ 
-            backgroundColor: isMapPage ? 'transparent' : colors.primary[900],
+            backgroundColor: isMapPage ? 'transparent' : colors.primary[400],
             position: 'flex',
             top: 0,
             left: 0,
             right: 0,
-            zIndex: 1000
+            zIndex: 1000,
+            boxShadow: isMapPage ? 'none' : '10px 4px 10px rgba(0,0,0, 0.2)',
         }}>
             {/* SEARCH BAR AND FILTERS */}
             <Box display="flex" alignItems="center">
                 <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="35px" sx={{ ml: 1, width: '400px', height: '42px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)' }}>
-                    <InputBase sx={{ ml: 3, flex: 1, fontSize: 15 }} placeholder="Search" />
-                    <IconButton type="button" sx={{ p: 1, mr: 2 }}>
+                    <InputBase
+                        sx={{ ml: 3, flex: 1, fontSize: 15 }}
+                        placeholder="Search"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                    />
+                    <IconButton type="button" sx={{ p: 1, mr: 2 }} onClick={handleSearchClick}>
                         <SearchIcon />
                     </IconButton>
                 </Box>
@@ -53,7 +72,7 @@ const Topbar = () => {
 
             {/* ICONS */}
             <Box display="flex" alignItems="center">
-                <IconButton  onClick={colorMode.toggleColorMode}>
+                <IconButton onClick={colorMode.toggleColorMode}>
                     {theme.palette.mode === 'dark' ? (
                         <DarkModeOutlinedIcon />
                     ) : (

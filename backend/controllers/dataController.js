@@ -89,6 +89,47 @@ module.exports = {
         });
     },
 
+    listDataForCity: async function (req, res) {
+        try {
+            const { cityName } = req.params; // Assuming city name is passed as a parameter
+            const now = new Date();
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const startOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+            const startOfTwoDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 2);
+
+            // Find the data series by city name and air_quality in tags
+            const dataSeries = await DataSeriesModel.findOne({ tags: { $all: [cityName, "air_quality"] } });
+            if (!dataSeries) {
+                return res.status(404).json({ message: 'City not found' });
+            }
+
+            // Find the data for the last 3 days
+            const data = await DataModel.find({
+                data_series_id: dataSeries._id,
+                timestamp: { $gte: startOfTwoDaysAgo }
+            }).exec();
+ 
+            // List of pollutants
+            const pollutants = ["pm10", "pm25", "so2", "co", "ozon", "no2", "benzen"];
+
+            // Transform data into the required format
+            const result = pollutants.map(pollutant => ({
+                id: pollutant.toUpperCase(),
+                data: [
+                    { x: startOfToday.toISOString().split('T')[0], y: getValueForDate(data, pollutant, startOfToday) },
+                    { x: startOfYesterday.toISOString().split('T')[0], y: getValueForDate(data, pollutant, startOfYesterday) },
+                    { x: startOfTwoDaysAgo.toISOString().split('T')[0], y: getValueForDate(data, pollutant, startOfTwoDaysAgo) }
+                ]
+            }));
+
+            res.json(result);
+        } catch (error) {
+            res.status(500).json({
+                message: 'Error when getting data.',
+                error: error.message
+            });
+        }
+    },
 
     listCurrentWindSpeedData: function (req, res) {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
@@ -353,10 +394,24 @@ module.exports = {
             return res.status(204).json();
         });
     },
-
-
-
-    
-    
-    
 };
+
+function getValueForDate(data, pollutant, date) {
+    const dateStr = date.toISOString().split('T')[0];
+    const dataForDate = data.find(d => {
+        const dataDateStr = new Date(d.timestamp).toISOString().split('T')[0];
+        return dataDateStr === dateStr;
+    });
+
+    console.log(`Date: ${dateStr}, Data for date:`, dataForDate);
+
+    if (dataForDate && dataForDate.data && typeof dataForDate.data.get === 'function') {
+        const pollutantValue = dataForDate.data.get(pollutant);
+        console.log(`Pollutant: ${pollutant}, Value: ${pollutantValue}`);
+        return pollutantValue;
+    }
+
+    console.log(`Pollutant: ${pollutant}, Value: null`);
+    return null;
+}
+
