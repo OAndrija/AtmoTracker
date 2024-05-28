@@ -4,23 +4,22 @@ import 'leaflet/dist/leaflet.css';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
 //import WbSunnyIcon from '@mui/icons-material/WbSunny';
-const position = [46.056946, 14.505751]; // Default center position for the map
+const position = [46.056946, 14.505751]; 
 const MapComponent = () => {
 
  
 
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
-  const [temperatureData, setTemperatureData] = useState([]); // State to store wind gust data
+  const [temperatureData, setTemperatureData] = useState([]); 
 
   const lightTileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
   const darkTileLayer = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
 
-  // Fetch wind gust data from the server when the component mounts
   useEffect(() => {
     const fetchTemperatureData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/data/temperature'); // Modify this URL to match your API endpoint
+        const response = await axios.get('http://localhost:3001/data/temperature'); 
         setTemperatureData(response.data);
       } catch (error) {
         console.error('Failed to fetch temperature:', error);
