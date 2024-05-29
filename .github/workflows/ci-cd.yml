@@ -41,10 +41,10 @@ jobs:
     if: success()
 
     steps:
-    - name: Webhook
-  uses: joelwmale/webhook-action@master
-  with:
-    url: ${{ secrets.WEBHOOK_URL }}
-    headers: '{"repository": "joelwmale/webhook-action"}'
-    body: '{"event": "deployment", "repository": "joelwmale/webhook-action"}'
-    github_event_payload: true
+    - name: Send Webhook Notification
+      uses: joelwmale/webhook-action@master
+      with:
+        url: ${{ secrets.WEBHOOK_URL }}
+        headers: '{"Content-Type": "application/json"}'
+        body: '{"text": "New Docker images have been built and pushed."}'
+        github_event_payload: false
