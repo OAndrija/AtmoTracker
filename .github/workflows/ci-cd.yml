@@ -35,4 +35,4 @@ jobs:
     - name: Send Webhook Notification
       uses: distributhor/workflow-webhook-action@v1
       with:
-        url: ${{ secrets.WEBHOOK_URL }}
+        url: ${{ secrets.WEBHOOK_URL }} 
