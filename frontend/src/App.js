@@ -8,6 +8,7 @@ import CustomSidebar from './scenes/global/Sidebar';
 // import Map from './scenes/map';
 
 import MapComponent from './scenes/map/MapComponent';
+import AreaBumpChart from './scenes/dashboard/AreaBumpChart';
 
 
 function App() {

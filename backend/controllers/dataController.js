@@ -89,39 +89,38 @@ module.exports = {
         });
     },
 
-    listDataForCity: async function (req, res) {
+    listAirQualityDataForCity: async function (req, res) {
         try {
-            const { cityName } = req.params; // Assuming city name is passed as a parameter
+            const { cityName } = req.params;
             const now = new Date();
             const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
             const startOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
-            const startOfTwoDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 2);
-
+            const endOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0); // End of yesterday is the start of today
+    
             // Find the data series by city name and air_quality in tags
             const dataSeries = await DataSeriesModel.findOne({ tags: { $all: [cityName, "air_quality"] } });
             if (!dataSeries) {
                 return res.status(404).json({ message: 'City not found' });
             }
-
-            // Find the data for the last 3 days
+    
+            // Find the data from the start of yesterday until now
             const data = await DataModel.find({
                 data_series_id: dataSeries._id,
-                timestamp: { $gte: startOfTwoDaysAgo }
+                timestamp: { $gte: startOfYesterday }
             }).exec();
- 
+    
             // List of pollutants
             const pollutants = ["pm10", "pm25", "so2", "co", "ozon", "no2", "benzen"];
-
+    
             // Transform data into the required format
             const result = pollutants.map(pollutant => ({
                 id: pollutant.toUpperCase(),
                 data: [
-                    { x: startOfToday.toISOString().split('T')[0], y: getValueForDate(data, pollutant, startOfToday) },
-                    { x: startOfYesterday.toISOString().split('T')[0], y: getValueForDate(data, pollutant, startOfYesterday) },
-                    { x: startOfTwoDaysAgo.toISOString().split('T')[0], y: getValueForDate(data, pollutant, startOfTwoDaysAgo) }
+                    { x: startOfYesterday.toISOString().split('T')[0], y: getValueForDate(data, pollutant, startOfYesterday, endOfYesterday) },
+                    { x: startOfToday.toISOString().split('T')[0], y: getValueForDate(data, pollutant, startOfToday, now) }
                 ]
             }));
-
+    
             res.json(result);
         } catch (error) {
             res.status(500).json({
@@ -396,22 +395,22 @@ module.exports = {
     },
 };
 
-function getValueForDate(data, pollutant, date) {
-    const dateStr = date.toISOString().split('T')[0];
-    const dataForDate = data.find(d => {
-        const dataDateStr = new Date(d.timestamp).toISOString().split('T')[0];
-        return dataDateStr === dateStr;
+function getValueForDate(data, pollutant, startDate, endDate) {
+    console.log(`Filtering data for pollutant: ${pollutant} from ${startDate.toISOString()} to ${endDate.toISOString()}`);
+    const filteredData = data.filter(d => {
+        const dataDate = new Date(d.timestamp);
+        return dataDate >= startDate && dataDate < endDate;
     });
 
-    console.log(`Date: ${dateStr}, Data for date:`, dataForDate);
+    console.log(`Filtered data for ${startDate.toISOString().split('T')[0]}:`, filteredData);
 
-    if (dataForDate && dataForDate.data && typeof dataForDate.data.get === 'function') {
-        const pollutantValue = dataForDate.data.get(pollutant);
-        console.log(`Pollutant: ${pollutant}, Value: ${pollutantValue}`);
-        return pollutantValue;
+    if (filteredData.length > 0) {
+        const latestDataPoint = filteredData[filteredData.length - 1]; // Get the latest data point for the date range
+        if (latestDataPoint.data && typeof latestDataPoint.data.get === 'function') {
+            const pollutantValue = latestDataPoint.data.get(pollutant);
+            return pollutantValue !== '' ? pollutantValue : null;
+        }
     }
 
-    console.log(`Pollutant: ${pollutant}, Value: null`);
     return null;
 }
-
