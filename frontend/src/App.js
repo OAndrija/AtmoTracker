@@ -8,7 +8,7 @@ import CustomSidebar from './scenes/global/Sidebar';
 // import Map from './scenes/map';
 
 import MapComponent from './scenes/map/MapComponent';
-
+//test
 
 function App() {
   const [theme, colorMode] = useMode();
