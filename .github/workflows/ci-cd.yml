@@ -33,8 +33,9 @@ jobs:
 
     steps:
     - name: Send Webhook Notification
-      uses: triggerwebhook/trigger-webhook-action@v0.1.0
+      uses: carlosperate/send-webhook@v1.1.0
       with:
         url: ${{ secrets.WEBHOOK_URL }}
         method: POST
-        payload: '{"text": "New Docker image is available"}'
+        data: '{"text": "New Docker image is available"}'
+        headers: '{"Content-Type": "application/json"}'
