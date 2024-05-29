@@ -33,6 +33,8 @@ jobs:
 
     steps:
     - name: Send Webhook Notification
-      uses: distributhor/workflow-webhook-action@v1
+      uses: triggerwebhook/trigger-webhook-action@v0.1.0
       with:
         url: ${{ secrets.WEBHOOK_URL }}
+        method: POST
+        payload: '{"text": "New Docker image is available"}'
