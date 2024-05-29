@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3001
 
 # Set the command to run the backend when the container starts
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
