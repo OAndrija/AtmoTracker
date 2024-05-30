@@ -94,7 +94,7 @@ const broadcastData = async (ws = null) => {
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
-    console.log('Data fetched succesfuly'); // Log the fetched data
+    console.log('Data fetched succesfuly'); // Log the fetched datadsada
     const dataToSend = JSON.stringify(data);
 
     if (ws) {
