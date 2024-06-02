@@ -3,6 +3,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -22,10 +23,10 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters.eq
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.mongodb.client.model.Projections
+import com.mongodb.client.model.Sorts
+import it.skrape.selects.html5.td
+import kotlinx.coroutines.*
 import org.bson.Document
 
 val barColor = Color(0xFFb0c985)
@@ -36,8 +37,6 @@ val offWhiteColor = Color(0xFFF5F5F5)
 
 enum class MenuState { DATA, ABOUT_APP, SCRAPER, GENERATOR }
 enum class ScraperChoice { NONE, WEATHER, AIR_QUALITY, SEND_DATA }
-enum class GeneratorChoice { NONE, WEATHER, AIR_QUALITY, GENERATE_DATA }
-
 
 suspend fun deleteDocumentById(collection: MongoCollection<Document>, id: String) {
     withContext(Dispatchers.IO) {
@@ -51,6 +50,7 @@ suspend fun updateDocumentById(collection: MongoCollection<Document>, id: String
         collection.updateOne(eq("_id", id), updateDoc)
     }
 }
+
 @Composable
 fun Menu(menuState: MutableState<MenuState>, modifier: Modifier = Modifier) {
     val borderColor = Color.Black
@@ -380,12 +380,24 @@ fun DatasTabContent(collectionName: String, modifier: Modifier = Modifier) {
             ) {
                 items(documents) { document ->
                     DataRow(
-                        name = document.getString("name") ?: "",
-                        data = document.toMap().mapValues { it.value.toString() },
+                        name = "",
+                        data = document.toMap().mapValues { entry ->
+                            val value = entry.value.toString()
+                            val trimmedValue = value.replace("Document{{", "").replace("}}", "")
+                            val subvalues = trimmedValue.split(",").map { it.trim() }
+                            val formattedValue = if (entry.key == "data") {
+                                subvalues.joinToString { "\n      $it" }
+                            } else {
+                                subvalues.joinToString()
+                            }
+
+                            formattedValue
+                        },
                         onDelete = {
                             coroutineScope.launch {
                                 deleteDocumentById(collection, document.getObjectId("_id").toString())
-                                queryResult = queryResult?.filter { it.getObjectId("_id") != document.getObjectId("_id") }
+                                queryResult =
+                                    queryResult?.filter { it.getObjectId("_id") != document.getObjectId("_id") }
                             }
                         },
                         onEdit = {
@@ -407,7 +419,88 @@ fun DatasTabContent(collectionName: String, modifier: Modifier = Modifier) {
             onDismiss = { editingDocument = null },
             onSave = { updatedDocument ->
                 coroutineScope.launch {
-                    updateDocumentById(collection, document.getObjectId("_id").toString(), updatedDocument.toMap().mapValues { it.value.toString() })
+                    updateDocumentById(
+                        collection,
+                        document.getObjectId("_id").toString(),
+                        updatedDocument.toMap().mapValues { it.value.toString() })
+                    queryResult = queryResult?.map {
+                        if (it.getObjectId("_id") == document.getObjectId("_id")) updatedDocument else it
+                    }
+                    editingDocument = null
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun DataSeriesTabContent(collectionName: String, modifier: Modifier = Modifier) {
+    var queryResult by remember { mutableStateOf<List<Document>?>(null) }
+    val coroutineScope = rememberCoroutineScope()
+    val database = MongoDBClient.database
+    val collection = database.getCollection(collectionName)
+    val lazyListState = rememberLazyListState()
+    var editingDocument by remember { mutableStateOf<Document?>(null) }
+
+    LaunchedEffect(Unit) {
+        queryResult = database.getCollection(collectionName).find().toList()
+    }
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        queryResult?.let { documents ->
+            LazyColumn(
+                state = lazyListState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                items(documents) { document ->
+                    DataRow(
+                        name = "",
+                        data = document.toMap().mapValues { entry ->
+                            val value = entry.value.toString()
+                            val trimmedValue =
+                                value.replace("Document{{", "").replace("}}", "").replace("[", "").replace("]", "")
+                            val subvalues = trimmedValue.split(",").map { it.trim() }
+                            val formattedValue = if (entry.key == "tags" || entry.key == "location") {
+                                subvalues.joinToString { "\n      $it" }
+                            } else {
+                                subvalues.joinToString()
+                            }
+
+                            formattedValue
+                        },
+                        onDelete = {
+                            coroutineScope.launch {
+                                deleteDocumentById(collection, document.getObjectId("_id").toString())
+                                queryResult =
+                                    queryResult?.filter { it.getObjectId("_id") != document.getObjectId("_id") }
+                            }
+                        },
+                        onEdit = { editingDocument = document }
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+            }
+        }
+        VerticalScrollbar(
+            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
+            adapter = rememberScrollbarAdapter(lazyListState)
+        )
+    }
+
+    editingDocument?.let { document ->
+        EditDocumentDialog(
+            document = document,
+            onDismiss = { editingDocument = null },
+            onSave = { updatedDocument ->
+                coroutineScope.launch {
+                    updateDocumentById(
+                        collection,
+                        document.getObjectId("_id").toString(),
+                        updatedDocument.toMap().mapValues { it.value.toString() })
                     queryResult = queryResult?.map {
                         if (it.getObjectId("_id") == document.getObjectId("_id")) updatedDocument else it
                     }
@@ -459,66 +552,6 @@ fun EditDocumentDialog(
             }
         }
     )
-}
-
-@Composable
-fun DataSeriesTabContent(collectionName: String, modifier: Modifier = Modifier) {
-    var queryResult by remember { mutableStateOf<List<Document>?>(null) }
-    val coroutineScope = rememberCoroutineScope()
-    val database = MongoDBClient.database
-    val collection = database.getCollection(collectionName)
-    val lazyListState = rememberLazyListState()
-    var editingDocument by remember { mutableStateOf<Document?>(null) }
-
-    LaunchedEffect(Unit) {
-        queryResult = database.getCollection(collectionName).find().toList()
-    }
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-    ) {
-        queryResult?.let { documents ->
-            LazyColumn(
-                state = lazyListState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                items(documents) { document ->
-                    DataRow(
-                        name = document.getString("name") ?: "",
-                        data = document.toMap().mapValues { it.value.toString() },
-                        onDelete = {  coroutineScope.launch {
-                            deleteDocumentById(collection, document.getObjectId("_id").toString())
-                            queryResult = queryResult?.filter { it.getObjectId("_id") != document.getObjectId("_id") }
-                        } },
-                        onEdit = { editingDocument = document }
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
-            }
-        }
-        VerticalScrollbar(
-            modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-            adapter = rememberScrollbarAdapter(lazyListState)
-        )
-    }
-
-    editingDocument?.let { document ->
-        EditDocumentDialog(
-            document = document,
-            onDismiss = { editingDocument = null },
-            onSave = { updatedDocument ->
-                coroutineScope.launch {
-                    updateDocumentById(collection, document.getObjectId("_id").toString(), updatedDocument.toMap().mapValues { it.value.toString() })
-                    queryResult = queryResult?.map {
-                        if (it.getObjectId("_id") == document.getObjectId("_id")) updatedDocument else it
-                    }
-                    editingDocument = null
-                }
-            }
-        )
-    }
 }
 
 @Composable
@@ -842,8 +875,15 @@ fun WeatherGeneratorTab(
     var precipitationMin by remember { mutableStateOf("0") }
     var precipitationMax by remember { mutableStateOf("50") }
     var editingWeather by remember { mutableStateOf<FakeData?>(null) }
-
     val lazyListState = rememberLazyListState()
+
+    var allNames by remember { mutableStateOf<List<String>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        allNames = fetchNamesFromMongoDB()
+    }
+
+    val filteredNames = allNames.filter { it.contains("Weather") }
 
     Box(modifier = modifier.fillMaxSize()) {
         LazyColumn(
@@ -881,6 +921,30 @@ fun WeatherGeneratorTab(
                     colors = ButtonDefaults.buttonColors(backgroundColor = barColor)
                 ) {
                     Text("Generate Weather Data")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        weatherTabState.generatedData.forEach { fakeData ->
+                            val weatherData = mapOf(
+                                "temperature" to fakeData.temperature.toString(),
+                                "windSpeed" to fakeData.windSpeed.toString(),
+                                "windGusts" to fakeData.windGusts.toString(),
+                                "precipitation" to fakeData.precipitation.toString()
+                            )
+
+                            filteredNames.forEachIndexed { _, name ->
+                                val weather = Weather(
+                                    name = name,
+                                    data = weatherData
+                                )
+                                dataGenerator.sendWeatherData(weather)
+                            }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = barColor)
+                ) {
+                    Text("Send Generated Weather Data")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -994,19 +1058,22 @@ fun WeatherGeneratorTab(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
-            items(weatherTabState.generatedData) { data ->
+            itemsIndexed(weatherTabState.generatedData) { index, data ->
+                val name = filteredNames.getOrNull(index) ?: "Unknown"
                 DataRow(
-                    name = data.name,
+                    name = name,
                     data = mapOf(
-                        "Temperature" to data.temperature.toString(),
-                        "Wind Speed" to data.windSpeed.toString(),
-                        "Wind Gusts" to data.windGusts.toString(),
-                        "Precipitation" to data.precipitation.toString()
+                        "temperature" to data.temperature.toString(),
+                        "windSpeed" to data.windSpeed.toString(),
+                        "windGusts" to data.windGusts.toString(),
+                        "precipitation" to data.precipitation.toString()
                     ),
-                    onDelete = { weatherTabState.generatedData = weatherTabState.generatedData.toMutableList().apply {
-                        remove(data)
-                    }},
-                    onEdit = {editingWeather = data}
+                    onDelete = {
+                        weatherTabState.generatedData = weatherTabState.generatedData.toMutableList().apply {
+                            remove(data)
+                        }
+                    },
+                    onEdit = { editingWeather = data }
                 )
             }
         }
@@ -1031,70 +1098,7 @@ fun WeatherGeneratorTab(
         )
     }
 }
-@Composable
-fun EditFakeDataDialog(
-    fakeData: FakeData,
-    onDismiss: () -> Unit,
-    onSave: (FakeData) -> Unit
-) {
-    var newName by remember { mutableStateOf(fakeData.name) }
-    var newTemperature by remember { mutableStateOf(fakeData.temperature.toString()) }
-    var newWindSpeed by remember { mutableStateOf(fakeData.windSpeed.toString()) }
-    var newWindGusts by remember { mutableStateOf(fakeData.windGusts.toString()) }
-    var newPrecipitation by remember { mutableStateOf(fakeData.precipitation.toString()) }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(text = "Edit Weather Data") },
-        text = {
-            Column {
-                TextField(
-                    value = newName,
-                    onValueChange = { newName = it },
-                    label = { Text("Name") }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                TextField(
-                    value = newTemperature,
-                    onValueChange = { newTemperature = it },
-                    label = { Text("Temperature") }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                TextField(
-                    value = newWindSpeed,
-                    onValueChange = { newWindSpeed = it },
-                    label = { Text("Wind Speed") }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                TextField(
-                    value = newWindGusts,
-                    onValueChange = { newWindGusts = it },
-                    label = { Text("Wind Gusts") }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                TextField(
-                    value = newPrecipitation,
-                    onValueChange = { newPrecipitation = it },
-                    label = { Text("Precipitation") }
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        },
-        confirmButton = {
-            Button(onClick = {
-                onSave(FakeData(newName, newTemperature.toInt(), newWindSpeed.toInt(), newWindGusts.toInt(), newPrecipitation.toInt()))
-                onDismiss()
-            }) {
-                Text("Save")
-            }
-        },
-        dismissButton = {
-            Button(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        }
-    )
-}
 @Composable
 fun AirQualityGeneratorTab(
     airQualityTabState: AirQualityTabState,
@@ -1117,8 +1121,15 @@ fun AirQualityGeneratorTab(
     var benzenMin by remember { mutableStateOf("0") }
     var benzenMax by remember { mutableStateOf("100") }
     var editingAirQuality by remember { mutableStateOf<FakeData?>(null) }
-
     val lazyListState = rememberLazyListState()
+
+    var allNames by remember { mutableStateOf<List<String>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        allNames = fetchNamesFromMongoDB()
+    }
+
+    val filteredNames = allNames.filter { it.contains("AirQuality") }
 
     Box(modifier = modifier.fillMaxSize()) {
 
@@ -1164,6 +1175,33 @@ fun AirQualityGeneratorTab(
                     colors = ButtonDefaults.buttonColors(backgroundColor = barColor)
                 ) {
                     Text("Generate Air Quality Data")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = {
+                        airQualityTabState.generatedData.forEach { fakeData ->
+                            val airQualityData = mapOf(
+                                "pm10" to fakeData.pm10.toString(),
+                                "pm25" to fakeData.pm25.toString(),
+                                "so2" to fakeData.so2.toString(),
+                                "co" to fakeData.co.toString(),
+                                "ozon" to fakeData.ozon.toString(),
+                                "no2" to fakeData.no2.toString(),
+                                "benzen" to fakeData.benzen.toString()
+                            )
+
+                            filteredNames.forEachIndexed { _, name ->
+                                val quality = AirQuality(
+                                    name = name,
+                                    data = airQualityData
+                                )
+                                dataGenerator.sendQualityData(quality)
+                            }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = barColor)
+                ) {
+                    Text("Send Generated Air Quality Data")
                 }
                 Spacer(modifier = Modifier.height(16.dp))
             }
@@ -1349,17 +1387,18 @@ fun AirQualityGeneratorTab(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
             }
-            items(airQualityTabState.generatedData) { data ->
+            itemsIndexed(airQualityTabState.generatedData) { index, data ->
+                val name = filteredNames.getOrNull(index) ?: "Unknown"
                 DataRow(
-                    name = data.name,
+                    name = name,
                     data = mapOf(
-                        "PM10" to data.pm10.toString(),
-                        "PM2.5" to data.pm25.toString(),
-                        "SO2" to data.so2.toString(),
-                        "CO" to data.co.toString(),
-                        "Ozon" to data.ozon.toString(),
-                        "NO2" to data.no2.toString(),
-                        "Benzen" to data.benzen.toString()
+                        "pm10" to data.pm10.toString(),
+                        "pm25" to data.pm25.toString(),
+                        "so2" to data.so2.toString(),
+                        "co" to data.co.toString(),
+                        "ozon" to data.ozon.toString(),
+                        "no2" to data.no2.toString(),
+                        "benzen" to data.benzen.toString()
                     ),
                     onDelete = {
                         airQualityTabState.generatedData = airQualityTabState.generatedData.toMutableList().apply {
@@ -1393,6 +1432,96 @@ fun AirQualityGeneratorTab(
             }
         )
     }
+}
+
+suspend fun fetchNamesFromMongoDB(): List<String> = withContext(Dispatchers.IO) {
+    val database = MongoDBClient.database
+    val collection = database.getCollection("dataseries")
+
+    val namesList = mutableListOf<String>()
+
+    collection.find()
+        .projection(Projections.include("name")) // Assuming the name field is stored as "name" in your documents
+        .sort(Sorts.ascending("timestamp")) // Sorting by timestamp if needed
+        .forEach { document ->
+            val name = document.getString("name")
+            namesList.add(name ?: "")
+        }
+
+    namesList
+}
+
+@Composable
+fun EditFakeDataDialog(
+    fakeData: FakeData,
+    onDismiss: () -> Unit,
+    onSave: (FakeData) -> Unit
+) {
+    var newName by remember { mutableStateOf(fakeData.name) }
+    var newTemperature by remember { mutableStateOf(fakeData.temperature.toString()) }
+    var newWindSpeed by remember { mutableStateOf(fakeData.windSpeed.toString()) }
+    var newWindGusts by remember { mutableStateOf(fakeData.windGusts.toString()) }
+    var newPrecipitation by remember { mutableStateOf(fakeData.precipitation.toString()) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Edit Weather Data") },
+        text = {
+            Column {
+                TextField(
+                    value = newName,
+                    onValueChange = { newName = it },
+                    label = { Text("Name") }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                TextField(
+                    value = newTemperature,
+                    onValueChange = { newTemperature = it },
+                    label = { Text("Temperature") }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                TextField(
+                    value = newWindSpeed,
+                    onValueChange = { newWindSpeed = it },
+                    label = { Text("Wind Speed") }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                TextField(
+                    value = newWindGusts,
+                    onValueChange = { newWindGusts = it },
+                    label = { Text("Wind Gusts") }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                TextField(
+                    value = newPrecipitation,
+                    onValueChange = { newPrecipitation = it },
+                    label = { Text("Precipitation") }
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        },
+        confirmButton = {
+            Button(onClick = {
+                onSave(
+                    FakeData(
+                        newName,
+                        newTemperature.toInt(),
+                        newWindSpeed.toInt(),
+                        newWindGusts.toInt(),
+                        newPrecipitation.toInt()
+                    )
+                )
+                onDismiss()
+            }) {
+                Text("Save")
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
 }
 
 @Composable
@@ -1467,7 +1596,18 @@ fun EditAirQualityDialog(
         },
         confirmButton = {
             Button(onClick = {
-                onSave(FakeData(newName, newPM10.toInt(), newPM25.toInt(), newSO2.toInt(), newCO.toInt(), newOzon.toInt(), newNO2.toInt(), newBenzen.toInt()))
+                onSave(
+                    FakeData(
+                        newName,
+                        newPM10.toInt(),
+                        newPM25.toInt(),
+                        newSO2.toInt(),
+                        newCO.toInt(),
+                        newOzon.toInt(),
+                        newNO2.toInt(),
+                        newBenzen.toInt()
+                    )
+                )
                 onDismiss()
             }) {
                 Text("Save")
