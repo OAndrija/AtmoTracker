@@ -209,13 +209,19 @@ fun DataRow(name: String?, data: Map<String, String?>, onDelete: () -> Unit, onE
             modifier = Modifier.padding(end = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(onClick = onEdit, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue)) {
-                Text("Edit")
+            Button(
+                onClick = onEdit,
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)) // Green color to match the theme
+            ) {
+                Text("Edit", color = Color.White) // White text color for better contrast
             }
             Spacer(modifier = Modifier.width(8.dp))
 
-            Button(onClick = onDelete, colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)) {
-                Text("Delete")
+            Button(
+                onClick = onDelete,
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFF44336)) // Red color for the delete button, keeping it as a warning color
+            ) {
+                Text("Delete", color = Color.White) // White text color for better contrast
             }
 
         }
