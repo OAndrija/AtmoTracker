@@ -211,17 +211,17 @@ fun DataRow(name: String?, data: Map<String, String?>, onDelete: () -> Unit, onE
         ) {
             Button(
                 onClick = onEdit,
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50)) // Green color to match the theme
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF4CAF50))
             ) {
-                Text("Edit", color = Color.White) // White text color for better contrast
+                Text("Edit", color = Color.White)
             }
             Spacer(modifier = Modifier.width(8.dp))
 
             Button(
                 onClick = onDelete,
-                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFF44336)) // Red color for the delete button, keeping it as a warning color
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFFF44336))
             ) {
-                Text("Delete", color = Color.White) // White text color for better contrast
+                Text("Delete", color = Color.White)
             }
 
         }
