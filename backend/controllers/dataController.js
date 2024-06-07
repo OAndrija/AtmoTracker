@@ -115,6 +115,98 @@ module.exports = {
         }
     },
 
+    listLjubljanaPieChartData: async function (req, res) {
+        try {
+            // Names of the data series we are interested in
+            const seriesNames = ["AirQuality LJ Bežigrad"];
+    
+            console.log("Series Names:", seriesNames);
+    
+            // Find the data series with the specified names
+            const dataSeries = await DataSeriesModel.find({ name: { $in: seriesNames } });
+    
+            console.log("Data Series found:", dataSeries);
+    
+            // Map series names to their IDs for easy lookup
+            const seriesIdMap = dataSeries.reduce((acc, series) => {
+                acc[series.name] = series._id;
+                return acc;
+            }, {});
+    
+            console.log("Series ID Map:", seriesIdMap);
+    
+            // Ensure we found all the necessary series
+            if (Object.keys(seriesIdMap).length !== seriesNames.length) {
+                console.log("One or more data series not found.");
+                return res.status(404).json({
+                    message: 'One or more data series not found.'
+                });
+            }
+    
+            // Find the most recent data for each series
+            const latestDataPromises = seriesNames.map(name => 
+                DataModel.findOne({ data_series_id: seriesIdMap[name] })
+                    .sort({ timestamp: -1 })
+                    .exec()
+            );
+    
+            // Wait for all promises to resolve
+            const latestDataResults = await Promise.all(latestDataPromises);
+    
+            console.log("Latest Data Results:", latestDataResults);
+    
+            // Define colors for each city
+            const colors = {
+                pm25: "#e8c1a0",
+                pm10: "#61cdbb",
+                ozon: "#f1e15b",
+                no2: "#f47560"
+            };
+    
+            // Construct the response
+            const responseData = latestDataResults.map((result, index) => {
+                const data = result.data;
+                return [
+                    {
+                        id: "pm25",
+                        label: "pm25",
+                        value: data.get('pm25'),
+                        color: colors.pm25
+                    },
+                    {
+                        id: "pm10",
+                        label: "pm10",
+                        value: data.get('pm10'),
+                        color: colors.pm10
+                    },
+                    {
+                        id: "ozon",
+                        label: "ozon",
+                        value: data.get('ozon'),
+                        color: colors.ozon
+                    },
+                    {
+                        id: "no2",
+                        label: "no2",
+                        value: data.get('no2'),
+                        color: colors.no2
+                    }
+                ];
+            }).flat();
+        
+            console.log("Response Data:", responseData);
+    
+            // Send the response
+            return res.json(responseData);
+        } catch (err) {
+            console.error("Error when getting global bar chart data:", err);
+            return res.status(500).json({
+                message: 'Error when getting global bar chart data.',
+                error: err
+            });
+        }
+    },
+
     listNearbyData: function (req, res) {
         const { longitude, latitude } = req.query;//ce hocemo maxDistance dodamo tu
 
