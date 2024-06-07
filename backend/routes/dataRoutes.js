@@ -16,6 +16,7 @@ router.get('/ozon', dataController.listCurrentOzonData);
 router.get('/no2', dataController.listCurrentNo2Data);
 router.get('/nearby',dataController.listNearbyData);
 router.get('/temperature',dataController.listCurrentTemperature);
+router.get('/transformedData',dataController.listCurrentDataTransformed);
 
 
 /*

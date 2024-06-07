@@ -89,6 +89,7 @@ module.exports = {
         });
     },
 
+    
 
     listCurrentWindSpeedData: function (req, res) {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
@@ -96,7 +97,7 @@ module.exports = {
         DataModel.find({
             timestamp: {$gte: oneHourAgo},
             'data.windSpeed': {$exists: true} // Check if windSpeed exists under the data object
-        }).populate('data_series_id').select('data.windSpeed').exec(function (err, windSpeedData) {
+        }).populate('data_series_id').select('data.windSpeed ').exec(function (err, windSpeedData) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting wind speed data.',
@@ -138,7 +139,7 @@ module.exports = {
 
         DataModel.find({
             timestamp: {$gte: oneHourAgo},
-            'data.temperature': {$exists: true} // Check if windSpeed exists under the data object
+            'data.temperature': {$exists: true} 
         }).populate('data_series_id').exec(function (err, temperatureData) {
             if (err) {
                 return res.status(500).json({
@@ -149,6 +150,39 @@ module.exports = {
 
             const transformedData = temperatureData.map(item => ({
                 temperature: item.data?.get('temperature'),
+                windSpeed: item.data?.get('windSpeed'),
+                location: item.data_series_id.location,
+                name: item.data_series_id.name,
+                timestamp: item.timestamp
+            }));
+
+            return res.json(transformedData);
+        });
+    },
+
+    listCurrentDataTransformed: function (req, res) {
+        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+
+        DataModel.find({
+            timestamp: {$gte: oneHourAgo},
+          
+        }).populate('data_series_id').exec(function (err, data) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting wind speed data.',
+                    error: err
+                });
+            }
+
+            const transformedData = data.map(item => ({
+                temperature: item.data?.get('temperature'),
+                windGusts: item.data?.get('windGusts'),
+                windSpeed: item.data?.get('windSpeed'),
+                precipitation: item.data?.get('precipitation'),
+                pm10: item.data?.get('pm10'),
+                pm25: item.data?.get('pm25'),
+                ozon: item.data?.get('ozon'),
+                no2: item.data?.get('no2'),
                 location: item.data_series_id.location,
                 name: item.data_series_id.name,
                 timestamp: item.timestamp
@@ -189,7 +223,13 @@ module.exports = {
                     error: err
                 });
             }
-
+           
+           /*/ const transformedData = pm10Data.map(item => ({
+                pm10: item.data?.get('pm10'),
+                location: item.data_series_id.location,
+                name: item.data_series_id.name,
+                timestamp: item.timestamp
+           })); /*/ 
             return res.json(pm10Data);
         });
     },

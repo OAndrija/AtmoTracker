@@ -13,16 +13,14 @@ import WaterDropOutlinedIcon from '@mui/icons-material/WaterDropOutlined';
 import SearchIcon from "@mui/icons-material/Search";
 import MasksOutlinedIcon from '@mui/icons-material/MasksOutlined';
 
-const Topbar = () => {
+const Topbar = ({ setFilter }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
 
+
     return (
-        <Box display="flex" justifyContent="space-between" alignItems="center" p={2} sx={{ backgroundColor: 'transparent',position: 'absolute',top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000}}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" p={2} sx={{ backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1000 }}>
             {/* SEARCH BAR AND FILTERS */}
             <Box display="flex" alignItems="center">
                 <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="35px" sx={{ ml: 1, width: '400px', height: '42px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)' }}>
@@ -32,19 +30,19 @@ const Topbar = () => {
                     </IconButton>
                 </Box>
                 <Box display="flex" alignItems="center" ml={2}>
-                    <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" />
-                    <FilterButton icon={<AirOutlinedIcon />} text="Wind" />
-                    <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="PM10" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="NO2" />
+                    <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" onClick={() => setFilter('temperature')} />
+                    <FilterButton icon={<AirOutlinedIcon />} text="Wind" onClick={() => setFilter('wind')} />
+                    <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" onClick={() => setFilter('rain')} />
+                    <FilterButton icon={<MasksOutlinedIcon />} text="PM10" onClick={() => setFilter('pm10')} />
+                    <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" onClick={() => setFilter('pm25')} />
+                    <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" onClick={() => setFilter('ozon')} />
+                    <FilterButton icon={<MasksOutlinedIcon />} text="NO2" onClick={() => setFilter('no2')} />
                 </Box>
             </Box>
 
             {/* ICONS */}
             <Box display="flex" alignItems="center">
-                <IconButton  onClick={colorMode.toggleColorMode}>
+                <IconButton onClick={colorMode.toggleColorMode}>
                     {theme.palette.mode === 'dark' ? (
                         <DarkModeOutlinedIcon />
                     ) : (
