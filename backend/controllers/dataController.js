@@ -23,6 +23,97 @@ module.exports = {
         });
     },
 
+    listGlobalBarChartData: async function (req, res) {
+        try {
+            // Names of the data series we are interested in
+            const seriesNames = ["Weather Ljubljana", "Weather Maribor", "Weather Kranj"];
+    
+            console.log("Series Names:", seriesNames);
+    
+            // Find the data series with the specified names
+            const dataSeries = await DataSeriesModel.find({ name: { $in: seriesNames } });
+    
+            console.log("Data Series found:", dataSeries);
+    
+            // Map series names to their IDs for easy lookup
+            const seriesIdMap = dataSeries.reduce((acc, series) => {
+                acc[series.name] = series._id;
+                return acc;
+            }, {});
+    
+            console.log("Series ID Map:", seriesIdMap);
+    
+            // Ensure we found all the necessary series
+            if (Object.keys(seriesIdMap).length !== seriesNames.length) {
+                console.log("One or more data series not found.");
+                return res.status(404).json({
+                    message: 'One or more data series not found.'
+                });
+            }
+    
+            // Find the most recent data for each series
+            const latestDataPromises = seriesNames.map(name => 
+                DataModel.findOne({ data_series_id: seriesIdMap[name] })
+                    .sort({ timestamp: -1 })
+                    .exec()
+            );
+    
+            // Wait for all promises to resolve
+            const latestDataResults = await Promise.all(latestDataPromises);
+    
+            console.log("Latest Data Results:", latestDataResults);
+    
+            // Define colors for each city
+            const colors = {
+                "Ljubljana": {
+                    temperatureColor: "hsl(185, 70%, 50%)",
+                    precipitationColor: "hsl(153, 70%, 50%)",
+                    windspeedColor: "hsl(238, 70%, 50%)",
+                    windgustColor: "hsl(127, 70%, 50%)"
+                },
+                "Maribor": {
+                    temperatureColor: "hsl(178, 70%, 50%)",
+                    precipitationColor: "hsl(233, 70%, 50%)",
+                    windspeedColor: "hsl(250, 70%, 50%)",
+                    windgustColor: "hsl(215, 70%, 50%)"
+                },
+                "Kranj": {
+                    temperatureColor: "hsl(348, 70%, 50%)",
+                    precipitationColor: "hsl(323, 70%, 50%)",
+                    windspeedColor: "hsl(19, 70%, 50%)",
+                    windgustColor: "hsl(303, 70%, 50%)"
+                }
+            };
+    
+            // Construct the response
+            const responseData = seriesNames.map((name, index) => {
+                const city = name.split(" ")[1];
+                const data = latestDataResults[index].data;
+                return {
+                    city: city,
+                    temperature: data.get('temperature'),
+                    temperatureColor: colors[city].temperatureColor,
+                    precipitation: data.get('precipitation'),
+                    precipitationColor: colors[city].precipitationColor,
+                    windspeed: data.get('windSpeed'),
+                    windspeedColor: colors[city].windspeedColor,
+                    windgust: data.get('windGusts'),
+                    windgustColor: colors[city].windgustColor
+                };
+            });
+    
+            console.log("Response Data:", responseData);
+    
+            // Send the response
+            return res.json(responseData);
+        } catch (err) {
+            console.error("Error when getting global bar chart data:", err);
+            return res.status(500).json({
+                message: 'Error when getting global bar chart data.',
+                error: err
+            });
+        }
+    },
 
     listNearbyData: function (req, res) {
         const { longitude, latitude } = req.query;//ce hocemo maxDistance dodamo tu

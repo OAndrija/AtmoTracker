@@ -24,8 +24,8 @@ function App() {
             <Topbar />
             <Box sx={{ flex: 1}}>
               <Routes>
-                <Route path="/search/:cityName" element={<Dashboard />} />
                 <Route path="/map" element={ <MapComponent />} />
+                <Route path="/dashboard" element={<Dashboard />} />
               </Routes>
             </Box>
           </Box>
