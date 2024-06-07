@@ -66,22 +66,22 @@ module.exports = {
             // Define colors for each city
             const colors = {
                 "Ljubljana": {
-                    temperatureColor: "hsl(185, 70%, 50%)",
-                    precipitationColor: "hsl(153, 70%, 50%)",
-                    windspeedColor: "hsl(238, 70%, 50%)",
-                    windgustColor: "hsl(127, 70%, 50%)"
+                    temperatureColor: "#e8c1a0",
+                    precipitationColor: "#61cdbb",
+                    windspeedColor: "#f1e15b",
+                    windgustColor: "#f47560"
                 },
                 "Maribor": {
-                    temperatureColor: "hsl(178, 70%, 50%)",
-                    precipitationColor: "hsl(233, 70%, 50%)",
-                    windspeedColor: "hsl(250, 70%, 50%)",
-                    windgustColor: "hsl(215, 70%, 50%)"
+                    temperatureColor: "#e8c1a0",
+                    precipitationColor: "#61cdbb",
+                    windspeedColor: "#f1e15b",
+                    windgustColor: "#f47560"
                 },
                 "Kranj": {
-                    temperatureColor: "hsl(348, 70%, 50%)",
-                    precipitationColor: "hsl(323, 70%, 50%)",
-                    windspeedColor: "hsl(19, 70%, 50%)",
-                    windgustColor: "hsl(303, 70%, 50%)"
+                    temperatureColor: "#e8c1a0",
+                    precipitationColor: "#61cdbb",
+                    windspeedColor: "#f1e15b",
+                    windgustColor: "#f47560"
                 }
             };
     

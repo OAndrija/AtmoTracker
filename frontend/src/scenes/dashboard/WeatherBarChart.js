@@ -1,13 +1,14 @@
 import { useTheme } from "@mui/material";
 import { ResponsiveBar } from "@nivo/bar";
-import { tokens } from "../../theme";
-import { useState, useEffect } from "react";
+import { ColorModeContext, tokens } from '../../theme';
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 
 const BarChart = () => {
+    const [barChartData, setData] = useState([]);
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const [barChartData, setData] = useState([]);
+    const colorMode = useContext(ColorModeContext);
 
     useEffect(() => {
         // Fetch data from the API
@@ -21,15 +22,52 @@ const BarChart = () => {
             });
     }, []);
 
+    const keys = [
+        { id: 'temperature', label: 'Temperature' },
+        { id: 'precipitation', label: 'Precipitation' },
+        { id: 'windspeed', label: 'Wind Speed' },
+        { id: 'windgust', label: 'Wind Gust' }
+    ];
+
     return (
         <ResponsiveBar
             data={barChartData}
-            keys={[
-                'temperature',
-                'precipitation',
-                'windspeed',
-                'windgust'
-            ]}
+            theme={{
+                axis: {
+                    domain: {
+                        line: {
+                            stroke:colors.grey[100]
+                        }
+                    },
+                    legend: {
+                        text: {
+                            fill: colors.grey[100]
+                        }
+                    },
+                    ticks: {
+                        line: {
+                            stroke: colors.grey[100],
+                            strokeWidth: 1
+                        },
+                        text: {
+                            fill: colors.grey[100]
+                        }
+                    }
+                },
+                tooltip: {
+                    container: {
+                        background: theme.palette.background.paper,
+                        color: theme.palette.text.primary,
+                        fontSize: 12
+                    }
+                },
+                legends: {
+                    text: {
+                        fill: colors.grey[100]
+                    }
+                }
+            }}
+            keys={keys.map(k => k.id)}
             indexBy="city"
             margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
             padding={0.3}
@@ -41,7 +79,7 @@ const BarChart = () => {
                     id: 'dots',
                     type: 'patternDots',
                     background: 'inherit',
-                    color: '#38bcb2',
+                    color: '#e8a838',
                     size: 4,
                     padding: 1,
                     stagger: true
@@ -59,7 +97,7 @@ const BarChart = () => {
             fill={[
                 {
                     match: {
-                        id: 'precipitation'
+                        id: 'windgust'
                     },
                     id: 'dots'
                 },
@@ -81,15 +119,6 @@ const BarChart = () => {
             }}
             axisTop={null}
             axisRight={null}
-            axisBottom={{
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-                legend: 'city',
-                legendPosition: 'middle',
-                legendOffset: 32,
-                truncateTickAt: 0
-            }}
             axisLeft={{
                 tickSize: 5,
                 tickPadding: 5,
@@ -106,7 +135,7 @@ const BarChart = () => {
                 modifiers: [
                     [
                         'darker',
-                        1.6
+                        3
                     ]
                 ]
             }}
