@@ -3,8 +3,44 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
+import L from 'leaflet';
+import { BsThermometerSun } from "react-icons/bs";
+import { renderToString } from 'react-dom/server';
+import { FaThermometerThreeQuarters, FaThermometerHalf } from "react-icons/fa";
 
 const position = [46.056946, 14.505751];
+
+const highTempIcon = new L.DivIcon({
+  html: renderToString(<BsThermometerSun style={{ color: 'red', fontSize: '24px' }} />),
+  className: '',
+  iconSize: [24, 24],
+  iconAnchor: [12, 24],
+  popupAnchor: [0, -24]
+});
+
+const midTempIcon = new L.DivIcon({
+  html: renderToString(<FaThermometerThreeQuarters style={{ color: 'orange', fontSize: '24px' }} />),
+  className: '',
+  iconSize: [24, 24],
+  iconAnchor: [12, 24],
+  popupAnchor: [0, -24]
+});
+
+const lowMidTempIcon = new L.DivIcon({
+  html: renderToString(<FaThermometerHalf style={{ color: 'yellow', fontSize: '24px' }} />),
+  className: '',
+  iconSize: [24, 24],
+  iconAnchor: [12, 24],
+  popupAnchor: [0, -24]
+});
+
+const defaultIcon = new L.Icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
 const MapComponent = ({ filter }) => {
   const theme = useTheme();
@@ -69,6 +105,20 @@ const MapComponent = ({ filter }) => {
     }
   };
 
+  const getIcon = (item) => {
+    if (filter === 'temperature') {
+      if (item.temperature > 25) {
+        return highTempIcon;
+      } else if (item.temperature >= 20 && item.temperature <= 25) {
+        return midTempIcon;
+      }
+      else if (item.temperature >= 15 && item.temperature <= 19){
+        return lowMidTempIcon;
+      }
+    }
+    return defaultIcon;
+  };
+
   return (
     <div style={{ height: '100vh', width: '100vw', position: 'absolute', top: 0, left: 0 }}>
       <MapContainer center={position} zoom={9} style={{ height: '100%', width: '100%' }}>
@@ -77,7 +127,10 @@ const MapComponent = ({ filter }) => {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
         />
         {data.filter(filterData).map((item, index) => (
-          <Marker key={index} position={[item.location.latitude, item.location.longitude]}>
+          <Marker key={index} 
+          position={[item.location.latitude, item.location.longitude]}
+          icon={getIcon(item)}
+          >
             <Popup>
               <div>
                 <strong>Name:</strong> {item.name}<br />
