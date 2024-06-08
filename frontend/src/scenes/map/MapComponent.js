@@ -3,15 +3,17 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
-//import WbSunnyIcon from '@mui/icons-material/WbSunny';
-const position = [46.056946, 14.505751]; 
+
+const position = [46.056946, 14.505751];
+const bounds = [
+  [45.4215, 13.3755], // South-West corner of Slovenia
+  [46.8766, 16.5966]  // North-East corner of Slovenia
+];
+
 const MapComponent = () => {
-
- 
-
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
-  const [temperatureData, setTemperatureData] = useState([]); 
+  const [temperatureData, setTemperatureData] = useState([]);
 
   const lightTileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
   const darkTileLayer = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
@@ -19,7 +21,7 @@ const MapComponent = () => {
   useEffect(() => {
     const fetchTemperatureData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/data/temperature'); 
+        const response = await axios.get('http://localhost:3001/data/temperature');
         setTemperatureData(response.data);
       } catch (error) {
         console.error('Failed to fetch temperature:', error);
@@ -31,13 +33,21 @@ const MapComponent = () => {
 
   return (
     <div style={{ height: '100vh', width: '100vw', position: 'absolute', top: 0, left: 0 }}>
-      <MapContainer center={position} zoom={9} style={{ height: '100%', width: '100%' }}>
+      <MapContainer 
+        center={position} 
+        zoom={9} 
+        style={{ height: '100%', width: '100%' }}
+        maxBounds={bounds}
+        maxBoundsViscosity={1.0}
+        minZoom={7}  // Set a minimum zoom level
+        maxZoom={9}
+      >
         <TileLayer
           url={isDarkMode ? darkTileLayer : lightTileLayer}
           attribution='&copy;'
         />
         {temperatureData.map((data, index) => (
-          <Marker key={index} position={[data.location.latitude, data.location.longitude]} >
+          <Marker key={index} position={[data.location.latitude, data.location.longitude]}>
             <Popup>
               <div>
                 <strong>Name:</strong> {data.name}<br/>
@@ -48,6 +58,14 @@ const MapComponent = () => {
           </Marker>
         ))}
       </MapContainer>
+      <style jsx global>{`
+        .leaflet-layer,
+        .leaflet-control-zoom-in,
+        .leaflet-control-zoom-out,
+        .leaflet-control-attribution {
+          ${isDarkMode ? 'filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);' : ''}
+        }
+      `}</style>
     </div>
   );
 };
