@@ -28,12 +28,12 @@ module.exports = {
             // Names of the data series we are interested in
             const seriesNames = ["Weather Ljubljana", "Weather Maribor", "Weather Kranj"];
     
-            console.log("Series Names:", seriesNames);
+            // console.log("Series Names:", seriesNames);
     
             // Find the data series with the specified names
             const dataSeries = await DataSeriesModel.find({ name: { $in: seriesNames } });
     
-            console.log("Data Series found:", dataSeries);
+            // console.log("Data Series found:", dataSeries);
     
             // Map series names to their IDs for easy lookup
             const seriesIdMap = dataSeries.reduce((acc, series) => {
@@ -41,7 +41,7 @@ module.exports = {
                 return acc;
             }, {});
     
-            console.log("Series ID Map:", seriesIdMap);
+            // console.log("Series ID Map:", seriesIdMap);
     
             // Ensure we found all the necessary series
             if (Object.keys(seriesIdMap).length !== seriesNames.length) {
@@ -61,7 +61,7 @@ module.exports = {
             // Wait for all promises to resolve
             const latestDataResults = await Promise.all(latestDataPromises);
     
-            console.log("Latest Data Results:", latestDataResults);
+            // console.log("Latest Data Results:", latestDataResults);
     
             // Define colors for each city
             const colors = {
@@ -102,7 +102,7 @@ module.exports = {
                 };
             });
     
-            console.log("Response Data:", responseData);
+            // console.log("Response Data:", responseData);
     
             // Send the response
             return res.json(responseData);
@@ -157,10 +157,10 @@ module.exports = {
     
             // Define colors for each city
             const colors = {
-                pm25: "#e8c1a0",
-                pm10: "#61cdbb",
-                ozon: "#f1e15b",
-                no2: "#f47560"
+                pm25: "#7D33ff",
+                pm10: "#FFA07A",
+                ozon: "#1E90FF",
+                no2: "#9400D3"
             };
     
             // Construct the response
@@ -197,6 +197,224 @@ module.exports = {
             console.log("Response Data:", responseData);
     
             // Send the response
+            return res.json(responseData);
+        } catch (err) {
+            console.error("Error when getting global bar chart data:", err);
+            return res.status(500).json({
+                message: 'Error when getting global bar chart data.',
+                error: err
+            });
+        }
+    },
+
+    listMariborPieChartData: async function (req, res) {
+        try {
+            const seriesNames = ["AirQuality MB Titova"];    
+            const dataSeries = await DataSeriesModel.find({ name: { $in: seriesNames } });
+        
+            const seriesIdMap = dataSeries.reduce((acc, series) => {
+                acc[series.name] = series._id;
+                return acc;
+            }, {});
+    
+            if (Object.keys(seriesIdMap).length !== seriesNames.length) {
+                console.log("One or more data series not found.");
+                return res.status(404).json({
+                    message: 'One or more data series not found.'
+                });
+            }
+    
+            const latestDataPromises = seriesNames.map(name => 
+                DataModel.findOne({ data_series_id: seriesIdMap[name] })
+                    .sort({ timestamp: -1 })
+                    .exec()
+            );
+    
+            const latestDataResults = await Promise.all(latestDataPromises);
+        
+            const colors = {
+                pm25: "#7D33ff",
+                pm10: "#FFA07A",
+                ozon: "#1E90FF",
+                no2: "#9400D3"
+            };
+    
+            const responseData = latestDataResults.map((result, index) => {
+                const data = result.data;
+                return [
+                    {
+                        id: "pm25",
+                        label: "pm25",
+                        value: data.get('pm25'),
+                        color: colors.pm25
+                    },
+                    {
+                        id: "pm10",
+                        label: "pm10",
+                        value: data.get('pm10'),
+                        color: colors.pm10
+                    },
+                    {
+                        id: "ozon",
+                        label: "ozon",
+                        value: data.get('ozon'),
+                        color: colors.ozon
+                    },
+                    {
+                        id: "no2",
+                        label: "no2",
+                        value: data.get('no2'),
+                        color: colors.no2
+                    }
+                ];
+            }).flat();
+        
+            console.log("Response Data:", responseData);
+    
+            return res.json(responseData);
+        } catch (err) {
+            console.error("Error when getting global bar chart data:", err);
+            return res.status(500).json({
+                message: 'Error when getting global bar chart data.',
+                error: err
+            });
+        }
+    },
+
+    listKranjPieChartData: async function (req, res) {
+        try {
+            const seriesNames = ["AirQuality Kranj"];    
+            const dataSeries = await DataSeriesModel.find({ name: { $in: seriesNames } });
+        
+            const seriesIdMap = dataSeries.reduce((acc, series) => {
+                acc[series.name] = series._id;
+                return acc;
+            }, {});
+    
+            if (Object.keys(seriesIdMap).length !== seriesNames.length) {
+                console.log("One or more data series not found.");
+                return res.status(404).json({
+                    message: 'One or more data series not found.'
+                });
+            }
+    
+            const latestDataPromises = seriesNames.map(name => 
+                DataModel.findOne({ data_series_id: seriesIdMap[name] })
+                    .sort({ timestamp: -1 })
+                    .exec()
+            );
+    
+            const latestDataResults = await Promise.all(latestDataPromises);
+        
+            const colors = {
+                pm25: "#7D33ff",
+                pm10: "#FFA07A",
+                ozon: "#1E90FF",
+                no2: "#9400D3"
+            };
+    
+            const responseData = latestDataResults.map((result, index) => {
+                const data = result.data;
+                return [
+                    {
+                        id: "pm25",
+                        label: "pm25",
+                        value: data.get('pm25'),
+                        color: colors.pm25
+                    },
+                    {
+                        id: "pm10",
+                        label: "pm10",
+                        value: data.get('pm10'),
+                        color: colors.pm10
+                    },
+                    {
+                        id: "ozon",
+                        label: "ozon",
+                        value: data.get('ozon'),
+                        color: colors.ozon
+                    },
+                    {
+                        id: "no2",
+                        label: "no2",
+                        value: data.get('no2'),
+                        color: colors.no2
+                    }
+                ];
+            }).flat();
+            
+            return res.json(responseData);
+        } catch (err) {
+            console.error("Error when getting global bar chart data:", err);
+            return res.status(500).json({
+                message: 'Error when getting global bar chart data.',
+                error: err
+            });
+        }
+    },
+
+    listCeljePieChartData: async function (req, res) {
+        try {
+            const seriesNames = ["AirQuality CE Ljubljanska"];    
+            const dataSeries = await DataSeriesModel.find({ name: { $in: seriesNames } });
+        
+            const seriesIdMap = dataSeries.reduce((acc, series) => {
+                acc[series.name] = series._id;
+                return acc;
+            }, {});
+    
+            if (Object.keys(seriesIdMap).length !== seriesNames.length) {
+                console.log("One or more data series not found.");
+                return res.status(404).json({
+                    message: 'One or more data series not found.'
+                });
+            }
+    
+            const latestDataPromises = seriesNames.map(name => 
+                DataModel.findOne({ data_series_id: seriesIdMap[name] })
+                    .sort({ timestamp: -1 })
+                    .exec()
+            );
+    
+            const latestDataResults = await Promise.all(latestDataPromises);
+        
+            const colors = {
+                pm25: "#7D33ff",
+                pm10: "#FFA07A",
+                ozon: "#1E90FF",
+                no2: "#9400D3"
+            };
+    
+            const responseData = latestDataResults.map((result, index) => {
+                const data = result.data;
+                return [
+                    {
+                        id: "pm25",
+                        label: "pm25",
+                        value: data.get('pm25'),
+                        color: colors.pm25
+                    },
+                    {
+                        id: "pm10",
+                        label: "pm10",
+                        value: data.get('pm10'),
+                        color: colors.pm10
+                    },
+                    {
+                        id: "ozon",
+                        label: "ozon",
+                        value: data.get('ozon'),
+                        color: colors.ozon
+                    },
+                    {
+                        id: "no2",
+                        label: "no2",
+                        value: data.get('no2'),
+                        color: colors.no2
+                    }
+                ];
+            }).flat();
+            
             return res.json(responseData);
         } catch (err) {
             console.error("Error when getting global bar chart data:", err);

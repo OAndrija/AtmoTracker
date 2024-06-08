@@ -15,6 +15,11 @@ router.get('/pm25', dataController.listCurrentPm25Data);
 router.get('/ozon', dataController.listCurrentOzonData);
 router.get('/no2', dataController.listCurrentNo2Data);
 router.get('/nearby',dataController.listNearbyData);
+router.get('/ljubljanapiechart', dataController.listLjubljanaPieChartData);
+router.get('/mariborpiechart', dataController.listMariborPieChartData);
+router.get('/kranjpiechart', dataController.listKranjPieChartData);
+router.get('/celjepiechart', dataController.listCeljePieChartData);
+
 // router.get('/:cityName', dataController.listAirQualityDataForCity);
 router.get('/globalbarchart', dataController.listGlobalBarChartData);
 

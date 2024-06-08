@@ -81,7 +81,7 @@ const BarChart = () => {
                     background: 'inherit',
                     color: '#e8a838',
                     size: 4,
-                    padding: 1,
+                    padding: 3,
                     stagger: true
                 },
                 {
@@ -130,15 +130,7 @@ const BarChart = () => {
             }}
             labelSkipWidth={12}
             labelSkipHeight={12}
-            labelTextColor={{
-                from: 'color',
-                modifiers: [
-                    [
-                        'darker',
-                        3
-                    ]
-                ]
-            }}
+            labelsTextColor="#000000"
             legends={[
                 {
                     dataFrom: 'keys',

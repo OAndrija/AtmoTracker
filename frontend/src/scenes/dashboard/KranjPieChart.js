@@ -1,10 +1,10 @@
 import { useTheme } from "@mui/material";
 import { ResponsivePie } from "@nivo/pie";
-import { ColorModeContext, tokens } from "../../theme";
+import { ColorModeContext, tokens } from '../../theme';
 import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 
-const LjubljanaPie = () => {
+const KranjPie = () => {
   const [pieChartData, setData] = useState([]);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -12,7 +12,7 @@ const LjubljanaPie = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/data/ljubljanapiechart")
+      .get("http://localhost:3001/data/kranjpiechart")
       .then((response) => {
         console.log("Fetched data:", response.data);
         setData(response.data);
@@ -35,7 +35,7 @@ const LjubljanaPie = () => {
         from: "color",
         modifiers: [["darker", 0.2]],
       }}
-      colors={{ scheme: "purpleRed_green" }}
+      colors={{ scheme: 'set3' }}
       arcLinkLabelsSkipAngle={10}
       arcLinkLabelsTextColor={colors.grey[100]}
       arcLinkLabelsThickness={2}
@@ -115,11 +115,11 @@ const LjubljanaPie = () => {
             id: "no2",
           },
           id: "lines",
-        },
+        }
       ]}
       legends={[]}
     />
   );
 };
 
-export default LjubljanaPie;
+export default KranjPie;
