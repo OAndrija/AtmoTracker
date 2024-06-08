@@ -22,7 +22,7 @@ function Profile() {
     return (
         <>
             {userContext.user ? <Navigate replace to="/profile"/> : ""}
-            <div className="container">
+            <div className="card">
                 <h1>User Profile</h1>
                 {avatarUrl && <img src={avatarUrl} alt="User Avatar" className="rounded-avatar"/>}
                 <p>Username: {profile.username}</p>
