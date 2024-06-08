@@ -1,0 +1,61 @@
+.form-group {
+    width: 300px;
+    margin: 90px auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    background-color: inherit;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    border-radius: 5px;
+    background-color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+}
+
+.form-control:focus {
+    border-color: inherit;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+}
+
+.choose-photo-label {
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #07bf1d;
+    font-weight: bold;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #079f1d;
+}
+
+.text-danger {
+    color: red;
+}
