@@ -85,7 +85,7 @@ wss.on('connection', (ws) => {
   ws.on('close', () => console.log('Client disconnected'));
 });
 
-// Function to fetch and broadcast data to a specific client or all clients
+// Function to fetch and broadcast data to a specific client or all clientss
 const broadcastData = async (ws = null) => {
   try {
     console.log('Fetching data from API...');
@@ -94,7 +94,7 @@ const broadcastData = async (ws = null) => {
       throw new Error('Network response was not ok');
     }
     const data = await response.json();
-    console.log('Data fetched succesfuly'); // Log the fetched data
+    console.log('Data fetched succesfuly'); // Log the fetched datadsada
     const dataToSend = JSON.stringify(data);
 
     if (ws) {

@@ -14,7 +14,6 @@ import Profile from "./components/Profile";
 import Logout from "./components/Logout";
 import {useEffect, useState} from "react";
 
-
 function App() {
     const [theme, colorMode] = useMode();
     const [user, setUser] = useState(localStorage.user ? JSON.parse(localStorage.user) : null);
