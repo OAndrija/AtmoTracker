@@ -3,6 +3,7 @@ var multer = require('multer');
 var upload = multer({ dest: 'public/avatars/' });
 var router = express.Router();
 var userController = require('../controllers/userController.js');
+var verifyToken = require('../middlewares/verifyToken.js');
 
 
 router.get('/', userController.list);

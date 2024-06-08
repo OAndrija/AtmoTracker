@@ -1,6 +1,6 @@
-import {Box, IconButton, useTheme, InputBase, Typography, Menu, MenuItem, Divider, Avatar} from "@mui/material";
-import {useContext, useEffect, useState} from "react";
-import {ColorModeContext, tokens} from "../../theme";
+import { Box, IconButton, useTheme, InputBase, Typography, Menu, MenuItem, Divider, Avatar } from "@mui/material";
+import { useContext } from "react";
+import { ColorModeContext, tokens } from "../../theme";
 import FilterButton from "./FilterButton";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
@@ -10,28 +10,19 @@ import DeviceThermostatOutlinedIcon from '@mui/icons-material/DeviceThermostatOu
 import WaterDropOutlinedIcon from '@mui/icons-material/WaterDropOutlined';
 import SearchIcon from "@mui/icons-material/Search";
 import MasksOutlinedIcon from '@mui/icons-material/MasksOutlined';
-import {useLocation, Link} from "react-router-dom";
-import {UserContext} from "../../userContext";
+import { useLocation, Link } from "react-router-dom";
+import { UserContext } from "../../userContext";
+import { useState } from "react";
 
-const Topbar = () => {
+const Topbar = ({ avatarUrl }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
     const location = useLocation();
     const userContext = useContext(UserContext);
 
-    const [profile, setProfile] = useState({});
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
-
-    useEffect(() => {
-        const getProfile = async () => {
-            const res = await fetch("http://localhost:3002/users/profile", {credentials: "include"});
-            const data = await res.json();
-            setProfile(data);
-        }
-        getProfile();
-    }, []);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -46,8 +37,6 @@ const Topbar = () => {
     const isLoginPage = location.pathname === '/login';
     const isProfilePage = location.pathname === '/profile';
 
-    const avatarUrl = profile.path ? `http://localhost:3002${profile.path}` : '';
-
     return (
         <Box display="flex" justifyContent="space-between" alignItems="center" p={2} sx={{
             backgroundColor: isMapPage || isRegisterPage || isLoginPage || isProfilePage ? 'transparent' : colors.primary[400],
@@ -61,20 +50,20 @@ const Topbar = () => {
             {/* SEARCH BAR AND FILTERS */}
             <Box display="flex" alignItems="center">
                 <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="35px"
-                     sx={{ml: 1, width: '400px', height: '42px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)'}}>
-                    <InputBase sx={{ml: 3, flex: 1, fontSize: 15}} placeholder="Search"/>
-                    <IconButton type="button" sx={{p: 1, mr: 2}}>
-                        <SearchIcon/>
+                     sx={{ ml: 1, width: '400px', height: '42px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)' }}>
+                    <InputBase sx={{ ml: 3, flex: 1, fontSize: 15 }} placeholder="Search" />
+                    <IconButton type="button" sx={{ p: 1, mr: 2 }}>
+                        <SearchIcon />
                     </IconButton>
                 </Box>
                 <Box display="flex" alignItems="center" ml={2}>
-                    <FilterButton icon={<DeviceThermostatOutlinedIcon/>} text="Temperature"/>
-                    <FilterButton icon={<AirOutlinedIcon/>} text="Wind"/>
-                    <FilterButton icon={<WaterDropOutlinedIcon/>} text="Rain"/>
-                    <FilterButton icon={<MasksOutlinedIcon/>} text="PM10"/>
-                    <FilterButton icon={<MasksOutlinedIcon/>} text="PM2,5"/>
-                    <FilterButton icon={<MasksOutlinedIcon/>} text="Ozon"/>
-                    <FilterButton icon={<MasksOutlinedIcon/>} text="NO2"/>
+                    <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" />
+                    <FilterButton icon={<AirOutlinedIcon />} text="Wind" />
+                    <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" />
+                    <FilterButton icon={<MasksOutlinedIcon />} text="PM10" />
+                    <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" />
+                    <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" />
+                    <FilterButton icon={<MasksOutlinedIcon />} text="NO2" />
                 </Box>
             </Box>
 
@@ -83,7 +72,7 @@ const Topbar = () => {
                 {userContext.user ? (
                     <>
                         <IconButton onClick={handleClick}>
-                            <Avatar src={avatarUrl}/>
+                            <Avatar src={avatarUrl} />
                         </IconButton>
                         <Menu
                             anchorEl={anchorEl}
@@ -130,19 +119,19 @@ const Topbar = () => {
                                     },
                                 },
                             }}
-                            transformOrigin={{horizontal: 'right', vertical: 'top'}}
-                            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
+                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                         >
                             <MenuItem>
                                 <Typography variant="body" fontSize='14px'>{userContext.user.email}</Typography>
                             </MenuItem>
                             <MenuItem>
-                                <Avatar src={avatarUrl} alt={userContext.user.username}/>
+                                <Avatar src={avatarUrl} alt={userContext.user.username} />
                             </MenuItem>
                             <MenuItem>
                                 <Typography variant="body" fontSize='22px'>Hi, {userContext.user.username}!</Typography>
                             </MenuItem>
-                            <Divider sx={{width: '100%'}}/>
+                            <Divider sx={{ width: '100%' }} />
                             <MenuItem sx={{
                                 border: '1px solid #ccc',
                                 borderRadius: '25px',

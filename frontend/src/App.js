@@ -12,16 +12,28 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Profile from "./components/Profile";
 import Logout from "./components/Logout";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 
 function App() {
     const [theme, colorMode] = useMode();
     const [user, setUser] = useState(localStorage.user ? JSON.parse(localStorage.user) : null);
+    const [profile, setProfile] = useState({});
     const updateUserData = (userInfo) => {
         localStorage.setItem("user", JSON.stringify(userInfo));
         setUser(userInfo);
     }
+
+    useEffect(() => {
+        const getProfile = async () => {
+            const res = await fetch("http://localhost:3002/users/profile", { credentials: "include" });
+            const data = await res.json();
+            setProfile(data);
+        }
+        getProfile();
+    }, []);
+
+    const avatarUrl = profile.path ? `http://localhost:3002${profile.path}` : '';
 
     return (
         <UserContext.Provider value={{
@@ -34,7 +46,7 @@ function App() {
                     <Box sx={{display: 'flex', height: '100vh'}}>
                         <CustomSidebar/>
                         <Box sx={{display: 'flex', flexDirection: 'column', flex: 1}}>
-                            <Topbar/>
+                            <Topbar avatarUrl={avatarUrl}/>
                             <Box sx={{flex: 1}}>
                                 <Routes>
                                     <Route path="/dashboard" element={<Dashboard/>}/>

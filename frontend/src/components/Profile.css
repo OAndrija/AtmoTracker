@@ -1,19 +1,15 @@
 .container {
-    display: flex;
-    justify-content: center;
-    align-items: start;
-    padding: 20px;
-    height: 100vh;
-}
-
-.card {
-    background-color: inherit;
+    width: 300px;
+    margin: 90px auto;
+    padding-top: 1px;
+    padding-bottom: 25px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    padding: 20px;
     text-align: center;
-    width: 300px;
-    height: 350px;
+    background-color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
 }
 
 .rounded-avatar {
