@@ -20,9 +20,9 @@ function App() {
         <CssBaseline />
         <Box sx={{ display: 'flex', height: '100vh' }}>
           <CustomSidebar />
-          <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100vh' }}>
             <Topbar />
-            <Box sx={{ flex: 1}}>
+            <Box sx={{ flex: 1, overflow: 'auto'}}>
               <Routes>
                 <Route path="/map" element={ <MapComponent />} />
                 <Route path="/dashboard" element={<Dashboard />} />

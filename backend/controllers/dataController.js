@@ -23,6 +23,31 @@ module.exports = {
         });
     },
 
+    listLatestPM25Data: async function (req, res) {
+        try {
+            const distinctDataSeriesIds = await DataModel.distinct("data_series_id", {
+                "data.pm25": { $exists: true, $ne: "" }
+            });
+    
+            const latestDataPromises = distinctDataSeriesIds.map(id => 
+                DataModel.findOne({ data_series_id: id, "data.pm25": { $exists: true, $ne: "" } })
+                    .sort({ timestamp: -1 })
+                    .populate('data_series_id')
+                    .select('data.pm25')
+                    .exec()
+            );
+    
+            const latestDataResults = await Promise.all(latestDataPromises);
+    
+            return res.json(latestDataResults);
+        } catch (err) {
+            return res.status(500).json({
+                message: 'Error when getting PM2.5 data.',
+                error: err
+            });
+        }    
+    },
+
     listGlobalBarChartData: async function (req, res) {
         try {
             // Names of the data series we are interested in

@@ -19,7 +19,7 @@ router.get('/ljubljanapiechart', dataController.listLjubljanaPieChartData);
 router.get('/mariborpiechart', dataController.listMariborPieChartData);
 router.get('/kranjpiechart', dataController.listKranjPieChartData);
 router.get('/celjepiechart', dataController.listCeljePieChartData);
-
+router.get('/cleanestcities', dataController.listLatestPM25Data);
 // router.get('/:cityName', dataController.listAirQualityDataForCity);
 router.get('/globalbarchart', dataController.listGlobalBarChartData);
 

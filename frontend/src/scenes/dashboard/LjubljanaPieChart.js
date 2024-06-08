@@ -25,7 +25,7 @@ const LjubljanaPie = () => {
   return (
     <ResponsivePie
       data={pieChartData}
-      margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+      margin={{ top: 35, right: 80, bottom: 80, left: 80 }}
       innerRadius={0.5}
       padAngle={0.7}
       cornerRadius={3}
