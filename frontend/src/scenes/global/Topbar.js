@@ -5,8 +5,7 @@ import { ColorModeContext, tokens } from "../../theme";
 import FilterButton from "./FilterButton";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import AirOutlinedIcon from '@mui/icons-material/AirOutlined';
+import LogoutIcon from '@mui/icons-material/Logout';import AirOutlinedIcon from '@mui/icons-material/AirOutlined';
 import DeviceThermostatOutlinedIcon from '@mui/icons-material/DeviceThermostatOutlined';
 import WaterDropOutlinedIcon from '@mui/icons-material/WaterDropOutlined';
 import SearchIcon from "@mui/icons-material/Search";
@@ -138,26 +137,18 @@ const Topbar = ({ avatarUrl }) => {
                             </MenuItem>
                             <Divider sx={{ width: '100%' }} />
                             <MenuItem sx={{
-                                border: '1px solid #ccc',
-                                borderRadius: '25px',
-                                width: '250px',
-                                padding: '2px 4px',
-                                alignSelf: 'stretch'
-                            }}>
-                                <Link to="/profile" className="menuLink">
-                                    <Typography variant="body" fontSize='16px'>Profile</Typography>
-                                </Link>
-                            </MenuItem>
-                            <MenuItem sx={{
                                 borderRadius: '25px',
                                 width: '250px',
                                 padding: '4px 8px',
                                 alignSelf: 'stretch',
                                 boxShadow: '0px 0px 10px rgba(0,0,0, 0.3)',
-                                marginTop: '15px'
+                                marginTop: '15px',
+                                display: 'flex',
+                                flex: '1',
                             }}>
+                                <LogoutIcon />
                                 <Link to="/logout" className="menuLink">
-                                    <Typography variant="body" fontSize='16px'>Logout</Typography>
+                                    <Typography variant="body" fontSize='16px'>Sign out</Typography>
                                 </Link>
                             </MenuItem>
                         </Menu>

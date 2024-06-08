@@ -43,8 +43,9 @@ const MapComponent = () => {
         maxZoom={9}
       >
         <TileLayer
-          url={isDarkMode ? darkTileLayer : lightTileLayer}
+          url={lightTileLayer}
           attribution='&copy;'
+          className={isDarkMode ? 'dark-mode' : ''}
         />
         {temperatureData.map((data, index) => (
           <Marker key={index} position={[data.location.latitude, data.location.longitude]}>
@@ -59,7 +60,7 @@ const MapComponent = () => {
         ))}
       </MapContainer>
       <style jsx global>{`
-        .leaflet-layer,
+        .leaflet-tile,
         .leaflet-control-zoom-in,
         .leaflet-control-zoom-out,
         .leaflet-control-attribution {
