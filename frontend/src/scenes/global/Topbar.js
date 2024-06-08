@@ -11,9 +11,8 @@ import DeviceThermostatOutlinedIcon from '@mui/icons-material/DeviceThermostatOu
 import WaterDropOutlinedIcon from '@mui/icons-material/WaterDropOutlined';
 import SearchIcon from "@mui/icons-material/Search";
 import MasksOutlinedIcon from '@mui/icons-material/MasksOutlined';
-import { useLocation, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { UserContext } from "../../userContext";
-import { useState } from "react";
 
 const Topbar = ({ avatarUrl }) => {
     const theme = useTheme();
@@ -54,7 +53,6 @@ const Topbar = ({ avatarUrl }) => {
                     <InputBase
                         sx={{ ml: 3, flex: 1, fontSize: 15 }}
                         placeholder="Search"
-                        value={searchTerm}
                     />
                     <IconButton type="button" sx={{ p: 1, mr: 2 }}>
                         <SearchIcon />
