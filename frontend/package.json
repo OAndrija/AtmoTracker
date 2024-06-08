@@ -13,6 +13,7 @@
     "@mui/material": "^5.15.18",
     "@mui/x-data-grid": "^7.5.0",
     "@nivo/bar": "^0.87.0",
+    "@nivo/bump": "^0.87.0",
     "@nivo/core": "^0.87.0",
     "@nivo/geo": "^0.87.0",
     "@nivo/line": "^0.87.0",
@@ -31,6 +32,7 @@
     "react-router": "^6.23.1",
     "react-router-dom": "^6.23.1",
     "react-scripts": "5.0.1",
+    "react-transition-group": "^4.4.5",
     "web-vitals": "^2.1.4",
     "yup": "^1.4.0"
   },

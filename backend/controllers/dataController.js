@@ -23,6 +23,432 @@ module.exports = {
         });
     },
 
+    listLatestPM25Data: async function (req, res) {
+        try {
+            const distinctDataSeriesIds = await DataModel.distinct("data_series_id", {
+                "data.pm25": { $exists: true, $ne: "" }
+            });
+    
+            const latestDataPromises = distinctDataSeriesIds.map(id => 
+                DataModel.findOne({ data_series_id: id, "data.pm25": { $exists: true, $ne: "" } })
+                    .sort({ timestamp: -1 })
+                    .populate('data_series_id')
+                    .select('data.pm25')
+                    .exec()
+            );
+    
+            const latestDataResults = await Promise.all(latestDataPromises);
+    
+            return res.json(latestDataResults);
+        } catch (err) {
+            return res.status(500).json({
+                message: 'Error when getting PM2.5 data.',
+                error: err
+            });
+        }    
+    },
+
+    listGlobalBarChartData: async function (req, res) {
+        try {
+            // Names of the data series we are interested in
+            const seriesNames = ["Weather Ljubljana", "Weather Maribor", "Weather Kranj"];
+    
+            // console.log("Series Names:", seriesNames);
+    
+            // Find the data series with the specified names
+            const dataSeries = await DataSeriesModel.find({ name: { $in: seriesNames } });
+    
+            // console.log("Data Series found:", dataSeries);
+    
+            // Map series names to their IDs for easy lookup
+            const seriesIdMap = dataSeries.reduce((acc, series) => {
+                acc[series.name] = series._id;
+                return acc;
+            }, {});
+    
+            // console.log("Series ID Map:", seriesIdMap);
+    
+            // Ensure we found all the necessary series
+            if (Object.keys(seriesIdMap).length !== seriesNames.length) {
+                console.log("One or more data series not found.");
+                return res.status(404).json({
+                    message: 'One or more data series not found.'
+                });
+            }
+    
+            // Find the most recent data for each series
+            const latestDataPromises = seriesNames.map(name => 
+                DataModel.findOne({ data_series_id: seriesIdMap[name] })
+                    .sort({ timestamp: -1 })
+                    .exec()
+            );
+    
+            // Wait for all promises to resolve
+            const latestDataResults = await Promise.all(latestDataPromises);
+    
+            // console.log("Latest Data Results:", latestDataResults);
+    
+            // Define colors for each city
+            const colors = {
+                "Ljubljana": {
+                    temperatureColor: "#e8c1a0",
+                    precipitationColor: "#61cdbb",
+                    windspeedColor: "#f1e15b",
+                    windgustColor: "#f47560"
+                },
+                "Maribor": {
+                    temperatureColor: "#e8c1a0",
+                    precipitationColor: "#61cdbb",
+                    windspeedColor: "#f1e15b",
+                    windgustColor: "#f47560"
+                },
+                "Kranj": {
+                    temperatureColor: "#e8c1a0",
+                    precipitationColor: "#61cdbb",
+                    windspeedColor: "#f1e15b",
+                    windgustColor: "#f47560"
+                }
+            };
+    
+            // Construct the response
+            const responseData = seriesNames.map((name, index) => {
+                const city = name.split(" ")[1];
+                const data = latestDataResults[index].data;
+                return {
+                    city: city,
+                    temperature: data.get('temperature'),
+                    temperatureColor: colors[city].temperatureColor,
+                    precipitation: data.get('precipitation'),
+                    precipitationColor: colors[city].precipitationColor,
+                    windspeed: data.get('windSpeed'),
+                    windspeedColor: colors[city].windspeedColor,
+                    windgust: data.get('windGusts'),
+                    windgustColor: colors[city].windgustColor
+                };
+            });
+    
+            // console.log("Response Data:", responseData);
+    
+            // Send the response
+            return res.json(responseData);
+        } catch (err) {
+            console.error("Error when getting global bar chart data:", err);
+            return res.status(500).json({
+                message: 'Error when getting global bar chart data.',
+                error: err
+            });
+        }
+    },
+
+    listLjubljanaPieChartData: async function (req, res) {
+        try {
+            // Names of the data series we are interested in
+            const seriesNames = ["AirQuality LJ Bežigrad"];
+    
+            console.log("Series Names:", seriesNames);
+    
+            // Find the data series with the specified names
+            const dataSeries = await DataSeriesModel.find({ name: { $in: seriesNames } });
+    
+            console.log("Data Series found:", dataSeries);
+    
+            // Map series names to their IDs for easy lookup
+            const seriesIdMap = dataSeries.reduce((acc, series) => {
+                acc[series.name] = series._id;
+                return acc;
+            }, {});
+    
+            console.log("Series ID Map:", seriesIdMap);
+    
+            // Ensure we found all the necessary series
+            if (Object.keys(seriesIdMap).length !== seriesNames.length) {
+                console.log("One or more data series not found.");
+                return res.status(404).json({
+                    message: 'One or more data series not found.'
+                });
+            }
+    
+            // Find the most recent data for each series
+            const latestDataPromises = seriesNames.map(name => 
+                DataModel.findOne({ data_series_id: seriesIdMap[name] })
+                    .sort({ timestamp: -1 })
+                    .exec()
+            );
+    
+            // Wait for all promises to resolve
+            const latestDataResults = await Promise.all(latestDataPromises);
+    
+            console.log("Latest Data Results:", latestDataResults);
+    
+            // Define colors for each city
+            const colors = {
+                pm25: "#7D33ff",
+                pm10: "#FFA07A",
+                ozon: "#1E90FF",
+                no2: "#9400D3"
+            };
+    
+            // Construct the response
+            const responseData = latestDataResults.map((result, index) => {
+                const data = result.data;
+                return [
+                    {
+                        id: "pm25",
+                        label: "pm25",
+                        value: data.get('pm25'),
+                        color: colors.pm25
+                    },
+                    {
+                        id: "pm10",
+                        label: "pm10",
+                        value: data.get('pm10'),
+                        color: colors.pm10
+                    },
+                    {
+                        id: "ozon",
+                        label: "ozon",
+                        value: data.get('ozon'),
+                        color: colors.ozon
+                    },
+                    {
+                        id: "no2",
+                        label: "no2",
+                        value: data.get('no2'),
+                        color: colors.no2
+                    }
+                ];
+            }).flat();
+        
+            console.log("Response Data:", responseData);
+    
+            // Send the response
+            return res.json(responseData);
+        } catch (err) {
+            console.error("Error when getting global bar chart data:", err);
+            return res.status(500).json({
+                message: 'Error when getting global bar chart data.',
+                error: err
+            });
+        }
+    },
+
+    listMariborPieChartData: async function (req, res) {
+        try {
+            const seriesNames = ["AirQuality MB Titova"];    
+            const dataSeries = await DataSeriesModel.find({ name: { $in: seriesNames } });
+        
+            const seriesIdMap = dataSeries.reduce((acc, series) => {
+                acc[series.name] = series._id;
+                return acc;
+            }, {});
+    
+            if (Object.keys(seriesIdMap).length !== seriesNames.length) {
+                console.log("One or more data series not found.");
+                return res.status(404).json({
+                    message: 'One or more data series not found.'
+                });
+            }
+    
+            const latestDataPromises = seriesNames.map(name => 
+                DataModel.findOne({ data_series_id: seriesIdMap[name] })
+                    .sort({ timestamp: -1 })
+                    .exec()
+            );
+    
+            const latestDataResults = await Promise.all(latestDataPromises);
+        
+            const colors = {
+                pm25: "#7D33ff",
+                pm10: "#FFA07A",
+                ozon: "#1E90FF",
+                no2: "#9400D3"
+            };
+    
+            const responseData = latestDataResults.map((result, index) => {
+                const data = result.data;
+                return [
+                    {
+                        id: "pm25",
+                        label: "pm25",
+                        value: data.get('pm25'),
+                        color: colors.pm25
+                    },
+                    {
+                        id: "pm10",
+                        label: "pm10",
+                        value: data.get('pm10'),
+                        color: colors.pm10
+                    },
+                    {
+                        id: "ozon",
+                        label: "ozon",
+                        value: data.get('ozon'),
+                        color: colors.ozon
+                    },
+                    {
+                        id: "no2",
+                        label: "no2",
+                        value: data.get('no2'),
+                        color: colors.no2
+                    }
+                ];
+            }).flat();
+        
+            console.log("Response Data:", responseData);
+    
+            return res.json(responseData);
+        } catch (err) {
+            console.error("Error when getting global bar chart data:", err);
+            return res.status(500).json({
+                message: 'Error when getting global bar chart data.',
+                error: err
+            });
+        }
+    },
+
+    listKranjPieChartData: async function (req, res) {
+        try {
+            const seriesNames = ["AirQuality Kranj"];    
+            const dataSeries = await DataSeriesModel.find({ name: { $in: seriesNames } });
+        
+            const seriesIdMap = dataSeries.reduce((acc, series) => {
+                acc[series.name] = series._id;
+                return acc;
+            }, {});
+    
+            if (Object.keys(seriesIdMap).length !== seriesNames.length) {
+                console.log("One or more data series not found.");
+                return res.status(404).json({
+                    message: 'One or more data series not found.'
+                });
+            }
+    
+            const latestDataPromises = seriesNames.map(name => 
+                DataModel.findOne({ data_series_id: seriesIdMap[name] })
+                    .sort({ timestamp: -1 })
+                    .exec()
+            );
+    
+            const latestDataResults = await Promise.all(latestDataPromises);
+        
+            const colors = {
+                pm25: "#7D33ff",
+                pm10: "#FFA07A",
+                ozon: "#1E90FF",
+                no2: "#9400D3"
+            };
+    
+            const responseData = latestDataResults.map((result, index) => {
+                const data = result.data;
+                return [
+                    {
+                        id: "pm25",
+                        label: "pm25",
+                        value: data.get('pm25'),
+                        color: colors.pm25
+                    },
+                    {
+                        id: "pm10",
+                        label: "pm10",
+                        value: data.get('pm10'),
+                        color: colors.pm10
+                    },
+                    {
+                        id: "ozon",
+                        label: "ozon",
+                        value: data.get('ozon'),
+                        color: colors.ozon
+                    },
+                    {
+                        id: "no2",
+                        label: "no2",
+                        value: data.get('no2'),
+                        color: colors.no2
+                    }
+                ];
+            }).flat();
+            
+            return res.json(responseData);
+        } catch (err) {
+            console.error("Error when getting global bar chart data:", err);
+            return res.status(500).json({
+                message: 'Error when getting global bar chart data.',
+                error: err
+            });
+        }
+    },
+
+    listCeljePieChartData: async function (req, res) {
+        try {
+            const seriesNames = ["AirQuality CE Ljubljanska"];    
+            const dataSeries = await DataSeriesModel.find({ name: { $in: seriesNames } });
+        
+            const seriesIdMap = dataSeries.reduce((acc, series) => {
+                acc[series.name] = series._id;
+                return acc;
+            }, {});
+    
+            if (Object.keys(seriesIdMap).length !== seriesNames.length) {
+                console.log("One or more data series not found.");
+                return res.status(404).json({
+                    message: 'One or more data series not found.'
+                });
+            }
+    
+            const latestDataPromises = seriesNames.map(name => 
+                DataModel.findOne({ data_series_id: seriesIdMap[name] })
+                    .sort({ timestamp: -1 })
+                    .exec()
+            );
+    
+            const latestDataResults = await Promise.all(latestDataPromises);
+        
+            const colors = {
+                pm25: "#7D33ff",
+                pm10: "#FFA07A",
+                ozon: "#1E90FF",
+                no2: "#9400D3"
+            };
+    
+            const responseData = latestDataResults.map((result, index) => {
+                const data = result.data;
+                return [
+                    {
+                        id: "pm25",
+                        label: "pm25",
+                        value: data.get('pm25'),
+                        color: colors.pm25
+                    },
+                    {
+                        id: "pm10",
+                        label: "pm10",
+                        value: data.get('pm10'),
+                        color: colors.pm10
+                    },
+                    {
+                        id: "ozon",
+                        label: "ozon",
+                        value: data.get('ozon'),
+                        color: colors.ozon
+                    },
+                    {
+                        id: "no2",
+                        label: "no2",
+                        value: data.get('no2'),
+                        color: colors.no2
+                    }
+                ];
+            }).flat();
+            
+            return res.json(responseData);
+        } catch (err) {
+            console.error("Error when getting global bar chart data:", err);
+            return res.status(500).json({
+                message: 'Error when getting global bar chart data.',
+                error: err
+            });
+        }
+    },
 
     listNearbyData: function (req, res) {
         const { longitude, latitude } = req.query;//ce hocemo maxDistance dodamo tu
@@ -89,6 +515,46 @@ module.exports = {
         });
     },
 
+    listAirQualityDataForCity: async function (req, res) {
+        try {
+            const { cityName } = req.params;
+            const now = new Date();
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const startOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1);
+            const endOfYesterday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0); // End of yesterday is the start of today
+    
+            // Find the data series by city name and air_quality in tags
+            const dataSeries = await DataSeriesModel.findOne({ tags: { $all: [cityName, "air_quality"] } });
+            if (!dataSeries) {
+                return res.status(404).json({ message: 'City not found' });
+            }
+    
+            // Find the data from the start of yesterday until now
+            const data = await DataModel.find({
+                data_series_id: dataSeries._id,
+                timestamp: { $gte: startOfYesterday }
+            }).exec();
+    
+            // List of pollutants
+            const pollutants = ["pm10", "pm25", "so2", "co", "ozon", "no2", "benzen"];
+    
+            // Transform data into the required format
+            const result = pollutants.map(pollutant => ({
+                id: pollutant.toUpperCase(),
+                data: [
+                    { x: startOfYesterday.toISOString().split('T')[0], y: getValueForDate(data, pollutant, startOfYesterday, endOfYesterday) },
+                    { x: startOfToday.toISOString().split('T')[0], y: getValueForDate(data, pollutant, startOfToday, now) }
+                ]
+            }));
+    
+            res.json(result);
+        } catch (error) {
+            res.status(500).json({
+                message: 'Error when getting data.',
+                error: error.message
+            });
+        }
+    },
 
     listCurrentWindSpeedData: function (req, res) {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
@@ -385,10 +851,24 @@ module.exports = {
             return res.status(204).json();
         });
     },
-
-
-
-    
-    
-    
 };
+
+function getValueForDate(data, pollutant, startDate, endDate) {
+    console.log(`Filtering data for pollutant: ${pollutant} from ${startDate.toISOString()} to ${endDate.toISOString()}`);
+    const filteredData = data.filter(d => {
+        const dataDate = new Date(d.timestamp);
+        return dataDate >= startDate && dataDate < endDate;
+    });
+
+    console.log(`Filtered data for ${startDate.toISOString().split('T')[0]}:`, filteredData);
+
+    if (filteredData.length > 0) {
+        const latestDataPoint = filteredData[filteredData.length - 1]; // Get the latest data point for the date range
+        if (latestDataPoint.data && typeof latestDataPoint.data.get === 'function') {
+            const pollutantValue = latestDataPoint.data.get(pollutant);
+            return pollutantValue !== '' ? pollutantValue : null;
+        }
+    }
+
+    return null;
+}

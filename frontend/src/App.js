@@ -13,6 +13,8 @@ import Register from "./components/Register";
 import Profile from "./components/Profile";
 import Logout from "./components/Logout";
 import {useEffect, useState} from "react";
+import AreaBumpChart from './scenes/dashboard/AreaBumpChart';
+
 
 function App() {
     const [theme, colorMode] = useMode();
@@ -42,12 +44,12 @@ function App() {
             <ColorModeContext.Provider value={colorMode}>
                 <ThemeProvider theme={theme}>
                     <CssBaseline/>
-                    <Box sx={{display: 'flex', height: '100vh'}}>
-                        <CustomSidebar/>
-                        <Box sx={{display: 'flex', flexDirection: 'column', flex: 1}}>
+                    <Box sx={{ display: 'flex', height: '100vh' }}>
+                      <CustomSidebar />
+                      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100vh' }}>
                             <Topbar avatarUrl={avatarUrl}/>
-                            <Box sx={{flex: 1}}>
-                                <Routes>
+                            <Box sx={{ flex: 1, overflow: 'auto'}}>
+                                  <Routes>
                                     <Route path="/dashboard" element={<Dashboard/>}/>
                                     <Route path="/map" element={<MapComponent/>}/>
                                     <Route path="/login" element={<Login/>}/>

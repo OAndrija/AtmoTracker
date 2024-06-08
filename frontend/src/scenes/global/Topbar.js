@@ -1,5 +1,6 @@
 import { Box, IconButton, useTheme, InputBase, Typography, Menu, MenuItem, Divider, Avatar } from "@mui/material";
-import { useContext } from "react";
+import { useState, useContext } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ColorModeContext, tokens } from "../../theme";
 import FilterButton from "./FilterButton";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -49,22 +50,28 @@ const Topbar = ({ avatarUrl }) => {
         }}>
             {/* SEARCH BAR AND FILTERS */}
             <Box display="flex" alignItems="center">
-                <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="35px"
-                     sx={{ ml: 1, width: '400px', height: '42px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)' }}>
-                    <InputBase sx={{ ml: 3, flex: 1, fontSize: 15 }} placeholder="Search" />
+                <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="35px" sx={{ ml: 1, width: '400px', height: '42px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)' }}>
+                    <InputBase
+                        sx={{ ml: 3, flex: 1, fontSize: 15 }}
+                        placeholder="Search"
+                        value={searchTerm}
+                    />
                     <IconButton type="button" sx={{ p: 1, mr: 2 }}>
                         <SearchIcon />
                     </IconButton>
                 </Box>
-                <Box display="flex" alignItems="center" ml={2}>
-                    <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" />
-                    <FilterButton icon={<AirOutlinedIcon />} text="Wind" />
-                    <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="PM10" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="NO2" />
-                </Box>
+
+                {isMapPage && (
+                    <Box display="flex" alignItems="center" ml={2}>
+                        <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" />
+                        <FilterButton icon={<AirOutlinedIcon />} text="Wind" />
+                        <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" />
+                        <FilterButton icon={<MasksOutlinedIcon />} text="PM10" />
+                        <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" />
+                        <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" />
+                        <FilterButton icon={<MasksOutlinedIcon />} text="NO2" />
+                    </Box>  
+                )}
             </Box>
 
             {/* ICONS */}
