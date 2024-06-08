@@ -1,6 +1,6 @@
-import { Box, IconButton, useTheme, InputBase, Typography, Menu, MenuItem } from "@mui/material";
-import { useContext, useState } from "react";
-import { ColorModeContext, tokens } from "../../theme";
+import {Box, IconButton, useTheme, InputBase, Typography, Menu, MenuItem, Divider, Avatar} from "@mui/material";
+import {useContext, useEffect, useState} from "react";
+import {ColorModeContext, tokens} from "../../theme";
 import FilterButton from "./FilterButton";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
@@ -10,8 +10,8 @@ import DeviceThermostatOutlinedIcon from '@mui/icons-material/DeviceThermostatOu
 import WaterDropOutlinedIcon from '@mui/icons-material/WaterDropOutlined';
 import SearchIcon from "@mui/icons-material/Search";
 import MasksOutlinedIcon from '@mui/icons-material/MasksOutlined';
-import { useLocation, Link } from "react-router-dom";
-import { UserContext } from "../../userContext";
+import {useLocation, Link} from "react-router-dom";
+import {UserContext} from "../../userContext";
 
 const Topbar = () => {
     const theme = useTheme();
@@ -20,8 +20,18 @@ const Topbar = () => {
     const location = useLocation();
     const userContext = useContext(UserContext);
 
+    const [profile, setProfile] = useState({});
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+
+    useEffect(() => {
+        const getProfile = async () => {
+            const res = await fetch("http://localhost:3002/users/profile", {credentials: "include"});
+            const data = await res.json();
+            setProfile(data);
+        }
+        getProfile();
+    }, []);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -36,6 +46,8 @@ const Topbar = () => {
     const isLoginPage = location.pathname === '/login';
     const isProfilePage = location.pathname === '/profile';
 
+    const avatarUrl = profile.path ? `http://localhost:3002${profile.path}` : '';
+
     return (
         <Box display="flex" justifyContent="space-between" alignItems="center" p={2} sx={{
             backgroundColor: isMapPage || isRegisterPage || isLoginPage || isProfilePage ? 'transparent' : colors.primary[400],
@@ -49,20 +61,20 @@ const Topbar = () => {
             {/* SEARCH BAR AND FILTERS */}
             <Box display="flex" alignItems="center">
                 <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="35px"
-                     sx={{ ml: 1, width: '400px', height: '42px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)' }}>
-                    <InputBase sx={{ ml: 3, flex: 1, fontSize: 15 }} placeholder="Search" />
-                    <IconButton type="button" sx={{ p: 1, mr: 2 }}>
-                        <SearchIcon />
+                     sx={{ml: 1, width: '400px', height: '42px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)'}}>
+                    <InputBase sx={{ml: 3, flex: 1, fontSize: 15}} placeholder="Search"/>
+                    <IconButton type="button" sx={{p: 1, mr: 2}}>
+                        <SearchIcon/>
                     </IconButton>
                 </Box>
                 <Box display="flex" alignItems="center" ml={2}>
-                    <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" />
-                    <FilterButton icon={<AirOutlinedIcon />} text="Wind" />
-                    <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="PM10" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="NO2" />
+                    <FilterButton icon={<DeviceThermostatOutlinedIcon/>} text="Temperature"/>
+                    <FilterButton icon={<AirOutlinedIcon/>} text="Wind"/>
+                    <FilterButton icon={<WaterDropOutlinedIcon/>} text="Rain"/>
+                    <FilterButton icon={<MasksOutlinedIcon/>} text="PM10"/>
+                    <FilterButton icon={<MasksOutlinedIcon/>} text="PM2,5"/>
+                    <FilterButton icon={<MasksOutlinedIcon/>} text="Ozon"/>
+                    <FilterButton icon={<MasksOutlinedIcon/>} text="NO2"/>
                 </Box>
             </Box>
 
@@ -71,66 +83,106 @@ const Topbar = () => {
                 {userContext.user ? (
                     <>
                         <IconButton onClick={handleClick}>
-                            <PersonOutlinedIcon />
+                            <Avatar src={avatarUrl}/>
                         </IconButton>
                         <Menu
                             anchorEl={anchorEl}
                             open={open}
                             onClose={handleClose}
                             PaperProps={{
-                                elevation: 0,
+                                elevation: 3,
                                 sx: {
                                     overflow: 'visible',
                                     filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
                                     mt: 1.5,
+                                    borderRadius: 2,
+                                    minWidth: 350,
+                                    width: 'fit-content',
+                                    padding: 2,
+                                    color: 'inherit',
+                                    fontFamily: 'inherit',
+                                    fontSize: 'inherit',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    '& .MuiMenuItem-root': {
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        gap: 1,
+                                    },
                                     '& .MuiAvatar-root': {
-                                        width: 32,
-                                        height: 32,
-                                        ml: -0.5,
-                                        mr: 1,
+                                        width: 64,
+                                        height: 64,
                                     },
                                     '& .MuiTypography-root': {
-                                        fontSize: 14,
+                                        textAlign: 'center',
+                                    },
+                                    '& .menuLink': {
+                                        width: '100%',
+                                        color: 'inherit',
+                                        textDecoration: 'none',
+                                        justifyContent: 'center',
+                                        textAlign: 'center',
+                                        alignItems: 'center',
+                                        display: 'flex',
+                                        padding: '8px 16px',
                                     },
                                 },
                             }}
-                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                            transformOrigin={{horizontal: 'right', vertical: 'top'}}
+                            anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                         >
                             <MenuItem>
-                                <Typography variant="body1">{userContext.user.name}</Typography>
+                                <Typography variant="body" fontSize='14px'>{userContext.user.email}</Typography>
                             </MenuItem>
                             <MenuItem>
-                                <Typography variant="body1">{userContext.user.email}</Typography>
+                                <Avatar src={avatarUrl} alt={userContext.user.username}/>
                             </MenuItem>
                             <MenuItem>
-                                <Link to="/profile">
-                                    <Typography variant="body1">Profile</Typography>
+                                <Typography variant="body" fontSize='22px'>Hi, {userContext.user.username}!</Typography>
+                            </MenuItem>
+                            <Divider sx={{width: '100%'}}/>
+                            <MenuItem sx={{
+                                border: '1px solid #ccc',
+                                borderRadius: '25px',
+                                width: '250px',
+                                padding: '2px 4px',
+                                alignSelf: 'stretch'
+                            }}>
+                                <Link to="/profile" className="menuLink">
+                                    <Typography variant="body" fontSize='16px'>Profile</Typography>
                                 </Link>
                             </MenuItem>
-                            <MenuItem>
-                                <Typography variant="body1">Settings</Typography>
-                            </MenuItem>
-                            <MenuItem>
-                                <Typography variant="body1">Logout</Typography>
+                            <MenuItem sx={{
+                                borderRadius: '25px',
+                                width: '250px',
+                                padding: '4px 8px',
+                                alignSelf: 'stretch',
+                                boxShadow: '0px 0px 10px rgba(0,0,0, 0.3)',
+                                marginTop: '15px'
+                            }}>
+                                <Link to="/logout" className="menuLink">
+                                    <Typography variant="body" fontSize='16px'>Logout</Typography>
+                                </Link>
                             </MenuItem>
                         </Menu>
                     </>
                 ) : (
                     <>
                         <IconButton component={Link} to="/login">
-                            <PersonOutlinedIcon />
+                            <Typography variant="body">Login</Typography>
                         </IconButton>
                         <IconButton component={Link} to="/register">
-                            <Typography variant="body1">Register</Typography>
+                            <Typography variant="body">Register</Typography>
                         </IconButton>
                     </>
                 )}
                 <IconButton onClick={colorMode.toggleColorMode}>
                     {theme.palette.mode === 'dark' ? (
-                        <DarkModeOutlinedIcon />
+                        <DarkModeOutlinedIcon/>
                     ) : (
-                        <LightModeOutlinedIcon />
+                        <LightModeOutlinedIcon/>
                     )}
                 </IconButton>
             </Box>

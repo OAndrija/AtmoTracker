@@ -1,11 +1,12 @@
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../userContext';
-import { Navigate } from 'react-router-dom';
-import './Profile.css'; // Import your CSS file
+import { Navigate, useNavigate } from 'react-router-dom';
+import './Profile.css';
 
 function Profile() {
     const userContext = useContext(UserContext);
     const [profile, setProfile] = useState({});
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getProfile = async () => {
@@ -20,13 +21,17 @@ function Profile() {
 
     return (
         <>
-            {!userContext.user ? <Navigate replace to="/profile" /> : ""}
+            {userContext.user ? <Navigate replace to="/profile" /> : ""}
             <div className="container">
                 <div className="card">
                     <h1>User Profile</h1>
                     {avatarUrl && <img src={avatarUrl} alt="User Avatar" className="rounded-avatar" />}
                     <p>Username: {profile.username}</p>
                     <p>Email: {profile.email}</p>
+                    <div className="mb-3">
+                        <input type="submit" name="submit" value="Log out" className="btn-logout btn-primary"
+                               onClick={() => navigate("/logout", { replace: true })}></input>
+                    </div>
                 </div>
             </div>
         </>

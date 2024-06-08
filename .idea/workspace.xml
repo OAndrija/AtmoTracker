@@ -5,20 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="960c9ee2-b552-4804-ba54-d64988bc3f5f" name="Changes" comment="ATMOS-58 # implemented the backend part for JWT authentication">
-      <change afterPath="$PROJECT_DIR$/backend/views/index.hbs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Login.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Login.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Logout.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Profile.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Profile.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Register.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/components/Register.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/src/userContext.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/public/avatars/e7d7edd1c82a93d517faaba591c67546" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/components/LoginRegister.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/controllers/userController.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/controllers/userController.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/models/userModel.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/models/userModel.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/routes/userRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/userRoutes.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/.eslintcache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/0.pack" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/0.pack" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/1.pack" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/1.pack" afterDir="false" />
@@ -28,7 +17,6 @@
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/13.pack" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/13.pack" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/14.pack" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/14.pack" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/15.pack" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/15.pack" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/16.pack" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/16.pack" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/2.pack" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/2.pack" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/3.pack" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/3.pack" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/4.pack" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/4.pack" afterDir="false" />
@@ -39,10 +27,13 @@
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/9.pack" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/9.pack" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/index.pack" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/index.pack" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/index.pack.old" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/node_modules/.cache/default-development/index.pack.old" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Login.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Profile.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Profile.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Profile.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Profile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Register.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Register.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Register.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/scenes/global/Topbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/scenes/global/Topbar.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -83,18 +74,22 @@
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2gK8C9LtktOml5HNka9nPUzTYRu" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "ATMOS-70-profile/login/register-components",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/FERI RIT/FERI RIT 2 UN/FERI RIT 4 SEM/Spletno Programiranje/Vaje/sp_v4_sample/sp_v4_sample",
+    "last_opened_file_path": "C:/FERI RIT/FERI RIT 2 UN/FERI RIT 4 SEM/Projektni Praktikum/GitHub/AtmoTracker",
     "list.type.of.created.stylesheet": "CSS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -128,6 +123,9 @@
       <workItem from="1715873743294" duration="11000" />
       <workItem from="1715873989677" duration="6000" />
       <workItem from="1715874007544" duration="11660000" />
+      <workItem from="1717355640797" duration="3590000" />
+      <workItem from="1717507418393" duration="1380000" />
+      <workItem from="1717852837706" duration="11913000" />
     </task>
     <task id="LOCAL-00001" summary="ATMOS-8 # added list functions based on listCurrentData that list data for windSpeed, windGusts, precipitation, pm10, pm25, ozon and no2 in the last hour">
       <option name="closed" value="true" />
@@ -160,6 +158,7 @@
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="ATMOS-8 # added list functions based on listCurrentData that list data for windSpeed, windGusts, precipitation, pm10, pm25, ozon and no2 in the last hour" />
     <MESSAGE value="ATMOS-8 # added list functions based on listCurrentData that list data for windSpeed, windGusts, precipitation, pm10, pm25, ozon and no2 in the last hour (fixed)" />
     <MESSAGE value="ATMOS-8 # added list functions based on listCurrentData that list data for windSpeed, windGusts, precipitation, pm10, pm25, ozon and no2 in the last hour (fixed: added .populate('data_series_id'))" />

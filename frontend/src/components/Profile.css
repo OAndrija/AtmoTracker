@@ -7,9 +7,9 @@
 }
 
 .card {
-    background-color: #fff;
+    background-color: inherit;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     padding: 20px;
     text-align: center;
     width: 300px;
@@ -20,4 +20,22 @@
     border-radius: 50%;
     width: 100px;
     height: 100px;
+}
+
+.btn-logout {
+    width: 40%;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e60505;
+    font-weight: bold;
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    cursor: pointer;
+}
+
+.btn-logout:hover {
+    background-color: #c60505;
 }
