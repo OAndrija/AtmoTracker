@@ -25,7 +25,8 @@ import { UserContext } from "../../userContext";
 import "./App.css"; // Make sure to import your CSS file
 import MapSearch from "../map/MapSearch";
 
-const Topbar = ({ avatarUrl }) => {
+
+const Topbar = ({ avatarUrl,setFilter,onSuggestionClick}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
@@ -34,7 +35,7 @@ const Topbar = ({ avatarUrl }) => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const [isMapPage, setIsMapPage] = useState(location.pathname === "/map");
+  const [isMapPage, setIsMapPage] = useState(location.pathname === "http://localhost:3000/map");
   const [animationClass, setAnimationClass] = useState("topbar-initial");
 
   const handleClick = (event) => {
@@ -48,7 +49,7 @@ const Topbar = ({ avatarUrl }) => {
   useEffect(() => {
     const currentIsMapPage = location.pathname === "/map";
     if (currentIsMapPage !== isMapPage) {
-      setAnimationClass(
+      setAnimationClass(  
         currentIsMapPage ? "topbar-retract" : "topbar-slide-in"
       );
       setIsMapPage(currentIsMapPage);
@@ -119,7 +120,8 @@ const Topbar = ({ avatarUrl }) => {
         p={2}
         className={`topbar-transition ${animationClass}`} // Apply the transition class here
         sx={{
-          position: "flex",
+           backgroundColor: 'transparent',
+          position: "relative",
           top: 0,
           left: 0,
           right: 0,
@@ -129,38 +131,16 @@ const Topbar = ({ avatarUrl }) => {
       >
         {/* SEARCH BAR AND FILTERS */}
         <Box display="flex" alignItems="center">
-          <Box
-            display="flex"
-            backgroundColor={colors.primary[400]}
-            borderRadius="35px"
-            sx={{
-              ml: 1,
-              width: "400px",
-              height: "42px",
-              boxShadow: "0px 4px 10px rgba(0,0,0, 0.2)",
-            }}
-          >
-            <InputBase
-              sx={{ ml: 3, flex: 1, fontSize: 15 }}
-              placeholder="Search"
-            />
-            <IconButton type="button" sx={{ p: 1, mr: 2 }}>
-              <SearchIcon />
-            </IconButton>
-          </Box>
-
+        <MapSearch onSuggestionClick={onSuggestionClick} colors={colors} />
           {isMapPage && (
             <Box display="flex" alignItems="center" ml={2}>
-              <FilterButton
-                icon={<DeviceThermostatOutlinedIcon />}
-                text="Temperature"
-              />
-              <FilterButton icon={<AirOutlinedIcon />} text="Wind" />
-              <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" />
-              <FilterButton icon={<MasksOutlinedIcon />} text="PM10" />
-              <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" />
-              <FilterButton icon={<MasksOutlinedIcon />} text="Ozone" />
-              <FilterButton icon={<MasksOutlinedIcon />} text="NO2" />
+              <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" onClick={() => setFilter('temperature')} />
+              <FilterButton icon={<AirOutlinedIcon />} text="Wind" onClick={() => setFilter('wind')} />
+              <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" onClick={() => setFilter('rain')} />
+              <FilterButton icon={<MasksOutlinedIcon />} text="PM10" onClick={() => setFilter('pm10')} />
+              <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" onClick={() => setFilter('pm25')} />
+              <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" onClick={() => setFilter('ozon')} />
+              <FilterButton icon={<MasksOutlinedIcon />} text="NO2" onClick={() => setFilter('no2')} />
             </Box>
           )}
         </Box>

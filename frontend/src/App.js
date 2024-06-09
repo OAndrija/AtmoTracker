@@ -47,11 +47,10 @@ function App() {
                     <Box sx={{ display: 'flex', height: '100vh' }}>
                       <CustomSidebar />
                       <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100vh' }}>
-                      <StateHolder />
                             <Box sx={{ flex: 1, overflow: 'auto'}}>
                                   <Routes>
                                     <Route path="/dashboard" element={<Dashboard/>}/>
-                                    <Route path="/map" element={<MapComponent/>}/>
+                                    <Route path="/map" element={<StateHolder/>}/>
                                     <Route path="/login" element={<Login/>}/>
                                     <Route path="/register" element={<Register/>}/>
                                     <Route path="/profile" element={<Profile/>}/>

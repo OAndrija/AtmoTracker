@@ -23,6 +23,7 @@ import AirOutlinedIcon from "@mui/icons-material/AirOutlined";
 import HighQualityOutlinedIcon from "@mui/icons-material/HighQualityOutlined";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import "./Dashboard.css"; // Import the CSS for animations
+import Topbar from "../global/Topbar";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -50,6 +51,7 @@ const Dashboard = () => {
   }, [cityData]);
 
   return (
+    <><Box> <Topbar/>  </Box>
     <Box display="flex" flexDirection="column" p={2}>
       <Box
         display="grid"
@@ -73,8 +75,7 @@ const Dashboard = () => {
                 color: colors.greenAccent[500],
                 marginRight: "8px",
                 fontSize: "30px",
-              }}
-            />
+              }} />
             <Typography variant="h4" sx={{ color: colors.grey[100] }}>
               Air Quality
             </Typography>
@@ -99,8 +100,7 @@ const Dashboard = () => {
                 color: colors.greenAccent[500],
                 marginRight: "8px",
                 fontSize: "30px",
-              }}
-            />
+              }} />
             <Typography variant="h4" sx={{ color: colors.grey[100] }}>
               Air Quality
             </Typography>
@@ -125,8 +125,7 @@ const Dashboard = () => {
                 color: colors.greenAccent[500],
                 marginRight: "8px",
                 fontSize: "30px",
-              }}
-            />
+              }} />
             <Typography variant="h4" sx={{ color: colors.grey[100] }}>
               Air Quality
             </Typography>
@@ -151,8 +150,7 @@ const Dashboard = () => {
                 color: colors.greenAccent[500],
                 marginRight: "8px",
                 fontSize: "30px",
-              }}
-            />
+              }} />
             <Typography variant="h4" sx={{ color: colors.grey[100] }}>
               Air Quality
             </Typography>
@@ -178,8 +176,7 @@ const Dashboard = () => {
                 color: colors.greenAccent[500],
                 marginRight: "8px",
                 fontSize: "30px",
-              }}
-            />
+              }} />
             <Typography variant="h4" sx={{ color: colors.grey[100] }}>
               Latest Weather Information
             </Typography>
@@ -202,8 +199,7 @@ const Dashboard = () => {
                 fontSize: "30px",
                 marginTop: "-10px",
                 color: colors.greenAccent[400],
-              }}
-            />
+              }} />
             <Typography
               variant="h4"
               sx={{ color: colors.grey[100], marginBottom: "10px" }}
@@ -258,7 +254,7 @@ const Dashboard = () => {
           </TableContainer>
         </Box>
       </Box>
-    </Box>
+    </Box></>
   );
 };
 
