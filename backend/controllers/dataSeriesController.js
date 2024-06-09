@@ -11,15 +11,19 @@ module.exports = {
      * dataSeriesController.list()
      */
     list: function (req, res) {
-        DataSeriesModel.find(function (err, dataSeriess) {
+        DataSeriesModel.find({}, 'tags location', function (err, dataSeriess) {
             if (err) {
                 return res.status(500).json({
                     message: 'Error when getting dataSeries.',
                     error: err
                 });
             }
-
-            return res.json(dataSeriess);
+            const result = dataSeriess.map(item => ({
+                location: item.location,
+                tags: item.tags || 'Unknown'
+                
+            }));
+            return res.json(result);
         });
     },
 

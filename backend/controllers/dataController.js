@@ -161,10 +161,10 @@ module.exports = {
     },
 
     listCurrentDataTransformed: function (req, res) {
-        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-
+        const now = new Date();
+        const startOfCurrentHour = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours());
         DataModel.find({
-            timestamp: {$gte: oneHourAgo},
+            timestamp: {$gte: startOfCurrentHour},
           
         }).populate('data_series_id').exec(function (err, data) {
             if (err) {

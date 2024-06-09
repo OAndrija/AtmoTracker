@@ -12,49 +12,44 @@ import DeviceThermostatOutlinedIcon from '@mui/icons-material/DeviceThermostatOu
 import WaterDropOutlinedIcon from '@mui/icons-material/WaterDropOutlined';
 import SearchIcon from "@mui/icons-material/Search";
 import MasksOutlinedIcon from '@mui/icons-material/MasksOutlined';
+import MapSearch from "../map/MapSearch";
 
-const Topbar = ({ setFilter }) => {
+const Topbar = ({ setFilter,onSuggestionClick }) => {
     const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const colorMode = useContext(ColorModeContext);
+  const colors = tokens(theme.palette.mode);
+  const colorMode = useContext(ColorModeContext);
 
-
-    return (
-        <Box display="flex" justifyContent="space-between" alignItems="center" p={2} sx={{ backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1000 }}>
-            {/* SEARCH BAR AND FILTERS */}
-            <Box display="flex" alignItems="center">
-                <Box display="flex" backgroundColor={colors.primary[400]} borderRadius="35px" sx={{ ml: 1, width: '400px', height: '42px', boxShadow: '0px 4px 10px rgba(0,0,0, 0.2)' }}>
-                    <InputBase sx={{ ml: 3, flex: 1, fontSize: 15 }} placeholder="Search" />
-                    <IconButton type="button" sx={{ p: 1, mr: 2 }}>
-                        <SearchIcon />
-                    </IconButton>
-                </Box>
-                <Box display="flex" alignItems="center" ml={2}>
-                    <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" onClick={() => setFilter('temperature')} />
-                    <FilterButton icon={<AirOutlinedIcon />} text="Wind" onClick={() => setFilter('wind')} />
-                    <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" onClick={() => setFilter('rain')} />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="PM10" onClick={() => setFilter('pm10')} />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" onClick={() => setFilter('pm25')} />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" onClick={() => setFilter('ozon')} />
-                    <FilterButton icon={<MasksOutlinedIcon />} text="NO2" onClick={() => setFilter('no2')} />
-                </Box>
-            </Box>
-
-            {/* ICONS */}
-            <Box display="flex" alignItems="center">
-                <IconButton onClick={colorMode.toggleColorMode}>
-                    {theme.palette.mode === 'dark' ? (
-                        <DarkModeOutlinedIcon />
-                    ) : (
-                        <LightModeOutlinedIcon />
-                    )}
-                </IconButton>
-                <IconButton>
-                    <PersonOutlinedIcon />
-                </IconButton>
-            </Box>
+  return (
+    <Box display="flex" justifyContent="space-between" alignItems="center" p={2} sx={{ backgroundColor: 'transparent', position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1000 }}>
+      {/* SEARCH BAR AND FILTERS */}
+      <Box display="flex" alignItems="center">
+        <MapSearch onSuggestionClick={onSuggestionClick} colors={colors} />
+        <Box display="flex" alignItems="center" ml={2}>
+          <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" onClick={() => setFilter('temperature')} />
+          <FilterButton icon={<AirOutlinedIcon />} text="Wind" onClick={() => setFilter('wind')} />
+          <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" onClick={() => setFilter('rain')} />
+          <FilterButton icon={<MasksOutlinedIcon />} text="PM10" onClick={() => setFilter('pm10')} />
+          <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" onClick={() => setFilter('pm25')} />
+          <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" onClick={() => setFilter('ozon')} />
+          <FilterButton icon={<MasksOutlinedIcon />} text="NO2" onClick={() => setFilter('no2')} />
         </Box>
-    );
+      </Box>
+
+      {/* ICONS */}
+      <Box display="flex" alignItems="center">
+        <IconButton onClick={colorMode.toggleColorMode}>
+          {theme.palette.mode === 'dark' ? (
+            <DarkModeOutlinedIcon />
+          ) : (
+            <LightModeOutlinedIcon />
+          )}
+        </IconButton>
+        <IconButton>
+          <PersonOutlinedIcon />
+        </IconButton>
+      </Box>
+    </Box>
+  );
 };
 
 export default Topbar;

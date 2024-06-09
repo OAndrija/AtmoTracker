@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
@@ -153,7 +153,15 @@ const createIcon = (icon, color) => {
   });
 }; /*/
 
-const MapComponent = ({ filter }) => {
+
+const SetViewOnChange=({center})=>{
+  const map=useMap();
+  useEffect(() => {
+    map.setView(center);
+  }, [center, map]);
+  return null;
+};
+const MapComponent = ({ filter,center  }) => {
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
   const [data, setData] = useState([]);
@@ -272,7 +280,8 @@ const MapComponent = ({ filter }) => {
 
   return (
     <div style={{ height: '100vh', width: '100vw', position: 'absolute', top: 0, left: 0 }}>
-      <MapContainer center={position} zoom={9} style={{ height: '100%', width: '100%' }}>
+      <MapContainer center={center} zoom={9} style={{ height: '100%', width: '100%' }}>
+      <SetViewOnChange center={center} />
         <TileLayer
           url={isDarkMode ? darkTileLayer : lightTileLayer}
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'

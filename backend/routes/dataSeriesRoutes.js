@@ -5,7 +5,7 @@ var dataSeriesController = require('../controllers/dataSeriesController.js');
 /*
  * GET
  */
-router.get('/', dataSeriesController.list);
+router.get('/location', dataSeriesController.list);
 
 /*
  * GET
