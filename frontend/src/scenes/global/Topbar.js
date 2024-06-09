@@ -23,6 +23,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import MasksOutlinedIcon from "@mui/icons-material/MasksOutlined";
 import { UserContext } from "../../userContext";
 import "./App.css"; // Make sure to import your CSS file
+import MapSearch from "../map/MapSearch";
 
 const Topbar = ({ avatarUrl }) => {
   const theme = useTheme();

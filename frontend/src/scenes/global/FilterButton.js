@@ -2,10 +2,9 @@ import { Box, Typography, useTheme } from "@mui/material";
 import { useContext } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 
-const FilterButton = ({ icon, text }) => {
+const FilterButton = ({ icon, text, onClick }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const colorMode = useContext(ColorModeContext);
 
     return (
         <Box 
@@ -27,6 +26,7 @@ const FilterButton = ({ icon, text }) => {
                 cursor: 'pointer',
                 padding: '0 6px'
             }}
+            onClick={onClick} 
         >
             {icon}
             <Typography fontSize={13} fontWeight='600' sx={{ ml: 0.5, pr: 1, color: 'inherit'}}>

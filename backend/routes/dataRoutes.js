@@ -23,6 +23,7 @@ router.get('/cleanestcities', dataController.listLatestPM25Data);
 // router.get('/:cityName', dataController.listAirQualityDataForCity);
 router.get('/globalbarchart', dataController.listGlobalBarChartData);
 router.get('/temperature',dataController.listCurrentTemperature);
+router.get('/transformedData',dataController.listCurrentDataTransformed);
 
 /*
  * GET

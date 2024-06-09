@@ -14,7 +14,7 @@ import Profile from "./components/Profile";
 import Logout from "./components/Logout";
 import {useEffect, useState} from "react";
 import AreaBumpChart from './scenes/dashboard/AreaBumpChart';
-
+import StateHolder from './scenes/map/StateHolder';
 
 function App() {
     const [theme, colorMode] = useMode();
@@ -47,7 +47,7 @@ function App() {
                     <Box sx={{ display: 'flex', height: '100vh' }}>
                       <CustomSidebar />
                       <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100vh' }}>
-                            <Topbar avatarUrl={avatarUrl}/>
+                      <StateHolder />
                             <Box sx={{ flex: 1, overflow: 'auto'}}>
                                   <Routes>
                                     <Route path="/dashboard" element={<Dashboard/>}/>
