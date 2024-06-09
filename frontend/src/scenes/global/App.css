@@ -1,0 +1,27 @@
+@keyframes slideInFromLeft {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+@keyframes retractToLeft {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
+}
+
+.topbar-slide-in {
+  animation: slideInFromLeft 0.8s forwards;
+  background-size: 200% 100%;
+}
+
+.topbar-retract {
+  animation: retractToLeft 0.8s forwards;
+  background-size: 200% 100%;
+}
