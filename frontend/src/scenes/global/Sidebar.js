@@ -36,6 +36,11 @@ const CustomSidebar = () => {
           },
         }}
       >
+        <Box sx={{ display: "flex", justifyContent: "center", p: 1, mt: 3}}>
+          <Button onClick={handleToggle}>
+            <MenuIcon sx={{ color: theme.palette.text.primary }}/>
+          </Button>
+        </Box>
         <Menu
           menuItemStyles={{
             button: {
@@ -55,7 +60,7 @@ const CustomSidebar = () => {
           }}
         >
           <MenuItem
-            style={{ marginTop: "80px" }}
+            style={{ marginTop: "12px" }}
             icon={<StatsIcon />}
             component={<Link to="/dashboard" />}
           >

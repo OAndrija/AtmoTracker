@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
 
 const position = [46.056946, 14.505751];
 const bounds = [
-  [45.4215, 13.3755], // South-West corner of Slovenia
-  [46.8766, 16.5966]  // North-East corner of Slovenia
+  [45.4215, 13.3755],
+  [46.8766, 16.5966]
 ];
 
 const MapComponent = () => {
@@ -39,8 +39,10 @@ const MapComponent = () => {
         style={{ height: '100%', width: '100%' }}
         maxBounds={bounds}
         maxBoundsViscosity={1.0}
-        minZoom={7}  // Set a minimum zoom level
+        minZoom={7}
         maxZoom={9}
+        zoomControl={false}
+        attributionControl={false}
       >
         <TileLayer
           url={lightTileLayer}
@@ -58,6 +60,7 @@ const MapComponent = () => {
             </Popup>
           </Marker>
         ))}
+        <ZoomControl position="bottomright" /> 
       </MapContainer>
       <style jsx global>{`
         .leaflet-tile,
