@@ -4,105 +4,106 @@ import 'leaflet/dist/leaflet.css';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios';
 import L from 'leaflet';
+import PlaceCardComponent from "./PlaceCardComponent";
 import { FaSnowflake, FaTemperatureLow, FaCloudSun, FaSun, FaTemperatureHigh, FaIndustry, FaSmog, FaCar, FaShieldAlt } from 'react-icons/fa';
 import { renderToString } from 'react-dom/server';
-  
-  const defaultIcon = new L.Icon({
-    iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
 
-  const greenPm10Icon = new L.Icon({
-    iconUrl: 'https://api.geoapify.com/v1/icon/?type=material&color=green&size=small&icon=factory&iconSize=small&textSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
+const defaultIcon = new L.Icon({
+  iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
-  const orangePm10Icon = new L.Icon({
-    iconUrl: 'https://api.geoapify.com/v1/icon/?type=material&color=orange&size=small&icon=factory&iconSize=small&textSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-  const redPm10Icon = new L.Icon({
-    iconUrl: 'https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=factory&iconSize=small&textSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-  const greenpm25Icon = new L.Icon({
-    iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=green&size=small&icon=smog&iconSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
+const greenPm10Icon = new L.Icon({
+  iconUrl: 'https://api.geoapify.com/v1/icon/?type=material&color=green&size=small&icon=factory&iconSize=small&textSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
-  const orangepm25Icon = new L.Icon({
-    iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=orange&size=small&icon=smog&iconSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
+const orangePm10Icon = new L.Icon({
+  iconUrl: 'https://api.geoapify.com/v1/icon/?type=material&color=orange&size=small&icon=factory&iconSize=small&textSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+const redPm10Icon = new L.Icon({
+  iconUrl: 'https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=factory&iconSize=small&textSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+const greenpm25Icon = new L.Icon({
+  iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=green&size=small&icon=smog&iconSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
-  const redpm25Icon = new L.Icon({
-    iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=red&size=small&icon=smog&iconSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
+const orangepm25Icon = new L.Icon({
+  iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=orange&size=small&icon=smog&iconSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
-  const greenOzon = new L.Icon({
-    iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=green&size=small&icon=shield-alt&iconSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-  const orangeOzon = new L.Icon({
-    iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=orange&size=small&icon=shield-alt&iconSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-  const redOzon = new L.Icon({
-    iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=red&size=small&icon=shield-alt&iconSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-  const greenNo2 = new L.Icon({
-    iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=green&size=small&icon=car&iconSize=small&textSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
-  const orangeNo2 = new L.Icon({
-    iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=orange&size=small&icon=car&iconSize=small&textSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]  
-  });
-  const redNo2 = new L.Icon({
-    iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=red&size=small&icon=car&iconSize=small&textSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-  });
+const redpm25Icon = new L.Icon({
+  iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=red&size=small&icon=smog&iconSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+const greenOzon = new L.Icon({
+  iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=green&size=small&icon=shield-alt&iconSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+const orangeOzon = new L.Icon({
+  iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=orange&size=small&icon=shield-alt&iconSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+const redOzon = new L.Icon({
+  iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=red&size=small&icon=shield-alt&iconSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+const greenNo2 = new L.Icon({
+  iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=green&size=small&icon=car&iconSize=small&textSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+const orangeNo2 = new L.Icon({
+  iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=orange&size=small&icon=car&iconSize=small&textSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+const redNo2 = new L.Icon({
+  iconUrl: 'https://api.geoapify.com/v1/icon/?type=awesome&color=red&size=small&icon=car&iconSize=small&textSize=small&scaleFactor=2&apiKey=2b257b2140204b5abc2a90177e0a63d3',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
 
 /*/
 const createIcon = (icon, color) => {
@@ -170,6 +171,8 @@ const MapComponent = ({ filter,center  }) => {
   ];
   const lightTileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
   const darkTileLayer = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
+  const [isOpenCard, setIsOpenCard] = useState(false);
+  const [selectedItem, setSelectedItem] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -182,8 +185,13 @@ const MapComponent = ({ filter,center  }) => {
     };
 
     fetchData();
-  }, [position, filter]);
+    // }, [position, filter]);
+  }, []);
 
+  const closeCard = () => {
+    setIsOpenCard(false);
+    setSelectedItem({});
+  }
   const filterData = (item) => {
     switch (filter) {
       case 'temperature':
@@ -203,6 +211,11 @@ const MapComponent = ({ filter,center  }) => {
       default:
         return false;
     }
+  };
+
+  const onMarkerClick = (item) => {
+    setIsOpenCard(true);
+    setSelectedItem(item);
   };
 
   const renderFilteredData = (item) => {
@@ -239,22 +252,22 @@ const MapComponent = ({ filter,center  }) => {
       } else if (item.temperature >= 30) {
         return createIcon(<FaTemperatureHigh />, 'red');
       }/*/
-      if (filter === 'pm10') {
+    if (filter === 'pm10') {
       if (item.pm10 <= 54) {
         return greenPm10Icon;
       } else if (item.pm10 <= 254) {
         return orangePm10Icon;
       } else if (item.pm10 <= 354) {
         return redPm10Icon;
-      } 
+      }
     } else if (filter === 'pm25') {
       if (item.pm25 <= 12) {
         return greenpm25Icon;
       } else if (item.pm25 <= 55.4) {
-       return orangepm25Icon;
+        return orangepm25Icon;
       } else if (item.pm25 <= 150.4) {
         return redpm25Icon;
-      } 
+      }
     } else if (filter === 'ozon') {
       if (item.ozon <= 54) {
         return greenOzon;
@@ -272,7 +285,7 @@ const MapComponent = ({ filter,center  }) => {
         return orangeNo2;
       } else if (item.no2 <= 649) {
         return redNo2;
-      } 
+      }
       else {
         return redNo2;
       }
@@ -281,42 +294,46 @@ const MapComponent = ({ filter,center  }) => {
   };
 
   return (
-    <div style={{ height: '100vh', width: '100vw', position: 'absolute', top: 0, left: 0 }}>
-      <MapContainer 
-        center={position} 
-        zoom={9} 
-        style={{ height: '100%', width: '100%' }}
-        maxBounds={bounds}
-        maxBoundsViscosity={1.0}
-        minZoom={7}
-        maxZoom={9}
-        zoomControl={false}
-        attributionControl={false}
-      >
-      <SetViewOnChange center={center} />
-        <TileLayer
-          url={lightTileLayer}
-          attribution='&copy;'
-          className={isDarkMode ? 'dark-mode' : ''}
-        />
-        {data.filter(filterData).map((item, index) => (
-          <Marker 
-            key={index} 
-            position={[item.location.latitude, item.location.longitude]}
-            icon={getIcon(item)}
-          >
-            <Popup>
-              <div>
-                <strong>Name:</strong> {item.name}<br />
-                {renderFilteredData(item)}<br />
-                <strong>Timestamp:</strong> {new Date(item.timestamp).toLocaleString()}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
-        <ZoomControl position="bottomright" /> 
-      </MapContainer>
-      <style jsx global>{`
+      <div style={{ height: '100vh', width: '100vw', position: 'absolute', top: 0, left: 0 }}>
+        { isOpenCard && <PlaceCardComponent onClose={closeCard} item={selectedItem} /> }
+        <MapContainer
+            center={position}
+            zoom={9}
+            style={{ height: '100%', width: '100%' }}
+            maxBounds={bounds}
+            maxBoundsViscosity={1.0}
+            minZoom={7}
+            maxZoom={9}
+            zoomControl={false}
+            attributionControl={false}
+        >
+          <SetViewOnChange center={center} />
+          <TileLayer
+              url={lightTileLayer}
+              attribution='&copy;'
+              className={isDarkMode ? 'dark-mode' : ''}
+          />
+          {data.filter(filterData).map((item, index) => (
+              <Marker
+                  key={index}
+                  position={[item.location.latitude, item.location.longitude]}
+                  icon={getIcon(item)}
+                  eventHandlers={{
+                    click: () => onMarkerClick(item)
+                  }}
+              >
+                <Popup>
+                  <div>
+                    <strong>Name:</strong> {item.name}<br />
+                    {renderFilteredData(item)}<br />
+                    <strong>Timestamp:</strong> {new Date(item.timestamp).toLocaleString()}
+                  </div>
+                </Popup>
+              </Marker>
+          ))}
+          <ZoomControl position="bottomright" />
+        </MapContainer>
+        <style jsx global>{`
         .leaflet-tile,
         .leaflet-control-zoom-in,
         .leaflet-control-zoom-out,
@@ -324,7 +341,7 @@ const MapComponent = ({ filter,center  }) => {
           ${isDarkMode ? 'filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);' : ''}
         }
       `}</style>
-    </div>
+      </div>
   );
 };
 

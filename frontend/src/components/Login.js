@@ -25,7 +25,7 @@ function Login() {
         const data = await res.json();
         if (data._id !== undefined) {
             userContext.setUserContext(data);
-            navigate("/");
+            navigate("/map");
         } else {
             setUsername("");
             setPassword("");
