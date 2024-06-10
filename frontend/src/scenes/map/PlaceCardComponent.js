@@ -59,13 +59,10 @@ function PlaceCardComponent({ item, onClose }) {
                 return response.data.results;
             };
 
-            console.log('Fetching image for:', cityName);
-            let results = await fetchFromUnsplash(cityName);
-            if (results.length === 0) {
-                const nameWithoutFirstWord = cityName.split(' ').slice(1).join(' ');
-                console.log('Fetching image for:', nameWithoutFirstWord);
-                results = await fetchFromUnsplash(nameWithoutFirstWord);
-            }
+            const nameWithoutFirstWord = cityName.split(' ').slice(1).join(' ');
+
+            console.log('Fetching image for:', nameWithoutFirstWord);
+            let results = await fetchFromUnsplash(nameWithoutFirstWord);
 
             if (results.length > 0) {
                 console.log('Image found:', results[0].urls.small);
