@@ -1,16 +1,45 @@
-import React, {useContext, useEffect} from 'react';
-import {ColorModeContext, tokens} from '../../theme';
-import {useTheme} from "@mui/material/styles";
-import {Card, CardContent, CardHeader, IconButton, Typography, Grid} from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import { ColorModeContext, tokens } from '../../theme';
+import { useTheme } from "@mui/material/styles";
+import { Card, CardContent, CardHeader, IconButton, Typography, Grid } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { keyframes } from '@mui/system';
 
-function PlaceCardComponent({item, onClose}) {
+const slideIn = keyframes`
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`;
+
+const slideOut = keyframes`
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+`;
+
+function PlaceCardComponent({ item, onClose }) {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const [visible, setVisible] = useState(true);
 
     useEffect(() => {
         console.log(item);
     }, [item]);
+
+    const handleClose = () => {
+        setVisible(false);
+        setTimeout(() => {
+            onClose();
+        }, 500); // Duration of the slide-out animation
+    };
+
+    const nameWithoutFirstWord = item.name.split(' ').slice(1).join(' ');
 
     return (
         <Card
@@ -24,7 +53,8 @@ function PlaceCardComponent({item, onClose}) {
                 paddingLeft: 1,
                 backgroundColor: colors.primary[400],
                 borderRadius: 0,
-                zIndex: 990
+                zIndex: 990,
+                animation: `${visible ? slideIn : slideOut} 0.5s forwards`
             }}
         >
             <CardHeader
@@ -36,12 +66,12 @@ function PlaceCardComponent({item, onClose}) {
                             fontWeight: 'bold',
                         }}
                     >
-                        {item.name}
+                        {nameWithoutFirstWord}
                     </Typography>
                 }
                 action={
-                    <IconButton onClick={onClose}>
-                        <CloseIcon/>
+                    <IconButton onClick={handleClose}>
+                        <CloseIcon />
                     </IconButton>
                 }
                 sx={{
@@ -50,11 +80,6 @@ function PlaceCardComponent({item, onClose}) {
                 }}
             />
             <CardContent>
-                {item.timestamp && (
-                    <Typography variant="body1" fontSize={18}>
-                        <strong>Timestamp</strong>: {new Date(item.timestamp).toLocaleString()}
-                    </Typography>
-                )}
                 {item.temperature && (
                     <Typography variant="body1" fontSize={18}>
                         <strong>Temperature</strong>: {item.temperature} °C
