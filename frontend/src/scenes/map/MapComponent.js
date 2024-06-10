@@ -146,7 +146,17 @@ const SetViewOnChange = ({ center, zoom }) => {
   return null;
 };
 
-const MapComponent = ({ filter, center, setCenter }) => {
+const MapComponent = ({
+  filter,
+  center,
+  setCenter,
+  zoom,
+  setZoom,
+  isOpenCard,
+  setIsOpenCard,
+  selectedItem,
+  setSelectedItem
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isDarkMode = theme.palette.mode === "dark";
@@ -158,9 +168,6 @@ const MapComponent = ({ filter, center, setCenter }) => {
   const lightTileLayer = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
   const darkTileLayer =
     "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png";
-  const [isOpenCard, setIsOpenCard] = useState(false);
-  const [selectedItem, setSelectedItem] = useState({});
-  const [mapZoom, setMapZoom] = useState(DEFAULT_ZOOM);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -181,7 +188,7 @@ const MapComponent = ({ filter, center, setCenter }) => {
     setIsOpenCard(false);
     setSelectedItem({});
     setCenter(DEFAULT_CENTER);
-    setMapZoom(DEFAULT_ZOOM);
+    setZoom(DEFAULT_ZOOM);
   };
 
   const filterData = (item) => {
@@ -209,7 +216,7 @@ const MapComponent = ({ filter, center, setCenter }) => {
     setIsOpenCard(true);
     setSelectedItem(item);
     setCenter([item.location.latitude, item.location.longitude]);
-    setMapZoom(11); // Zoom in to level 13 on marker click
+    setZoom(11); // Zoom in to level 13 on marker click
   };
 
   const renderFilteredData = (item) => {
@@ -289,7 +296,7 @@ const MapComponent = ({ filter, center, setCenter }) => {
       )}
       <MapContainer
         center={center}
-        zoom={mapZoom}
+        zoom={zoom}
         style={{ height: "100%", width: "100%" }}
         maxBounds={bounds}
         maxBoundsViscosity={1.0}
@@ -298,7 +305,7 @@ const MapComponent = ({ filter, center, setCenter }) => {
         zoomControl={false}
         attributionControl={false}
       >
-        <SetViewOnChange center={center} zoom={mapZoom} />
+        <SetViewOnChange center={center} zoom={zoom} />
         <TileLayer
           url={lightTileLayer}
           attribution="&copy;"
