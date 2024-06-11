@@ -47,7 +47,7 @@ function PlaceCardComponent({ item, onClose }) {
     setVisible(false);
     setTimeout(() => {
       onClose();
-    }, 500);
+    }, 320);
   };
 
   const fetchImage = async (cityName) => {
@@ -119,7 +119,7 @@ function PlaceCardComponent({ item, onClose }) {
         }
         action={
           <IconButton onClick={handleClose}>
-            <CloseIcon />
+            <CloseIcon  sx={{ fontSize: 34, marginRight: 1 }}/>
           </IconButton>
         }
         sx={{
