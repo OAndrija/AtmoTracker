@@ -13,7 +13,7 @@ function Logout(){
     }, []);
 
     return (
-        <Navigate replace to="/" />
+        <Navigate replace to="/map" />
     );
 }
 

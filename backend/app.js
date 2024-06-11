@@ -28,7 +28,7 @@ mongoose.connection.on('connected', () => {
 });
 
 // CORS configuration
-var allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002'];
+var allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://23.97.216.213:3000', 'http://23.97.216.213:3001', 'http://23.97.216.213:3002' ];
 app.use(cors({
   credentials: true,
   origin: function(origin, callback) {
@@ -125,8 +125,7 @@ const getTimeUntilNextHour = () => {
   nextHour.setMinutes(0, 0, 0);
   return nextHour - now;
 };
-
-// Set a timeout to broadcast data at the next whole hour
+//cascascascasasccas// Set a timeout to broadcast data at the next whole hour
 setTimeout(() => {
   broadcastData();
   // Set an interval to broadcast data every subsequent hour

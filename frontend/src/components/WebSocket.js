@@ -43,10 +43,7 @@ const WebSocketComponent = () => {
     };
   }, []);
 
-  return (
-    <>
-    </>
-  );
+  return null;
 };
 
 export default WebSocketComponent;

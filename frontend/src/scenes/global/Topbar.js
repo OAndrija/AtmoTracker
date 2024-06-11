@@ -145,19 +145,22 @@ const Topbar = ({ setFilter,onSuggestionClick }) => {
         >
           {/* SEARCH BAR AND FILTERS */}
           <Box display="flex" alignItems="center">
-            <MapSearch onSuggestionClick={onSuggestionClick} colors={colors} />
-            {isMapPage && (
-                <Box display="flex" alignItems="center" ml={2}>
-                  <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" onClick={() => setFilter('temperature')} />
-                  <FilterButton icon={<AirOutlinedIcon />} text="Wind" onClick={() => setFilter('wind')} />
-                  <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" onClick={() => setFilter('rain')} />
-                  <FilterButton icon={<MasksOutlinedIcon />} text="PM10" onClick={() => setFilter('pm10')} />
-                  <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" onClick={() => setFilter('pm25')} />
-                  <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" onClick={() => setFilter('ozon')} />
-                  <FilterButton icon={<MasksOutlinedIcon />} text="NO2" onClick={() => setFilter('no2')} />
-                </Box>
-            )}
-          </Box>
+  {isMapPage && (
+    <>
+      <MapSearch onSuggestionClick={onSuggestionClick} colors={colors} />
+      <Box display="flex" alignItems="center" ml={2}>
+        <FilterButton icon={<DeviceThermostatOutlinedIcon />} text="Temperature" onClick={() => setFilter('temperature')} />
+        <FilterButton icon={<AirOutlinedIcon />} text="Wind" onClick={() => setFilter('wind')} />
+        <FilterButton icon={<WaterDropOutlinedIcon />} text="Rain" onClick={() => setFilter('rain')} />
+        <FilterButton icon={<MasksOutlinedIcon />} text="PM10" onClick={() => setFilter('pm10')} />
+        <FilterButton icon={<MasksOutlinedIcon />} text="PM2,5" onClick={() => setFilter('pm25')} />
+        <FilterButton icon={<MasksOutlinedIcon />} text="Ozon" onClick={() => setFilter('ozon')} />
+        <FilterButton icon={<MasksOutlinedIcon />} text="NO2" onClick={() => setFilter('no2')} />
+      </Box>
+    </>
+  )}
+</Box>
+
 
           {/* ICONS */}
           <Box display="flex" alignItems="center">

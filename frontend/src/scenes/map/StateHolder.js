@@ -3,8 +3,11 @@ import Topbar from '../global/Topbar';
 import MapComponent from './MapComponent';
 
 const StateHolder = () => {
-  const [filter, setFilter] = useState('temperature');  
+  const [filter, setFilter] = useState('temperature');
   const [mapCenter, setMapCenter] = useState([46.056946, 14.505751]);
+  const [mapZoom, setMapZoom] = useState(9);
+  const [isOpenCard, setIsOpenCard] = useState(false);
+  const [selectedItem, setSelectedItem] = useState({});
 
   const handleSuggestionClick = (suggestion) => {
     const lat = parseFloat(suggestion.location.latitude);
@@ -17,14 +20,26 @@ const StateHolder = () => {
 
     console.log('Setting map center to:', lat, lon);
     setMapCenter([lat, lon]);
+    setMapZoom(11); // Set a specific zoom level when a suggestion is clicked
+    setSelectedItem(suggestion); // Set the selected item to show in PlaceCardComponent
   };
 
   return (
     <div>
-      <Topbar setFilter={setFilter}  onSuggestionClick={handleSuggestionClick}/>
-      <MapComponent filter={filter} center={mapCenter} />
+      <Topbar setFilter={setFilter} onSuggestionClick={handleSuggestionClick} />
+      <MapComponent
+        filter={filter}
+        center={mapCenter}
+        setCenter={setMapCenter}
+        zoom={mapZoom}
+        setZoom={setMapZoom}
+        isOpenCard={isOpenCard}
+        setIsOpenCard={setIsOpenCard}
+        selectedItem={selectedItem}
+        setSelectedItem={setSelectedItem}
+      />
     </div>
   );
 };
- 
+
 export default StateHolder;

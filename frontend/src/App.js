@@ -1,20 +1,19 @@
-import {ColorModeContext, useMode} from './theme';
-import {CssBaseline, ThemeProvider, Box} from '@mui/material';
-import {Routes, Route} from "react-router-dom";
+import { ColorModeContext, useMode } from './theme';
+import { CssBaseline, ThemeProvider, Box } from '@mui/material';
+import { Routes, Route } from "react-router-dom";
 import Topbar from './scenes/global/Topbar';
 import Dashboard from './scenes/dashboard';
 import CustomSidebar from './scenes/global/Sidebar';
-import {UserContext} from "./userContext";
-// import WebSocket from './components/WebSocket';
-// import Map from './scenes/map';
+import { UserContext } from "./userContext";
 import MapComponent from './scenes/map/MapComponent';
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Profile from "./components/Profile";
 import Logout from "./components/Logout";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import AreaBumpChart from './scenes/dashboard/AreaBumpChart';
 import StateHolder from './scenes/map/StateHolder';
+import WebSocketComponent from './components/WebSocket';
 
 function App() {
     const [theme, colorMode] = useMode();
@@ -33,7 +32,7 @@ function App() {
         }
         getProfile();
     }, []);
-
+//test8
     const avatarUrl = profile.path ? `http://localhost:3002${profile.path}` : '';
 
     return (
@@ -43,18 +42,19 @@ function App() {
         }}>
             <ColorModeContext.Provider value={colorMode}>
                 <ThemeProvider theme={theme}>
-                    <CssBaseline/>
+                    <CssBaseline />
+                    <WebSocketComponent />
                     <Box sx={{ display: 'flex', height: '100vh' }}>
-                      <CustomSidebar />
-                      <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100vh' }}>
-                            <Box sx={{ flex: 1, overflow: 'auto'}}>
-                                  <Routes>
-                                    <Route path="/dashboard" element={<Dashboard/>}/>
-                                    <Route path="/map" element={<StateHolder/>}/>
-                                    <Route path="/login" element={<Login/>}/>
-                                    <Route path="/register" element={<Register/>}/>
-                                    <Route path="/profile" element={<Profile/>}/>
-                                    <Route path="/logout" element={<Logout/>}/>
+                        <CustomSidebar />
+                        <Box sx={{ display: 'flex', flexDirection: 'column', flex: 1, height: '100vh' }}>
+                            <Box sx={{ flex: 1, overflow: 'auto' }}>
+                                <Routes>
+                                    <Route path="/dashboard" element={<Dashboard />} />
+                                    <Route path="/map" element={<StateHolder />} />
+                                    <Route path="/login" element={<Login />} />
+                                    <Route path="/register" element={<Register />} />
+                                    <Route path="/profile" element={<Profile />} />
+                                    <Route path="/logout" element={<Logout />} />
                                 </Routes>
                             </Box>
                         </Box>

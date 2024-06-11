@@ -36,7 +36,7 @@ function Login() {
     return (
         <div className="container mt-4">
             <form onSubmit={Login} className="form-group">
-                {userContext.user ? <Navigate replace to="/"/> : ""}
+                {userContext.user ? <Navigate replace to="/map"/> : ""}
                 <div className="mb-3">
                     <input type="text" name="username" placeholder="Username"
                            value={username} onChange={(e) => (setUsername(e.target.value))}
