@@ -32,7 +32,7 @@ function App() {
         }
         getProfile();
     }, []);
-
+//test8
     const avatarUrl = profile.path ? `http://localhost:3002${profile.path}` : '';
 
     return (
