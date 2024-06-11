@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 3001
 
 # Set the command to run the backend when the container starts
-CMD ["node", "server.js"]
+CMD ["node", "app.js"]
