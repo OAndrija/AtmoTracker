@@ -13,6 +13,9 @@ RUN npm install
 # Copy the rest of the application code to the working directory
 COPY . .
 
+# Rebuild native dependencies
+RUN npm rebuild bcrypt --build-from-source
+
 # Expose the port the backend runs on
 EXPOSE 3001
 
