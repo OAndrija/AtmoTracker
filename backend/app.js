@@ -27,7 +27,7 @@ mongoose.connection.on('connected', () => {
   console.log('Mongoose is connected');
 });
 
-// CORS configuration
+// CORS configurations
 var allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://23.97.216.213:3000', 'http://23.97.216.213:3001', 'http://23.97.216.213:3002' ];
 app.use(cors({
   credentials: true,
