@@ -1,5 +1,3 @@
-package task
-
 import java.io.*
 
 const val ERROR_STATE = 0
@@ -7,26 +5,21 @@ const val ERROR_STATE = 0
 enum class Symbol {
     CITY,
     CITY_NAME,
-    REAL,
+    COORDINATES,
     TEMPERATURE,
     WIND,
     PRECIPITATION,
     POLLUTION,
-    POLLUTION_REGEX,
     AREA,
     AREA_NAME,
-    SHAPE,
     POLYGON,
     CIRCLE,
-    POINT,
-    DIRECTION_REGEX,
-    COMMA,
+    REAL,
     LPAREN,
     RPAREN,
-    LBRACE,
-    RBRACE,
-    QUOTE,
-    STRING,
+    COMMA,
+    CURLY_OPEN,
+    CURLY_CLOSE,
     SKIP,
     EOF,
 }
@@ -44,12 +37,10 @@ interface DFA {
 }
 
 object Automaton : DFA {
-    override val states = (1..30).toSet()
+    override val states = (1..68).toSet()
     override val alphabet = 0..255
     override val startState = 1
-    override val finalStates = setOf(
-        2, 4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 16, 18, 21, 23, 25, 26, 27, 28, 29, 30
-    )
+    override val finalStates = setOf(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68)
 
     private val numberOfStates = states.max() + 1 // plus the ERROR_STATE
     private val numberOfCodes = alphabet.max() + 1 // plus the EOF
@@ -70,7 +61,7 @@ object Automaton : DFA {
 
     override fun next(state: Int, code: Int): Int {
         assert(states.contains(state))
-        assert(alphabet.contains(code))
+        assert(alphabet.contains(code) || code == EOF)
         return transitions[state][code + 1]
     }
 
@@ -80,73 +71,83 @@ object Automaton : DFA {
     }
 
     init {
-        // Real numbers
+        // Transitions sorted by state number
+        setTransition(1, '(', 22)
+        setTransition(1, ')', 23)
+        setTransition(1, ',', 24)
+        setTransition(1, '{', 25)
+        setTransition(1, '}', 26)
+
+        // Newline transitions for brackets and parentheses
+        setTransition(23, '\r', 66)
+        setTransition(25, '\r', 66)
+        setTransition(26, '\r', 66)
+
+        "city".forEachIndexed { index, char -> setTransition(1, char, 2 + index) }
+        setTransition(5, ' ', 65)
+
+        "temperature".forEachIndexed { index, char -> setTransition(1, char, 6 + index) }
+        setTransition(17, ' ', 65)
+
+        "wind".forEachIndexed { index, char -> setTransition(1, char, 18 + index) }
+        setTransition(21, ' ', 65)
+
+        "precipitation".forEachIndexed { index, char -> setTransition(1, char, 22 + index) }
+        setTransition(35, ' ', 65)
+
+        "pollution".forEachIndexed { index, char -> setTransition(1, char, 36 + index) }
+        setTransition(45, ' ', 65)
+
+        "area".forEachIndexed { index, char -> setTransition(1, char, 46 + index) }
+        setTransition(50, ' ', 65)
+
+        "polygon".forEachIndexed { index, char -> setTransition(1, char, 51 + index) }
+        setTransition(58, ' ', 65)
+
+        "circle".forEachIndexed { index, char -> setTransition(1, char, 59 + index) }
+        setTransition(64, ' ', 65)
+
         ('0'..'9').forEach { char ->
-            setTransition(1, char, 2)
-            setTransition(2, char, 2)
-            setTransition(3, char, 4)
-            setTransition(4, char, 4)
-            setTransition(5, char, 5)
+            setTransition(1, char, 27)
+            setTransition(27, char, 27)
+            setTransition(28, char, 27)
         }
-        setTransition(2, '.', 3)
+        setTransition(27, '.', 28)
 
-        // Variable names (for CITY-NAME and AREA-NAME)
-        (('a'..'z') + ('A'..'Z')).forEach { char ->
-            setTransition(1, char, 6)
-            setTransition(6, char, 6)
+        setTransition(1, '"', 29)
+        (' '..'~').forEach { char ->
+            setTransition(29, char, 29)
         }
+        setTransition(29, '"', 30)
 
-        // Strings for CITY-NAME and AREA-NAME
-        setTransition(1, '"', 7)
-        (0..255).forEach { code -> setTransition(7, code, 7) } // Any character inside quotes
-        setTransition(7, '"', 8)
+        setTransition(1, ' ', 65)
+        setTransition(1, '\r', 66)
+        setTransition(1, '\t', 67)
+        setTransition(1, EOF, 68)
 
-        // Keywords and symbols
-        "city".forEachIndexed { i, c -> setTransition(i + 1, c, i + 2) }
-        setTransition(5, ' ', 9)
+        setTransition(66, '\n', 1)
 
-        "temperature".forEachIndexed { i, c -> setTransition(i + 1, c, i + 2) }
-        setTransition(12, '(', 13)
+        // Symbols
+        setSymbol(5, Symbol.CITY)
+        setSymbol(17, Symbol.TEMPERATURE)
+        setSymbol(21, Symbol.WIND)
+        setSymbol(35, Symbol.PRECIPITATION)
+        setSymbol(45, Symbol.POLLUTION)
+        setSymbol(50, Symbol.AREA)
+        setSymbol(58, Symbol.POLYGON)
+        setSymbol(64, Symbol.CIRCLE)
 
-        "wind".forEachIndexed { i, c -> setTransition(i + 1, c, i + 2) }
-        setTransition(16, '(', 17)
+        setSymbol(22, Symbol.LPAREN)
+        setSymbol(23, Symbol.RPAREN)
+        setSymbol(24, Symbol.COMMA)
+        setSymbol(25, Symbol.CURLY_OPEN)
+        setSymbol(26, Symbol.CURLY_CLOSE)
 
-        "precipitation".forEachIndexed { i, c -> setTransition(i + 1, c, i + 2) }
-        setTransition(20, '(', 21)
+        setSymbol(27, Symbol.REAL)
+        setSymbol(28, Symbol.REAL)
 
-        "pollution".forEachIndexed { i, c -> setTransition(i + 1, c, i + 2) }
-        setTransition(24, '(', 25)
-
-        "area".forEachIndexed { i, c -> setTransition(i + 1, c, i + 2) }
-        setTransition(4, ' ', 6)
-
-        setTransition(1, ',', 10)
-        setTransition(1, '(', 11)
-        setTransition(1, ')', 12)
-        setTransition(1, '{', 13)
-        setTransition(1, '}', 14)
-        setTransition(1, EOF, 15)
-
-        setSymbol(2, Symbol.REAL)
-        setSymbol(4, Symbol.REAL)
-        setSymbol(6, Symbol.STRING)
-        setSymbol(7, Symbol.QUOTE)
-        setSymbol(8, Symbol.CITY_NAME)
-        setSymbol(9, Symbol.CITY)
-        setSymbol(10, Symbol.COMMA)
-        setSymbol(11, Symbol.LPAREN)
-        setSymbol(12, Symbol.RPAREN)
-        setSymbol(13, Symbol.LBRACE)
-        setSymbol(14, Symbol.RBRACE)
-        setSymbol(15, Symbol.EOF)
-        setSymbol(16, Symbol.TEMPERATURE)
-        setSymbol(17, Symbol.LPAREN)
-        setSymbol(18, Symbol.WIND)
-        setSymbol(21, Symbol.PRECIPITATION)
-        setSymbol(24, Symbol.POLLUTION)
-        setSymbol(25, Symbol.POLLUTION_REGEX)
-        setSymbol(26, Symbol.AREA)
-        setSymbol(28, Symbol.DIRECTION_REGEX)
+        setSymbol(30, Symbol.CITY_NAME)
+        setSymbol(68, Symbol.EOF)
     }
 }
 
@@ -201,27 +202,22 @@ class Scanner(private val automaton: DFA, private val stream: InputStream) {
 fun name(symbol: Symbol) =
     when (symbol) {
         Symbol.CITY -> "city"
-        Symbol.CITY_NAME -> "city-name"
-        Symbol.REAL -> "real"
+        Symbol.CITY_NAME -> "city_name"
+        Symbol.COORDINATES -> "coordinates"
         Symbol.TEMPERATURE -> "temperature"
         Symbol.WIND -> "wind"
         Symbol.PRECIPITATION -> "precipitation"
         Symbol.POLLUTION -> "pollution"
-        Symbol.POLLUTION_REGEX -> "pollution-regex"
         Symbol.AREA -> "area"
-        Symbol.AREA_NAME -> "area-name"
-        Symbol.SHAPE -> "shape"
+        Symbol.AREA_NAME -> "area_name"
         Symbol.POLYGON -> "polygon"
         Symbol.CIRCLE -> "circle"
-        Symbol.POINT -> "point"
-        Symbol.DIRECTION_REGEX -> "direction-regex"
-        Symbol.COMMA -> "comma"
+        Symbol.REAL -> "real"
         Symbol.LPAREN -> "lparen"
         Symbol.RPAREN -> "rparen"
-        Symbol.LBRACE -> "lbrace"
-        Symbol.RBRACE -> "rbrace"
-        Symbol.QUOTE -> "quote"
-        Symbol.STRING -> "string"
+        Symbol.COMMA -> "comma"
+        Symbol.CURLY_OPEN -> "curly_open"
+        Symbol.CURLY_CLOSE -> "curly_close"
         else -> throw Error("Invalid symbol")
     }
 
@@ -240,5 +236,14 @@ fun printTokens(scanner: Scanner, output: OutputStream) {
 fun main(args: Array<String>) {
     val inputFile = FileInputStream(args[0])
     val outputFile = FileOutputStream(args[1])
+
     printTokens(Scanner(Automaton, inputFile), outputFile)
+
+    println("Done!")
+
+    inputFile.close()
+    outputFile.close()
+
+    val fileContent = File(args[1]).readText()
+    println(fileContent)
 }
