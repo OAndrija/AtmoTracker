@@ -1,4 +1,10 @@
-import java.io.*
+package task
+
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 
 const val ERROR_STATE = 0
 
@@ -20,6 +26,8 @@ enum class Symbol {
     COMMA,
     CURLY_OPEN,
     CURLY_CLOSE,
+    DIRECTION,
+    POLLUTION_LEVEL,
     SKIP,
     EOF,
 }
@@ -149,8 +157,8 @@ object Automaton : DFA {
         setSymbol(28, Symbol.REAL)
 
         setSymbol(30, Symbol.CITY_NAME)
-        setSymbol(69, Symbol.CITY_NAME)
-        setSymbol(75, Symbol.POLLUTION) // Corrected final state for "Moderate"
+        setSymbol(69, Symbol.DIRECTION)
+        setSymbol(75, Symbol.POLLUTION_LEVEL)
         setSymbol(68, Symbol.EOF)
     }
 }
@@ -222,6 +230,8 @@ fun name(symbol: Symbol) =
         Symbol.COMMA -> "comma"
         Symbol.CURLY_OPEN -> "curly_open"
         Symbol.CURLY_CLOSE -> "curly_close"
+        Symbol.DIRECTION -> "direction"
+        Symbol.POLLUTION_LEVEL -> "pollution_level"
         else -> throw Error("Invalid symbol")
     }
 
@@ -237,12 +247,168 @@ fun printTokens(scanner: Scanner, output: OutputStream) {
     writer.flush()
 }
 
+class Recognizer(private val scanner: Scanner) {
+    private var last: Token? = null
+
+    fun recognizeStart(): Boolean {
+        last = scanner.getToken()
+        val result = recognizeCity()
+        return when (last?.symbol) {
+            Symbol.EOF -> result
+            else -> false
+        }
+    }
+
+    private fun recognizeCity(): Boolean =
+        when (last?.symbol) {
+            Symbol.CITY -> recognizeTerminal(Symbol.CITY) &&
+                    recognizeTerminal(Symbol.CITY_NAME) &&
+                    recognizeTerminal(Symbol.LPAREN) &&
+                    recognizeCoordinates() &&
+                    recognizeTerminal(Symbol.RPAREN) &&
+                    recognizeTerminal(Symbol.CURLY_OPEN) &&
+                    recognizeCommands() &&
+                    recognizeTerminal(Symbol.CURLY_CLOSE)
+            else -> false
+        }
+
+    private fun recognizeCoordinates(): Boolean =
+        recognizeTerminal(Symbol.REAL) &&
+                recognizeTerminal(Symbol.COMMA) &&
+                recognizeTerminal(Symbol.REAL)
+
+    private fun recognizeCommands(): Boolean =
+        recognizeCommand() && recognizeCommandsR()
+
+    private fun recognizeCommandsR(): Boolean =
+        when (last?.symbol) {
+            Symbol.TEMPERATURE,
+            Symbol.WIND,
+            Symbol.PRECIPITATION,
+            Symbol.POLLUTION,
+            Symbol.AREA -> recognizeCommand() && recognizeCommandsR()
+            Symbol.CURLY_CLOSE -> true
+            else -> false
+        }
+
+    private fun recognizeCommand(): Boolean =
+        when (last?.symbol) {
+            Symbol.TEMPERATURE -> recognizeTemperature()
+            Symbol.WIND -> recognizeWind()
+            Symbol.PRECIPITATION -> recognizePrecipitation()
+            Symbol.POLLUTION -> recognizePollution()
+            Symbol.AREA -> recognizeArea()
+            else -> false
+        }
+
+    private fun recognizeTemperature(): Boolean =
+        recognizeTerminal(Symbol.TEMPERATURE) &&
+                recognizeTerminal(Symbol.LPAREN) &&
+                recognizeTerminal(Symbol.REAL) &&
+                recognizeTerminal(Symbol.RPAREN)
+
+    private fun recognizeWind(): Boolean =
+        recognizeTerminal(Symbol.WIND) &&
+                recognizeTerminal(Symbol.LPAREN) &&
+                recognizeTerminal(Symbol.REAL) &&
+                recognizeTerminal(Symbol.COMMA) &&
+                recognizeTerminal(Symbol.DIRECTION) &&
+                recognizeTerminal(Symbol.RPAREN)
+
+    private fun recognizePrecipitation(): Boolean =
+        recognizeTerminal(Symbol.PRECIPITATION) &&
+                recognizeTerminal(Symbol.LPAREN) &&
+                recognizeTerminal(Symbol.REAL) &&
+                recognizeTerminal(Symbol.RPAREN)
+
+    private fun recognizePollution(): Boolean =
+        recognizeTerminal(Symbol.POLLUTION) &&
+                recognizeTerminal(Symbol.LPAREN) &&
+                recognizeTerminal(Symbol.POLLUTION_LEVEL) &&
+                recognizeTerminal(Symbol.RPAREN)
+
+    private fun recognizeArea(): Boolean =
+        recognizeTerminal(Symbol.AREA) &&
+                recognizeTerminal(Symbol.CITY_NAME) &&
+                recognizeTerminal(Symbol.CURLY_OPEN) &&
+                recognizeShapes() &&
+                recognizeCommands() &&
+                recognizeTerminal(Symbol.CURLY_CLOSE)
+
+    private fun recognizeShapes(): Boolean =
+        recognizeShape() && recognizeShapesR()
+
+    private fun recognizeShapesR(): Boolean =
+        when (last?.symbol) {
+            Symbol.POLYGON, Symbol.CIRCLE -> recognizeShape() && recognizeShapesR()
+            Symbol.CURLY_CLOSE -> true
+            else -> false
+        }
+
+    private fun recognizeShape(): Boolean =
+        when (last?.symbol) {
+            Symbol.POLYGON -> recognizePolygon()
+            Symbol.CIRCLE -> recognizeCircle()
+            else -> false
+        }
+
+    private fun recognizePolygon(): Boolean =
+        recognizeTerminal(Symbol.POLYGON) &&
+                recognizeTerminal(Symbol.LPAREN) &&
+                recognizePoints() &&
+                recognizeTerminal(Symbol.RPAREN)
+
+    private fun recognizeCircle(): Boolean =
+        recognizeTerminal(Symbol.CIRCLE) &&
+                recognizeTerminal(Symbol.LPAREN) &&
+                recognizeTerminal(Symbol.REAL) &&
+                recognizeTerminal(Symbol.COMMA) &&
+                recognizeTerminal(Symbol.REAL) &&
+                recognizeTerminal(Symbol.COMMA) &&
+                recognizeTerminal(Symbol.REAL) &&
+                recognizeTerminal(Symbol.RPAREN)
+
+    private fun recognizePoints(): Boolean =
+        recognizePoint() && recognizePointsR()
+
+    private fun recognizePointsR(): Boolean =
+        when (last?.symbol) {
+            Symbol.COMMA -> recognizeTerminal(Symbol.COMMA) && recognizePoint() && recognizePointsR()
+            Symbol.RPAREN -> true
+            else -> false
+        }
+
+    private fun recognizePoint(): Boolean =
+        recognizeTerminal(Symbol.LPAREN) &&
+                recognizeTerminal(Symbol.REAL) &&
+                recognizeTerminal(Symbol.COMMA) &&
+                recognizeTerminal(Symbol.REAL) &&
+                recognizeTerminal(Symbol.RPAREN)
+
+    private fun recognizeTerminal(symbol: Symbol): Boolean =
+        if (last?.symbol == symbol) {
+            last = scanner.getToken()
+            true
+        } else {
+            false
+        }
+}
+
 fun main(args: Array<String>) {
     val inputFile = FileInputStream(args[0])
     val outputFile = FileOutputStream(args[1])
 
     printTokens(Scanner(Automaton, inputFile), outputFile)
 
+    val writer = outputFile.writer(Charsets.UTF_8)
+    val recog = Recognizer(Scanner(Automaton, inputFile))
+    writer.write(
+        when (recog.recognizeStart()) {
+            true -> "accept"
+            false -> "reject"
+        }
+    )
+    writer.flush()
     println("Done!")
 
     inputFile.close()
