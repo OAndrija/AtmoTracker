@@ -1,12 +1,54 @@
 package task
-
 import java.io.File
+
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
 
 const val ERROR_STATE = 0
+
+interface ASTNode
+
+data class City(val name: String, val coordinates: Coordinates, val commands: List<Command>) : ASTNode {
+    override fun toString() = "City(name=$name, coordinates=$coordinates, commands=$commands)"
+}
+
+data class Coordinates(val latitude: Double, val longitude: Double) : ASTNode {
+    override fun toString() = "Coordinates(latitude=$latitude, longitude=$longitude)"
+}
+
+sealed class Command : ASTNode
+
+data class Temperature(val value: Double) : Command() {
+    override fun toString() = "Temperature(value=$value)"
+}
+
+data class Wind(val speed: Double, val direction: String) : Command() {
+    override fun toString() = "Wind(speed=$speed, direction=$direction)"
+}
+
+data class Precipitation(val value: Double) : Command() {
+    override fun toString() = "Precipitation(value=$value)"
+}
+
+data class Pollution(val level: String) : Command() {
+    override fun toString() = "Pollution(level=$level)"
+}
+
+data class Area(val name: String, val shapes: List<Shape>, val commands: List<Command>) : Command() {
+    override fun toString() = "Area(name=$name, shapes=$shapes, commands=$commands)"
+}
+
+sealed class Shape : ASTNode
+
+data class Polygon(val points: List<Coordinates>) : Shape() {
+    override fun toString() = "Polygon(points=$points)"
+}
+
+data class Circle(val center: Coordinates, val radius: Double) : Shape() {
+    override fun toString() = "Circle(center=$center, radius=$radius)"
+}
 
 enum class Symbol {
     CITY,
@@ -28,6 +70,7 @@ enum class Symbol {
     CURLY_CLOSE,
     DIRECTION,
     POLLUTION_LEVEL,
+    STRING,
     SKIP,
     EOF,
 }
@@ -156,7 +199,7 @@ object Automaton : DFA {
         setSymbol(27, Symbol.REAL)
         setSymbol(28, Symbol.REAL)
 
-        setSymbol(30, Symbol.CITY_NAME)
+        setSymbol(30, Symbol.STRING)
         setSymbol(69, Symbol.DIRECTION)
         setSymbol(75, Symbol.POLLUTION_LEVEL)
         setSymbol(68, Symbol.EOF)
@@ -232,6 +275,7 @@ fun name(symbol: Symbol) =
         Symbol.CURLY_CLOSE -> "curly_close"
         Symbol.DIRECTION -> "direction"
         Symbol.POLLUTION_LEVEL -> "pollution_level"
+        Symbol.STRING -> "string"
         else -> throw Error("Invalid symbol")
     }
 
@@ -250,148 +294,178 @@ fun printTokens(scanner: Scanner, output: OutputStream) {
 class Recognizer(private val scanner: Scanner) {
     private var last: Token? = null
 
-    fun recognizeStart(): Boolean {
+    fun recognizeStart(): City? {
         last = scanner.getToken()
-        val result = recognizeCity()
-        return when (last?.symbol) {
-            Symbol.EOF -> result
-            else -> false
-        }
+        return recognizeCity()
     }
 
-    private fun recognizeCity(): Boolean =
-        when (last?.symbol) {
-            Symbol.CITY -> recognizeTerminal(Symbol.CITY) &&
-                    recognizeTerminal(Symbol.CITY_NAME) &&
-                    recognizeTerminal(Symbol.LPAREN) &&
-                    recognizeCoordinates() &&
-                    recognizeTerminal(Symbol.RPAREN) &&
-                    recognizeTerminal(Symbol.CURLY_OPEN) &&
-                    recognizeCommands() &&
-                    recognizeTerminal(Symbol.CURLY_CLOSE)
-            else -> false
+    private fun recognizeCity(): City? {
+        return if (last?.symbol == Symbol.CITY) {
+            recognizeTerminal(Symbol.CITY)
+            val cityName = recognizeTerminal(Symbol.STRING)
+            recognizeTerminal(Symbol.LPAREN)
+            val coordinates = recognizeCoordinates()
+            recognizeTerminal(Symbol.RPAREN)
+            recognizeTerminal(Symbol.CURLY_OPEN)
+            val commands = recognizeCommands()
+            recognizeTerminal(Symbol.CURLY_CLOSE)
+            City(cityName!!.lexeme, coordinates!!, commands)
+        } else null
+    }
+
+    private fun recognizeCoordinates(): Coordinates? {
+        val lat = recognizeTerminal(Symbol.REAL)
+        recognizeTerminal(Symbol.COMMA)
+        val lon = recognizeTerminal(Symbol.REAL)
+        return if (lat != null && lon != null) {
+            Coordinates(lat.lexeme.toDouble(), lon.lexeme.toDouble())
+        } else null
+    }
+
+    private fun recognizeCommands(): List<Command> {
+        val commands = mutableListOf<Command>()
+        while (true) {
+            val command = recognizeCommand()
+            if (command != null) {
+                commands.add(command)
+            } else {
+                break
+            }
         }
+        return commands
+    }
 
-    private fun recognizeCoordinates(): Boolean =
-        recognizeTerminal(Symbol.REAL) &&
-                recognizeTerminal(Symbol.COMMA) &&
-                recognizeTerminal(Symbol.REAL)
-
-    private fun recognizeCommands(): Boolean =
-        recognizeCommand() && recognizeCommandsR()
-
-    private fun recognizeCommandsR(): Boolean =
-        when (last?.symbol) {
-            Symbol.TEMPERATURE,
-            Symbol.WIND,
-            Symbol.PRECIPITATION,
-            Symbol.POLLUTION,
-            Symbol.AREA -> recognizeCommand() && recognizeCommandsR()
-            Symbol.CURLY_CLOSE -> true
-            else -> false
-        }
-
-    private fun recognizeCommand(): Boolean =
-        when (last?.symbol) {
+    private fun recognizeCommand(): Command? {
+        return when (last?.symbol) {
             Symbol.TEMPERATURE -> recognizeTemperature()
             Symbol.WIND -> recognizeWind()
             Symbol.PRECIPITATION -> recognizePrecipitation()
             Symbol.POLLUTION -> recognizePollution()
             Symbol.AREA -> recognizeArea()
-            else -> false
+            else -> null
         }
+    }
 
-    private fun recognizeTemperature(): Boolean =
-        recognizeTerminal(Symbol.TEMPERATURE) &&
-                recognizeTerminal(Symbol.LPAREN) &&
-                recognizeTerminal(Symbol.REAL) &&
-                recognizeTerminal(Symbol.RPAREN)
+    private fun recognizeTemperature(): Command? {
+        recognizeTerminal(Symbol.TEMPERATURE)
+        recognizeTerminal(Symbol.LPAREN)
+        val value = recognizeTerminal(Symbol.REAL)
+        recognizeTerminal(Symbol.RPAREN)
+        return if (value != null) Temperature(value.lexeme.toDouble()) else null
+    }
 
-    private fun recognizeWind(): Boolean =
-        recognizeTerminal(Symbol.WIND) &&
-                recognizeTerminal(Symbol.LPAREN) &&
-                recognizeTerminal(Symbol.REAL) &&
-                recognizeTerminal(Symbol.COMMA) &&
-                recognizeTerminal(Symbol.DIRECTION) &&
-                recognizeTerminal(Symbol.RPAREN)
+    private fun recognizeWind(): Command? {
+        recognizeTerminal(Symbol.WIND)
+        recognizeTerminal(Symbol.LPAREN)
+        val speed = recognizeTerminal(Symbol.REAL)
+        recognizeTerminal(Symbol.COMMA)
+        val direction = recognizeTerminal(Symbol.DIRECTION)
+        recognizeTerminal(Symbol.RPAREN)
+        return if (speed != null && direction != null) Wind(speed.lexeme.toDouble(), direction.lexeme) else null
+    }
 
-    private fun recognizePrecipitation(): Boolean =
-        recognizeTerminal(Symbol.PRECIPITATION) &&
-                recognizeTerminal(Symbol.LPAREN) &&
-                recognizeTerminal(Symbol.REAL) &&
-                recognizeTerminal(Symbol.RPAREN)
+    private fun recognizePrecipitation(): Command? {
+        recognizeTerminal(Symbol.PRECIPITATION)
+        recognizeTerminal(Symbol.LPAREN)
+        val value = recognizeTerminal(Symbol.REAL)
+        recognizeTerminal(Symbol.RPAREN)
+        return if (value != null) Precipitation(value.lexeme.toDouble()) else null
+    }
 
-    private fun recognizePollution(): Boolean =
-        recognizeTerminal(Symbol.POLLUTION) &&
-                recognizeTerminal(Symbol.LPAREN) &&
-                recognizeTerminal(Symbol.POLLUTION_LEVEL) &&
-                recognizeTerminal(Symbol.RPAREN)
+    private fun recognizePollution(): Command? {
+        recognizeTerminal(Symbol.POLLUTION)
+        recognizeTerminal(Symbol.LPAREN)
+        val level = recognizeTerminal(Symbol.POLLUTION_LEVEL)
+        recognizeTerminal(Symbol.RPAREN)
+        return if (level != null) Pollution(level.lexeme) else null
+    }
 
-    private fun recognizeArea(): Boolean =
-        recognizeTerminal(Symbol.AREA) &&
-                recognizeTerminal(Symbol.CITY_NAME) &&
-                recognizeTerminal(Symbol.CURLY_OPEN) &&
-                recognizeShapes() &&
-                recognizeCommands() &&
-                recognizeTerminal(Symbol.CURLY_CLOSE)
+    private fun recognizeArea(): Command? {
+        recognizeTerminal(Symbol.AREA)
+        val areaName = recognizeTerminal(Symbol.STRING)
+        recognizeTerminal(Symbol.CURLY_OPEN)
+        val shapes = recognizeShapes()
+        val commands = recognizeCommands()
+        recognizeTerminal(Symbol.CURLY_CLOSE)
+        return if (areaName != null) Area(areaName.lexeme, shapes, commands) else null
+    }
 
-    private fun recognizeShapes(): Boolean =
-        recognizeShape() && recognizeShapesR()
-
-    private fun recognizeShapesR(): Boolean =
-        when (last?.symbol) {
-            Symbol.POLYGON, Symbol.CIRCLE -> recognizeShape() && recognizeShapesR()
-            Symbol.CURLY_CLOSE -> true
-            else -> false
+    private fun recognizeShapes(): List<Shape> {
+        val shapes = mutableListOf<Shape>()
+        while (true) {
+            val shape = recognizeShape()
+            if (shape != null) {
+                shapes.add(shape)
+            } else {
+                break
+            }
         }
+        return shapes
+    }
 
-    private fun recognizeShape(): Boolean =
-        when (last?.symbol) {
+    private fun recognizeShape(): Shape? {
+        return when (last?.symbol) {
             Symbol.POLYGON -> recognizePolygon()
             Symbol.CIRCLE -> recognizeCircle()
-            else -> false
+            else -> null
         }
+    }
 
-    private fun recognizePolygon(): Boolean =
-        recognizeTerminal(Symbol.POLYGON) &&
-                recognizeTerminal(Symbol.LPAREN) &&
-                recognizePoints() &&
-                recognizeTerminal(Symbol.RPAREN)
+    private fun recognizePolygon(): Shape? {
+        recognizeTerminal(Symbol.POLYGON)
+        recognizeTerminal(Symbol.LPAREN)
+        val points = recognizePoints()
+        recognizeTerminal(Symbol.RPAREN)
+        return if (points.isNotEmpty()) Polygon(points) else null
+    }
 
-    private fun recognizeCircle(): Boolean =
-        recognizeTerminal(Symbol.CIRCLE) &&
-                recognizeTerminal(Symbol.LPAREN) &&
-                recognizeTerminal(Symbol.REAL) &&
-                recognizeTerminal(Symbol.COMMA) &&
-                recognizeTerminal(Symbol.REAL) &&
-                recognizeTerminal(Symbol.COMMA) &&
-                recognizeTerminal(Symbol.REAL) &&
-                recognizeTerminal(Symbol.RPAREN)
+    private fun recognizeCircle(): Shape? {
+        recognizeTerminal(Symbol.CIRCLE)
+        recognizeTerminal(Symbol.LPAREN)
+        val centerX = recognizeTerminal(Symbol.REAL)
+        recognizeTerminal(Symbol.COMMA)
+        val centerY = recognizeTerminal(Symbol.REAL)
+        recognizeTerminal(Symbol.COMMA)
+        val radius = recognizeTerminal(Symbol.REAL)
+        recognizeTerminal(Symbol.RPAREN)
+        return if (centerX != null && centerY != null && radius != null) {
+            Circle(Coordinates(centerX.lexeme.toDouble(), centerY.lexeme.toDouble()), radius.lexeme.toDouble())
+        } else null
+    }
 
-    private fun recognizePoints(): Boolean =
-        recognizePoint() && recognizePointsR()
-
-    private fun recognizePointsR(): Boolean =
-        when (last?.symbol) {
-            Symbol.COMMA -> recognizeTerminal(Symbol.COMMA) && recognizePoint() && recognizePointsR()
-            Symbol.RPAREN -> true
-            else -> false
+    private fun recognizePoints(): List<Coordinates> {
+        val points = mutableListOf<Coordinates>()
+        while (true) {
+            val point = recognizePoint()
+            if (point != null) {
+                points.add(point)
+            } else {
+                break
+            }
         }
+        return points
+    }
 
-    private fun recognizePoint(): Boolean =
-        recognizeTerminal(Symbol.LPAREN) &&
-                recognizeTerminal(Symbol.REAL) &&
-                recognizeTerminal(Symbol.COMMA) &&
-                recognizeTerminal(Symbol.REAL) &&
-                recognizeTerminal(Symbol.RPAREN)
+    private fun recognizePoint(): Coordinates? {
+        recognizeTerminal(Symbol.LPAREN)
+        val lat = recognizeTerminal(Symbol.REAL)
+        recognizeTerminal(Symbol.COMMA)
+        val lon = recognizeTerminal(Symbol.REAL)
+        recognizeTerminal(Symbol.RPAREN)
+        return if (lat != null && lon != null) {
+            Coordinates(lat.lexeme.toDouble(), lon.lexeme.toDouble())
+        } else null
+    }
 
-    private fun recognizeTerminal(symbol: Symbol): Boolean =
-        if (last?.symbol == symbol) {
+    private fun recognizeTerminal(symbol: Symbol): Token? {
+        return if (last?.symbol == symbol) {
+            val token = last
             last = scanner.getToken()
-            true
+            token
         } else {
-            false
+            null
         }
+    }
 }
 
 fun main(args: Array<String>) {
@@ -402,10 +476,11 @@ fun main(args: Array<String>) {
 
     val writer = outputFile.writer(Charsets.UTF_8)
     val recog = Recognizer(Scanner(Automaton, inputFile))
+    val city = recog.recognizeStart()
     writer.write(
-        when (recog.recognizeStart()) {
-            true -> "accept"
-            false -> "reject"
+        when (city) {
+            null -> "reject"
+            else -> "accept\n$city"
         }
     )
     writer.flush()
