@@ -37,14 +37,14 @@ interface DFA {
 }
 
 object Automaton : DFA {
-    override val states = (1..68).toSet()
+    override val states = (1..77).toSet() // Adjusted states to include up to 76 based on the transitions needed
     override val alphabet = 0..255
     override val startState = 1
-    override val finalStates = setOf(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68)
+    override val finalStates = setOf(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77)
 
     private val numberOfStates = states.max() + 1 // plus the ERROR_STATE
     private val numberOfCodes = alphabet.max() + 1 // plus the EOF
-    private val transitions = Array(numberOfStates) { IntArray(numberOfCodes) }
+    private val transitions = Array(numberOfStates) { IntArray(numberOfCodes) { ERROR_STATE } } // Initialized with ERROR_STATE
     private val values = Array(numberOfStates) { Symbol.SKIP }
 
     private fun setTransition(from: Int, chr: Char, to: Int) {
@@ -77,11 +77,6 @@ object Automaton : DFA {
         setTransition(1, ',', 24)
         setTransition(1, '{', 25)
         setTransition(1, '}', 26)
-
-        // Newline transitions for brackets and parentheses
-        setTransition(23, '\r', 66)
-        setTransition(25, '\r', 66)
-        setTransition(26, '\r', 66)
 
         "city".forEachIndexed { index, char -> setTransition(1, char, 2 + index) }
         setTransition(5, ' ', 65)
@@ -127,6 +122,13 @@ object Automaton : DFA {
 
         setTransition(66, '\n', 1)
 
+        // Handling direction and pollution regex
+        setTransition(1, 'N', 69)
+        setTransition(1, 'S', 69)
+        setTransition(1, 'E', 69)
+        setTransition(1, 'W', 69)
+        "Moderate".forEachIndexed { index, char -> setTransition(1, char, 70 + index) }
+
         // Symbols
         setSymbol(5, Symbol.CITY)
         setSymbol(17, Symbol.TEMPERATURE)
@@ -147,6 +149,8 @@ object Automaton : DFA {
         setSymbol(28, Symbol.REAL)
 
         setSymbol(30, Symbol.CITY_NAME)
+        setSymbol(69, Symbol.CITY_NAME)
+        setSymbol(75, Symbol.POLLUTION) // Corrected final state for "Moderate"
         setSymbol(68, Symbol.EOF)
     }
 }
