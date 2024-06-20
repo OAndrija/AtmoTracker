@@ -12,42 +12,132 @@ interface ASTNode
 
 data class City(val name: String, val coordinates: Coordinates, val commands: List<Command>) : ASTNode {
     override fun toString() = "City(name=$name, coordinates=$coordinates, commands=$commands)"
+
+    fun toGeoJSON(): String {
+        val commandGeoJSONs = commands.map { it.toGeoJSON() }
+        return """
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [${coordinates.longitude}, ${coordinates.latitude}]
+                },
+                "properties": {
+                    "name": "$name",
+                    "commands": [${commandGeoJSONs.joinToString(",")}]
+                }
+            }
+        """.trimIndent()
+    }
 }
 
 data class Coordinates(val latitude: Double, val longitude: Double) : ASTNode {
     override fun toString() = "Coordinates(latitude=$latitude, longitude=$longitude)"
 }
 
-sealed class Command : ASTNode
+sealed class Command : ASTNode {
+    abstract fun toGeoJSON(): String
+}
 
 data class Temperature(val value: Double) : Command() {
     override fun toString() = "Temperature(value=$value)"
+
+    override fun toGeoJSON() = """
+        {
+            "type": "Temperature",
+            "value": $value
+        }
+    """.trimIndent()
 }
 
 data class Wind(val speed: Double, val direction: String) : Command() {
     override fun toString() = "Wind(speed=$speed, direction=$direction)"
+
+    override fun toGeoJSON() = """
+        {
+            "type": "Wind",
+            "speed": $speed,
+            "direction": "$direction"
+        }
+    """.trimIndent()
 }
 
 data class Precipitation(val value: Double) : Command() {
     override fun toString() = "Precipitation(value=$value)"
+
+    override fun toGeoJSON() = """
+        {
+            "type": "Precipitation",
+            "value": $value
+        }
+    """.trimIndent()
 }
 
 data class Pollution(val level: String) : Command() {
     override fun toString() = "Pollution(level=$level)"
+
+    override fun toGeoJSON() = """
+        {
+            "type": "Pollution",
+            "level": "$level"
+        }
+    """.trimIndent()
 }
 
 data class Area(val name: String, val shapes: List<Shape>, val commands: List<Command>) : Command() {
     override fun toString() = "Area(name=$name, shapes=$shapes, commands=$commands)"
+
+    override fun toGeoJSON(): String {
+        val shapeGeoJSONs = shapes.map { it.toGeoJSON() }
+        val commandGeoJSONs = commands.map { it.toGeoJSON() }
+        return """
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "GeometryCollection",
+                    "geometries": [${shapeGeoJSONs.joinToString(",")}]
+                },
+                "properties": {
+                    "name": "$name",
+                    "commands": [${commandGeoJSONs.joinToString(",")}]
+                }
+            }
+        """.trimIndent()
+    }
 }
 
-sealed class Shape : ASTNode
+sealed class Shape : ASTNode {
+    abstract fun toGeoJSON(): String
+}
 
 data class Polygon(val points: List<Coordinates>) : Shape() {
     override fun toString() = "Polygon(points=$points)"
+
+    override fun toGeoJSON(): String {
+        val coordinatesGeoJSON = points.map { "[${it.longitude}, ${it.latitude}]" }
+        return """
+            {
+                "type": "Polygon",
+                "coordinates": [[${
+            coordinatesGeoJSON.joinToString(",")
+        }]]
+            }
+        """.trimIndent()
+    }
 }
 
 data class Circle(val center: Coordinates, val radius: Double) : Shape() {
     override fun toString() = "Circle(center=$center, radius=$radius)"
+
+    override fun toGeoJSON(): String {
+        return """
+            {
+                "type": "Circle",
+                "center": [${center.longitude}, ${center.latitude}],
+                "radius": $radius
+            }
+        """.trimIndent()
+    }
 }
 
 enum class Symbol {
@@ -474,13 +564,17 @@ fun main(args: Array<String>) {
 
     printTokens(Scanner(Automaton, inputFile), outputFile)
 
+    // Reset inputFile for Recognizer
+    inputFile.channel.position(0)
+
     val writer = outputFile.writer(Charsets.UTF_8)
     val recog = Recognizer(Scanner(Automaton, inputFile))
     val city = recog.recognizeStart()
+
     writer.write(
         when (city) {
             null -> "reject"
-            else -> "accept\n$city"
+            else -> "accept\n${city.toGeoJSON()}"
         }
     )
     writer.flush()
@@ -489,6 +583,6 @@ fun main(args: Array<String>) {
     inputFile.close()
     outputFile.close()
 
-    val fileContent = File(args[1]).readText()
+    val fileContent = File(args[1]).readText(Charsets.UTF_8)
     println(fileContent)
 }
