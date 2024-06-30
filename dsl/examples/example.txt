@@ -4,20 +4,7 @@ city "New York" (40.7128, 74.0060) {
     precipitation(0.2)
     pollution("Moderate")
     area "Central Park" {
-        polygon((40.785091, 73.968285), (40.769043, 73.981898), (40.764356, 73.973396))
-        circle(40.7812, 73.9665, 0.5)
-        temperature(20.0)
-    }
-}
-
-city "New York" (40.7128, 74.0060) {
-    temperature(22.5)
-    wind(5.0, "N")
-    precipitation(0.2)
-    pollution("Moderate")
-    area "Central Park" {
-        polygon((40.785091, 73.968285), (40.769043, 73.981898), (40.764356, 73.973396))
-        circle(40.7812, 73.9665, 0.5)
+        polygon((40.785091, 73.968285), (40.769043, 73.981898), (40.764356, 73.973396),)
         temperature(20.0)
     }
 }

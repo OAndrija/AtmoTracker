@@ -1,0 +1,37 @@
+city("city") string(""New York"") lparen("(") real("40.7128") comma(",") real("74.0060") rparen(")") curly_open("{") temperature("temperature") lparen("(") real("22.5") rparen(")") wind("wind") lparen("(") real("5.0") comma(",") string(""N"") rparen(")") precipitation("precipitation") lparen("(") real("0.2") rparen(")") pollution("pollution") lparen("(") string(""Moderate"") rparen(")") area("area") string(""Central Park"") curly_open("{") polygon("polygon") lparen("(") lparen("(") real("40.785091") comma(",") real("73.968285") rparen(")") comma(",") lparen("(") real("40.769043") comma(",") real("73.981898") rparen(")") comma(",") lparen("(") real("40.764356") comma(",") real("73.973396") rparen(")") comma(",") rparen(")") temperature("temperature") lparen("(") real("20.0") rparen(")") curly_close("}") curly_close("
+}") 
+accept
+        {   
+             "type": "FeatureCollection",
+             "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [74.006, 40.7128]
+                },
+                "properties": {
+                    "name": "New York",
+                    "commands": [
+                        { "type": "Temperature", "value": 22.5 },
+{ "type": "Wind", "speed": 5.0, "direction": ""N"" },
+{ "type": "Precipitation", "amount": 0.2 },
+,
+
+                    ]
+                }
+               },
+               [, , , { "type": "Pollution", "level": ""Moderate"" }, {
+    "type": "Area",
+    "name": ""Central Park"",
+    "geometry": [
+        { "type": "Polygon", "coordinates": [[[73.968285, 40.785091], [73.981898, 40.769043], [73.973396, 40.764356]]] }
+    ],
+    "properties": [
+        { "type": "Temperature", "value": 20.0 }
+    ]
+}]
+               ]
+               }  
+        ]
+        }

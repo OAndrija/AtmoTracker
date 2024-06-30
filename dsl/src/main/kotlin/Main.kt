@@ -1,21 +1,93 @@
 package task
-import java.io.File
 
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
+import java.io.*
 
 const val ERROR_STATE = 0
 
 interface ASTNode
 
-data class City(val name: String, val coordinates: Coordinates, val commands: List<Command>) : ASTNode {
+data class Coordinates(val latitude: Double, val longitude: Double)
+
+interface Command {
+    fun toGeoJSON(): String
+    fun toGeoJSONProperties() = ""
+}
+
+data class Temperature(val value: Double) : Command {
+    override fun toGeoJSON(): String =
+       ""
+
+    override fun toGeoJSONProperties(): String
+        = """{ "type": "Temperature", "value": $value }"""
+}
+
+data class Wind(val speed: Double, val direction: String) : Command {
+    override fun toGeoJSON(): String =
+       ""
+
+    override fun toGeoJSONProperties() = """{ "type": "Wind", "speed": $speed, "direction": "$direction" }"""
+}
+
+data class Precipitation(val amount: Double) : Command {
+    override fun toGeoJSON(): String =
+        ""
+
+    override fun toGeoJSONProperties() = """{ "type": "Precipitation", "amount": $amount }"""
+}
+
+data class Pollution(val level: String) : Command {
+    override fun toGeoJSON() = """{ "type": "Pollution", "level": "$level" }"""
+}
+
+data class Area(val name: String, val geometry: List<Shape>, val commands: List<Command>) : Command {
+    override fun toGeoJSON(): String {
+        val geometryGeoJSONs = geometry.map { it.toGeoJSON() }
+        //val commandGeoJSONs = commands.map { it.toGeoJSON() }
+        val propertyGeoJSONs = commands.map { it.toGeoJSONProperties() }
+        return """
+        {
+            "type": "Area",
+            "name": "$name",
+            "geometry": [
+                ${geometryGeoJSONs.joinToString(",\n")}
+            ],
+            "properties": [
+                ${propertyGeoJSONs.joinToString(",\n")}
+            ]
+        }
+        """.trimIndent()
+    }
+}
+
+interface Shape {
+    fun toGeoJSON(): String
+}
+
+data class Polygon(val points: List<Coordinates>) : Shape {
+    override fun toGeoJSON(): String {
+        val coordinates = points.joinToString(", ") { "[${it.longitude}, ${it.latitude}]" }
+        return """{ "type": "Polygon", "coordinates": [[$coordinates]] }"""
+    }
+}
+
+data class Circle(val center: Coordinates, val radius: Double) : Shape {
+    override fun toGeoJSON(): String {
+        return """{ "type": "Circle", "center": [${center.longitude}, ${center.latitude}], "radius": $radius }"""
+    }
+}
+
+data class City(val name: String, val coordinates: Coordinates, val commands: List<Command>) {
     override fun toString() = "City(name=$name, coordinates=$coordinates, commands=$commands)"
+
+
 
     fun toGeoJSON(): String {
         val commandGeoJSONs = commands.map { it.toGeoJSON() }
+        val propertyGeoJSONs = commands.map { it.toGeoJSONProperties() }
         return """
+        {   
+             "type": "FeatureCollection",
+             "features": [
             {
                 "type": "Feature",
                 "geometry": {
@@ -23,119 +95,17 @@ data class City(val name: String, val coordinates: Coordinates, val commands: Li
                     "coordinates": [${coordinates.longitude}, ${coordinates.latitude}]
                 },
                 "properties": {
-                    "name": "$name",
-                    "commands": [${commandGeoJSONs.joinToString(",")}]
+                    "name": $name,
+                    "commands": [
+                        ${propertyGeoJSONs.joinToString(",\n")}
+                    ]
                 }
-            }
-        """.trimIndent()
-    }
-}
-
-data class Coordinates(val latitude: Double, val longitude: Double) : ASTNode {
-    override fun toString() = "Coordinates(latitude=$latitude, longitude=$longitude)"
-}
-
-sealed class Command : ASTNode {
-    abstract fun toGeoJSON(): String
-}
-
-data class Temperature(val value: Double) : Command() {
-    override fun toString() = "Temperature(value=$value)"
-
-    override fun toGeoJSON() = """
-        {
-            "type": "Temperature",
-            "value": $value
+               },
+               ${commandGeoJSONs}
+               ]
+               }  
+        ]
         }
-    """.trimIndent()
-}
-
-data class Wind(val speed: Double, val direction: String) : Command() {
-    override fun toString() = "Wind(speed=$speed, direction=$direction)"
-
-    override fun toGeoJSON() = """
-        {
-            "type": "Wind",
-            "speed": $speed,
-            "direction": "$direction"
-        }
-    """.trimIndent()
-}
-
-data class Precipitation(val value: Double) : Command() {
-    override fun toString() = "Precipitation(value=$value)"
-
-    override fun toGeoJSON() = """
-        {
-            "type": "Precipitation",
-            "value": $value
-        }
-    """.trimIndent()
-}
-
-data class Pollution(val level: String) : Command() {
-    override fun toString() = "Pollution(level=$level)"
-
-    override fun toGeoJSON() = """
-        {
-            "type": "Pollution",
-            "level": "$level"
-        }
-    """.trimIndent()
-}
-
-data class Area(val name: String, val shapes: List<Shape>, val commands: List<Command>) : Command() {
-    override fun toString() = "Area(name=$name, shapes=$shapes, commands=$commands)"
-
-    override fun toGeoJSON(): String {
-        val shapeGeoJSONs = shapes.map { it.toGeoJSON() }
-        val commandGeoJSONs = commands.map { it.toGeoJSON() }
-        return """
-            {
-                "type": "Feature",
-                "geometry": {
-                    "type": "GeometryCollection",
-                    "geometries": [${shapeGeoJSONs.joinToString(",")}]
-                },
-                "properties": {
-                    "name": "$name",
-                    "commands": [${commandGeoJSONs.joinToString(",")}]
-                }
-            }
-        """.trimIndent()
-    }
-}
-
-sealed class Shape : ASTNode {
-    abstract fun toGeoJSON(): String
-}
-
-data class Polygon(val points: List<Coordinates>) : Shape() {
-    override fun toString() = "Polygon(points=$points)"
-
-    override fun toGeoJSON(): String {
-        val coordinatesGeoJSON = points.map { "[${it.longitude}, ${it.latitude}]" }
-        return """
-            {
-                "type": "Polygon",
-                "coordinates": [[${
-            coordinatesGeoJSON.joinToString(",")
-        }]]
-            }
-        """.trimIndent()
-    }
-}
-
-data class Circle(val center: Coordinates, val radius: Double) : Shape() {
-    override fun toString() = "Circle(center=$center, radius=$radius)"
-
-    override fun toGeoJSON(): String {
-        return """
-            {
-                "type": "Circle",
-                "center": [${center.longitude}, ${center.latitude}],
-                "radius": $radius
-            }
         """.trimIndent()
     }
 }
@@ -181,11 +151,89 @@ object Automaton : DFA {
     override val states = (1..77).toSet() // Adjusted states to include up to 76 based on the transitions needed
     override val alphabet = 0..255
     override val startState = 1
-    override val finalStates = setOf(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77)
+    override val finalStates = setOf(
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77
+    )
 
     private val numberOfStates = states.max() + 1 // plus the ERROR_STATE
     private val numberOfCodes = alphabet.max() + 1 // plus the EOF
-    private val transitions = Array(numberOfStates) { IntArray(numberOfCodes) { ERROR_STATE } } // Initialized with ERROR_STATE
+    private val transitions =
+        Array(numberOfStates) { IntArray(numberOfCodes) { ERROR_STATE } } // Initialized with ERROR_STATE
     private val values = Array(numberOfStates) { Symbol.SKIP }
 
     private fun setTransition(from: Int, chr: Char, to: Int) {
@@ -212,87 +260,142 @@ object Automaton : DFA {
     }
 
     init {
-        // Transitions sorted by state number
-        setTransition(1, '(', 22)
-        setTransition(1, ')', 23)
-        setTransition(1, ',', 24)
-        setTransition(1, '{', 25)
-        setTransition(1, '}', 26)
+        setTransition(1, '(', 61)
+        setTransition(1, ')', 62)
+        setTransition(1, ',', 68)
+        setTransition(1, '{', 63)
+        setTransition(1, '}', 64)
 
-        "city".forEachIndexed { index, char -> setTransition(1, char, 2 + index) }
-        setTransition(5, ' ', 65)
+        //"city".forEachIndexed { index, char -> setTransition(1, char, 2 + index) }
+        setTransition(1, 'c', 2)
+        setTransition(2, 'i', 3)
+        setTransition(3, 't', 4)
+        setTransition(4, 'y', 5)
 
-        "temperature".forEachIndexed { index, char -> setTransition(1, char, 6 + index) }
-        setTransition(17, ' ', 65)
+        //"temperature".forEachIndexed { index, char -> setTransition(1, char, 6 + index) }
+        setTransition(1, 't', 6)
+        setTransition(6, 'e', 7)
+        setTransition(7, 'm', 8)
+        setTransition(8, 'p', 9)
+        setTransition(9, 'e', 10)
+        setTransition(10, 'r', 11)
+        setTransition(11, 'a', 12)
+        setTransition(12, 't', 13)
+        setTransition(13, 'u', 14)
+        setTransition(14, 'r', 15)
+        setTransition(15, 'e', 16)
+        setTransition(16, ' ', 65)
 
-        "wind".forEachIndexed { index, char -> setTransition(1, char, 18 + index) }
-        setTransition(21, ' ', 65)
+        //"wind".forEachIndexed { index, char -> setTransition(1, char, 18 + index) }
+        setTransition(1, 'w', 17)
+        setTransition(17, 'i', 18)
+        setTransition(18, 'n', 19)
+        setTransition(19, 'd', 20)
+        setTransition(20, ' ', 65)
 
-        "precipitation".forEachIndexed { index, char -> setTransition(1, char, 22 + index) }
-        setTransition(35, ' ', 65)
+        //"precipitation".forEachIndexed { index, char -> setTransition(1, char, 22 + index) }
+        setTransition(1, 'p', 21)
+        setTransition(21, 'r', 22)
+        setTransition(22, 'e', 23)
+        setTransition(23, 'c', 24)
+        setTransition(24, 'i', 25)
+        setTransition(25, 'p', 26)
+        setTransition(26, 'i', 27)
+        setTransition(27, 't', 28)
+        setTransition(28, 'a', 29)
+        setTransition(29, 't', 30)
+        setTransition(30, 'i', 31)
+        setTransition(31, 'o', 32)
+        setTransition(32, 'n', 33)
+        setTransition(33, ' ', 65)
 
-        "pollution".forEachIndexed { index, char -> setTransition(1, char, 36 + index) }
-        setTransition(45, ' ', 65)
+        //"pollution".forEachIndexed { index, char -> setTransition(1, char, 36 + index) }
+        setTransition(1, 'p', 21)
+        setTransition(21, 'o', 35)
+        setTransition(35, 'l', 36)
+        setTransition(36, 'l', 37)
+        setTransition(37, 'u', 38)
+        setTransition(38, 't', 39)
+        setTransition(39, 'i', 40)
+        setTransition(40, 'o', 41)
+        setTransition(41, 'n', 42)
+        setTransition(42, ' ', 65)
 
-        "area".forEachIndexed { index, char -> setTransition(1, char, 46 + index) }
-        setTransition(50, ' ', 65)
+        //"area".forEachIndexed { index, char -> setTransition(1, char, 46 + index) }
+        setTransition(1, 'a', 43)
+        setTransition(43, 'r', 44)
+        setTransition(44, 'e', 45)
+        setTransition(45, 'a', 46)
 
-        "polygon".forEachIndexed { index, char -> setTransition(1, char, 51 + index) }
-        setTransition(58, ' ', 65)
+        //"polygon".forEachIndexed { index, char -> setTransition(1, char, 51 + index) }
+        setTransition(1, 'p', 21)
+        setTransition(21, 'o', 35)
+        setTransition(35, 'l', 36)
+        setTransition(36, 'y', 50)
+        setTransition(50, 'g', 51)
+        setTransition(51, 'o', 52)
+        setTransition(52, 'n', 53)
 
-        "circle".forEachIndexed { index, char -> setTransition(1, char, 59 + index) }
-        setTransition(64, ' ', 65)
+
+        //"circle".forEachIndexed { index, char -> setTransition(1, char, 59 + index) }
+        setTransition(1, 'c', 2)
+        setTransition(2, 'i', 3)
+        setTransition(3, 'r', 56)
+        setTransition(56, 'c', 57)
+        setTransition(57, 'l', 58)
+        setTransition(58, 'e', 59)
+        setTransition(59, ' ', 65)
 
         ('0'..'9').forEach { char ->
-            setTransition(1, char, 27)
-            setTransition(27, char, 27)
-            setTransition(28, char, 27)
+            setTransition(1, char, 70)
+            setTransition(70, char, 70)
+            setTransition(71, char, 70)
         }
-        setTransition(27, '.', 28)
+        setTransition(70, '.', 71)
 
-        setTransition(1, '"', 29)
+        setTransition(1, '"', 72)
         (' '..'~').forEach { char ->
-            setTransition(29, char, 29)
+            setTransition(72, char, 72)
         }
-        setTransition(29, '"', 30)
+        setTransition(72, '"', 73)
 
         setTransition(1, ' ', 65)
         setTransition(1, '\r', 66)
         setTransition(1, '\t', 67)
-        setTransition(1, EOF, 68)
+        setTransition(1, EOF, 77)
 
         setTransition(66, '\n', 1)
 
-        // Handling direction and pollution regex
-        setTransition(1, 'N', 69)
-        setTransition(1, 'S', 69)
-        setTransition(1, 'E', 69)
-        setTransition(1, 'W', 69)
-        "Moderate".forEachIndexed { index, char -> setTransition(1, char, 70 + index) }
+//        // Handling direction and pollution regex
+//        setTransition(1, 'N', 69)
+//        setTransition(1, 'S', 69)
+//        setTransition(1, 'E', 69)
+//        setTransition(1, 'W', 69)
+//        "Moderate".forEachIndexed { index, char -> setTransition(1, char, 70 + index) }
 
         // Symbols
         setSymbol(5, Symbol.CITY)
-        setSymbol(17, Symbol.TEMPERATURE)
-        setSymbol(21, Symbol.WIND)
-        setSymbol(35, Symbol.PRECIPITATION)
-        setSymbol(45, Symbol.POLLUTION)
-        setSymbol(50, Symbol.AREA)
-        setSymbol(58, Symbol.POLYGON)
-        setSymbol(64, Symbol.CIRCLE)
+        setSymbol(16, Symbol.TEMPERATURE)
+        setSymbol(20, Symbol.WIND)
+        setSymbol(33, Symbol.PRECIPITATION)
+        setSymbol(42, Symbol.POLLUTION)
+        setSymbol(46, Symbol.AREA)
+        setSymbol(53, Symbol.POLYGON)
+        setSymbol(59, Symbol.CIRCLE)
 
-        setSymbol(22, Symbol.LPAREN)
-        setSymbol(23, Symbol.RPAREN)
-        setSymbol(24, Symbol.COMMA)
-        setSymbol(25, Symbol.CURLY_OPEN)
-        setSymbol(26, Symbol.CURLY_CLOSE)
+        setSymbol(61, Symbol.LPAREN)
+        setSymbol(62, Symbol.RPAREN)
+        setSymbol(68, Symbol.COMMA)
+        setSymbol(63, Symbol.CURLY_OPEN)
+        setSymbol(64, Symbol.CURLY_CLOSE)
 
-        setSymbol(27, Symbol.REAL)
-        setSymbol(28, Symbol.REAL)
+        setSymbol(70, Symbol.REAL)
+        setSymbol(71, Symbol.REAL)
 
-        setSymbol(30, Symbol.STRING)
-        setSymbol(69, Symbol.DIRECTION)
-        setSymbol(75, Symbol.POLLUTION_LEVEL)
-        setSymbol(68, Symbol.EOF)
+        setSymbol(73, Symbol.STRING)
+        setSymbol(75, Symbol.DIRECTION)
+        setSymbol(76, Symbol.POLLUTION_LEVEL)
+        setSymbol(77, Symbol.EOF)
     }
 }
 
@@ -449,7 +552,7 @@ class Recognizer(private val scanner: Scanner) {
         recognizeTerminal(Symbol.LPAREN)
         val speed = recognizeTerminal(Symbol.REAL)
         recognizeTerminal(Symbol.COMMA)
-        val direction = recognizeTerminal(Symbol.DIRECTION)
+        val direction = recognizeTerminal(Symbol.STRING)
         recognizeTerminal(Symbol.RPAREN)
         return if (speed != null && direction != null) Wind(speed.lexeme.toDouble(), direction.lexeme) else null
     }
@@ -465,7 +568,7 @@ class Recognizer(private val scanner: Scanner) {
     private fun recognizePollution(): Command? {
         recognizeTerminal(Symbol.POLLUTION)
         recognizeTerminal(Symbol.LPAREN)
-        val level = recognizeTerminal(Symbol.POLLUTION_LEVEL)
+        val level = recognizeTerminal(Symbol.STRING)
         recognizeTerminal(Symbol.RPAREN)
         return if (level != null) Pollution(level.lexeme) else null
     }
@@ -477,7 +580,7 @@ class Recognizer(private val scanner: Scanner) {
         val shapes = recognizeShapes()
         val commands = recognizeCommands()
         recognizeTerminal(Symbol.CURLY_CLOSE)
-        return if (areaName != null) Area(areaName.lexeme, shapes, commands) else null
+        return if (areaName != null) Area(areaName.lexeme,shapes, commands) else null
     }
 
     private fun recognizeShapes(): List<Shape> {
@@ -527,6 +630,7 @@ class Recognizer(private val scanner: Scanner) {
         val points = mutableListOf<Coordinates>()
         while (true) {
             val point = recognizePoint()
+            recognizeTerminal(Symbol.COMMA)
             if (point != null) {
                 points.add(point)
             } else {
@@ -557,6 +661,8 @@ class Recognizer(private val scanner: Scanner) {
         }
     }
 }
+
+
 
 fun main(args: Array<String>) {
     val inputFile = FileInputStream(args[0])
