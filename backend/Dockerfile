@@ -19,11 +19,20 @@ COPY . .
 # Change ownership of the app directory to the non-root user
 RUN chown -R appuser:appgroup /app
 
-# Switch to the non-root user
-USER appuser
+# Temporarily switch back to root user to rebuild bcrypt
+USER root
 
 # Rebuild bcrypt to ensure the correct architecture
 RUN npm rebuild bcrypt
+
+# Change ownership back to non-root user after rebuild
+RUN chown -R appuser:appgroup /app
+
+# Switch to the non-root user
+USER appuser
+
+# Ensure app.js has execute permissions
+RUN chmod +x app.js
 
 # Use a new stage to create the final image
 FROM node:20.12.0-alpine
