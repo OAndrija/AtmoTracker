@@ -11,7 +11,7 @@ const WebSocketComponent = () => {
     }
 
     // Create a new WebSocket connection
-    socket.current = new WebSocket('ws://localhost:3002');
+    socket.current = new WebSocket('ws://localhost:3001');
 
     // Connection opened
     socket.current.addEventListener('open', (event) => {

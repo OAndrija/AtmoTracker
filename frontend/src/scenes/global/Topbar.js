@@ -66,14 +66,14 @@ const Topbar = ({ setFilter,onSuggestionClick }) => {
 
   useEffect(() => {
     const getProfile = async () => {
-      const res = await fetch("http://localhost:3002/users/profile", { credentials: "include" });
+      const res = await fetch("http://localhost:3001/users/profile", { credentials: "include" });
       const data = await res.json();
       setProfile(data);
     }
     getProfile();
   }, []);
 
-  const avatarUrl = profile.path ? `http://localhost:3002${profile.path}` : '';
+  const avatarUrl = profile.path ? `http://localhost:3001${profile.path}` : '';
 
   const initialAnimation = `
     .topbar-initial {
