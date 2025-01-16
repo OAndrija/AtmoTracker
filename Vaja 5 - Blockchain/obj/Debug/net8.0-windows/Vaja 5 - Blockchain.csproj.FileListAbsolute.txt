@@ -1,0 +1,92 @@
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.exe
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.deps.json
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.runtimeconfig.json
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.pdb
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Blockchain.Form1.resources
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.GenerateResource.cache
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.GeneratedMSBuildEditorConfig.editorconfig
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.AssemblyInfoInputs.cache
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.AssemblyInfo.cs
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.CoreCompileInputs.cache
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\refint\Vaja 5 - Blockchain.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.pdb
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.genruntimeconfig.cache
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\ref\Vaja 5 - Blockchain.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.AssemblyReference.cache
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.CopyComplete
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Eco.Handles.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Eco.Interfaces.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Eco.LinqExtender.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\MDriven.Net.Http.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.exe
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.deps.json
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.runtimeconfig.json
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.pdb
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Eco.Handles.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Eco.Interfaces.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Eco.LinqExtender.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\MDriven.Net.Http.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.AssemblyReference.cache
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Blockchain.Form1.resources
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.GenerateResource.cache
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.GeneratedMSBuildEditorConfig.editorconfig
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.AssemblyInfoInputs.cache
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.AssemblyInfo.cs
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.CoreCompileInputs.cache
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.CopyComplete
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\refint\Vaja 5 - Blockchain.dll
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.pdb
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.genruntimeconfig.cache
+C:\FERI RIT\FERI RIT 2 UN\FERI RIT 3 SEM\Mrezno Usmerjeno Racunanje\Vaja 5 - Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\ref\Vaja 5 - Blockchain.dll
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.exe
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.deps.json
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.runtimeconfig.json
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.dll
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.pdb
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Eco.Handles.dll
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Eco.Interfaces.dll
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Eco.LinqExtender.dll
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\MDriven.Net.Http.dll
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.AssemblyReference.cache
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Blockchain.Form1.resources
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.GenerateResource.cache
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.AssemblyInfoInputs.cache
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.AssemblyInfo.cs
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.CoreCompileInputs.cache
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.CopyComplete
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.dll
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\refint\Vaja 5 - Blockchain.dll
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.pdb
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.genruntimeconfig.cache
+C:\Users\EliteBook 840 G8\Downloads\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\ref\Vaja 5 - Blockchain.dll
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.exe
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.deps.json
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.runtimeconfig.json
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.dll
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Vaja 5 - Blockchain.pdb
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Eco.Handles.dll
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Eco.Interfaces.dll
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Eco.LinqExtender.dll
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\MDriven.Net.Http.dll
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.AssemblyReference.cache
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Blockchain.Form1.resources
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.GenerateResource.cache
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.AssemblyInfoInputs.cache
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.AssemblyInfo.cs
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.csproj.CoreCompileInputs.cache
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 -.F8782242.Up2Date
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.dll
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\refint\Vaja 5 - Blockchain.dll
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.pdb
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\Vaja 5 - Blockchain.genruntimeconfig.cache
+C:\Projekti\PPR\Vaja_5_-_Blockchain\Vaja 5 - Blockchain\obj\Debug\net8.0-windows\ref\Vaja 5 - Blockchain.dll
