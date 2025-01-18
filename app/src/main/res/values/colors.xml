@@ -3,6 +3,8 @@
     <color name="md_theme_progressBlue">#002D40</color>
     <color name="md_theme_backgroundProgressGreen">#A9C1A5</color>
     <color name="md_theme_progressGreen">#2A4631</color>
+    <color name="md_theme_progressBlue_grayer">#AEBBC4</color>
+    <color name="md_theme_progressGreen_grayer">#9AA99A</color>
     <color name="md_theme_primary">#8F4B39</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>
     <color name="md_theme_primaryContainer">#FFDBD1</color>
