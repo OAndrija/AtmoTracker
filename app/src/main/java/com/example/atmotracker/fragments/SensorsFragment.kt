@@ -25,6 +25,9 @@ class SensorsFragment : Fragment() {
     private var weatherStartTime: Long = 0L
     private var airQualityStartTime: Long = 0L
 
+    private var weatherSavedTime: Long = 0L
+    private var airQualitySavedTime: Long = 0L
+
     private val updateInterval: Long = 1000L // Update every second
 
     private val weatherUpdater = object : Runnable {
@@ -57,6 +60,9 @@ class SensorsFragment : Fragment() {
         weatherStartTime = System.currentTimeMillis()
         airQualityStartTime = System.currentTimeMillis()
 
+        binding.weatherProgressbar.progressMax = weatherSavedTime.toFloat()
+        binding.airQualityProgressbar.progressMax = airQualitySavedTime.toFloat()
+
         weatherTimeHandler.post(weatherUpdater)
         airQualityTimeHandler.post(airQualityUpdater)
 
@@ -70,19 +76,20 @@ class SensorsFragment : Fragment() {
 
     private fun loadSavedTimes() {
         val sharedPreferences = requireContext().getSharedPreferences(MY_SP_FILE_NAME, Context.MODE_PRIVATE)
-
         // Weather time values
         val weatherHours = sharedPreferences.getInt("weather_hours", 0)
         val weatherMinutes = sharedPreferences.getInt("weather_minutes", 0)
         val weatherSeconds = sharedPreferences.getInt("weather_seconds", 0)
-        val weatherTimeFormatted = formatElapsedTime(hoursToMillis(weatherHours, weatherMinutes, weatherSeconds))
+        weatherSavedTime = hoursToMillis(weatherHours, weatherMinutes, weatherSeconds)
+        val weatherTimeFormatted = formatElapsedTime(weatherSavedTime)
         binding.weatherUpdateTimeText.text = weatherTimeFormatted
 
         // Air Quality time values
         val airQualityHours = sharedPreferences.getInt("air_quality_hours", 0)
         val airQualityMinutes = sharedPreferences.getInt("air_quality_minutes", 0)
         val airQualitySeconds = sharedPreferences.getInt("air_quality_seconds", 0)
-        val airQualityTimeFormatted = formatElapsedTime(hoursToMillis(airQualityHours, airQualityMinutes, airQualitySeconds))
+        airQualitySavedTime = hoursToMillis(airQualityHours, airQualityMinutes, airQualitySeconds)
+        val airQualityTimeFormatted = formatElapsedTime(airQualitySavedTime)
         binding.airQualityUpdateTimeText.text = airQualityTimeFormatted
     }
 
@@ -94,14 +101,28 @@ class SensorsFragment : Fragment() {
 
     private fun updateWeatherElapsedTime() {
         val elapsedTime = System.currentTimeMillis() - weatherStartTime
-        val formattedTime = formatElapsedTime(elapsedTime)
-        binding.weatherTimeElapsedText.text = formattedTime
+
+        if (elapsedTime >= weatherSavedTime) {
+            weatherStartTime = System.currentTimeMillis()
+            binding.weatherTimeElapsedText.text = formatElapsedTime(0)
+            binding.weatherProgressbar.setProgressWithAnimation(0f)
+        } else {
+            binding.weatherTimeElapsedText.text = formatElapsedTime(elapsedTime)
+            binding.weatherProgressbar.setProgressWithAnimation(elapsedTime.toFloat())
+        }
     }
 
     private fun updateAirQualityElapsedTime() {
         val elapsedTime = System.currentTimeMillis() - airQualityStartTime
-        val formattedTime = formatElapsedTime(elapsedTime)
-        binding.airQualityTimeElapsedText.text = formattedTime
+
+        if (elapsedTime >= airQualitySavedTime) {
+            airQualityStartTime = System.currentTimeMillis()
+            binding.airQualityTimeElapsedText.text = formatElapsedTime(0)
+            binding.airQualityProgressbar.setProgressWithAnimation(0f)
+        } else {
+            binding.airQualityTimeElapsedText.text = formatElapsedTime(elapsedTime)
+            binding.airQualityProgressbar.setProgressWithAnimation(elapsedTime.toFloat())
+        }
     }
 
     private fun formatElapsedTime(elapsedTimeMillis: Long): String {

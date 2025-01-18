@@ -25,7 +25,7 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         app:cpb_background_progressbar_color="@color/md_theme_backgroundProgressGreen"
-        app:cpb_background_progressbar_width="12dp"
+        app:cpb_background_progressbar_width="16dp"
         app:cpb_progressbar_color="@color/md_theme_progressGreen"
         app:cpb_progressbar_width="10dp"
         app:cpb_round_border="true"
@@ -39,7 +39,7 @@
         android:layout_width="250dp"
         android:layout_height="250dp"
         app:cpb_background_progressbar_color="@color/md_theme_backgroundProgressBlue"
-        app:cpb_background_progressbar_width="12dp"
+        app:cpb_background_progressbar_width="16dp"
         app:cpb_progressbar_color="@color/md_theme_progressBlue"
         app:cpb_progressbar_width="10dp"
         app:cpb_round_border="true"
@@ -77,26 +77,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
+        android:textColor="@color/md_theme_backgroundProgressGreen"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:textColor="@color/md_theme_backgroundProgressGreen"
         app:layout_constraintBottom_toBottomOf="@+id/weather_progressbar"
         app:layout_constraintEnd_toEndOf="@+id/weather_progressbar"
         app:layout_constraintStart_toStartOf="@+id/weather_progressbar"
-        app:layout_constraintTop_toBottomOf="@+id/weatherTimeElapsedText" />
+        app:layout_constraintTop_toBottomOf="@+id/weatherTimeElapsedText"
+        app:layout_constraintVertical_bias="0.2" />
 
     <TextView
         android:id="@+id/airQualityUpdateTimeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
+        android:textColor="@color/md_theme_backgroundProgressBlue"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:textColor="@color/md_theme_backgroundProgressBlue"
         app:layout_constraintBottom_toBottomOf="@+id/air_quality_progressbar"
         app:layout_constraintEnd_toEndOf="@+id/air_quality_progressbar"
         app:layout_constraintStart_toStartOf="@+id/air_quality_progressbar"
-        app:layout_constraintTop_toBottomOf="@+id/airQualityTimeElapsedText" />
+        app:layout_constraintTop_toBottomOf="@+id/airQualityTimeElapsedText"
+        app:layout_constraintVertical_bias="0.2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
