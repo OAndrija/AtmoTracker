@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -72,14 +73,33 @@ class SensorsFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+
+        parentFragmentManager.setFragmentResultListener("settings_result", this) { _, result ->
+            val valuesChanged = result.getBoolean("values_changed", false)
+            if (valuesChanged) {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    loadSavedTimes()
+
+                    binding.weatherProgressbar.progressMax = weatherSavedTime.toFloat()
+                    binding.airQualityProgressbar.progressMax = airQualitySavedTime.toFloat()
+
+                    weatherStartTime = System.currentTimeMillis()
+                    airQualityStartTime = System.currentTimeMillis()
+                }, 300)
+            }
+        }
     }
 
     private fun loadSavedTimes() {
         val sharedPreferences = requireContext().getSharedPreferences(MY_SP_FILE_NAME, Context.MODE_PRIVATE)
+
         // Weather time values
         val weatherHours = sharedPreferences.getInt("weather_hours", 0)
         val weatherMinutes = sharedPreferences.getInt("weather_minutes", 0)
         val weatherSeconds = sharedPreferences.getInt("weather_seconds", 0)
+
+        Log.d("SensorsFragment", "AFTER UPDATING: Weather Time: $weatherSavedTime, Air Quality Time: $airQualitySavedTime")
+
         weatherSavedTime = hoursToMillis(weatherHours, weatherMinutes, weatherSeconds)
         val weatherTimeFormatted = formatElapsedTime(weatherSavedTime)
         binding.weatherUpdateTimeText.text = weatherTimeFormatted
@@ -88,6 +108,9 @@ class SensorsFragment : Fragment() {
         val airQualityHours = sharedPreferences.getInt("air_quality_hours", 0)
         val airQualityMinutes = sharedPreferences.getInt("air_quality_minutes", 0)
         val airQualitySeconds = sharedPreferences.getInt("air_quality_seconds", 0)
+
+        Log.d("SensorsFragment", "Loaded air quality values: Hours=$airQualityHours, Minutes=$airQualityMinutes, Seconds=$airQualitySeconds")
+
         airQualitySavedTime = hoursToMillis(airQualityHours, airQualityMinutes, airQualitySeconds)
         val airQualityTimeFormatted = formatElapsedTime(airQualitySavedTime)
         binding.airQualityUpdateTimeText.text = airQualityTimeFormatted

@@ -33,35 +33,69 @@ class SettingsFragment : Fragment() {
         val sharedPreferences = requireContext().getSharedPreferences(MY_SP_FILE_NAME, Context.MODE_PRIVATE)
 
         // Configure NumberPickers
-        configureNumberPicker(binding.WeatherNumberPickerHours,23)
-        configureNumberPicker(binding.WeatherNumberPickerMinutes,59)
-        configureNumberPicker(binding.WeatherNumberPickerSeconds,59)
+        configureNumberPicker(binding.WeatherNumberPickerHours, 23)
+        configureNumberPicker(binding.WeatherNumberPickerMinutes, 59)
+        configureNumberPicker(binding.WeatherNumberPickerSeconds, 59)
 
-        configureNumberPicker(binding.airQualityNumberPickerHours,23)
-        configureNumberPicker(binding.airQualityNumberPickerMinutes,59)
-        configureNumberPicker(binding.airQualityNumberPickerSeconds,59)
+        configureNumberPicker(binding.airQualityNumberPickerHours, 23)
+        configureNumberPicker(binding.airQualityNumberPickerMinutes, 59)
+        configureNumberPicker(binding.airQualityNumberPickerSeconds, 59)
 
-        // Load saved values and set them on NumberPickers
-        setSavedValues(
-            sharedPreferences,
-            binding.WeatherNumberPickerHours,
-            binding.WeatherNumberPickerMinutes,
-            binding.WeatherNumberPickerSeconds,
-            "weather"
-        )
-        setSavedValues(
-            sharedPreferences,
-            binding.airQualityNumberPickerHours,
-            binding.airQualityNumberPickerMinutes,
-            binding.airQualityNumberPickerSeconds,
-            "air_quality"
-        )
+        // Load saved values into maps
+        val weatherValues = loadSavedValues(sharedPreferences, "weather")
+        val airQualityValues = loadSavedValues(sharedPreferences, "air_quality")
+
+        Log.d("SettingsFragment", "Loaded weather values: $weatherValues")
+        Log.d("SettingsFragment", "Loaded air quality values: $airQualityValues")
+
+        // Set values on NumberPickers
+        setPickerValues(weatherValues, binding.WeatherNumberPickerHours, binding.WeatherNumberPickerMinutes, binding.WeatherNumberPickerSeconds)
+        setPickerValues(airQualityValues, binding.airQualityNumberPickerHours, binding.airQualityNumberPickerMinutes, binding.airQualityNumberPickerSeconds)
 
         binding.closeButton.setOnClickListener {
+            val newWeatherValues = getPickerValues(binding.WeatherNumberPickerHours, binding.WeatherNumberPickerMinutes, binding.WeatherNumberPickerSeconds)
+            val newAirQualityValues = getPickerValues(binding.airQualityNumberPickerHours, binding.airQualityNumberPickerMinutes, binding.airQualityNumberPickerSeconds)
+
+            Log.d("SettingsFragment", "New weather values: $newWeatherValues")
+            Log.d("SettingsFragment", "New air quality values: $newAirQualityValues")
+
+            val valuesChanged = newWeatherValues != weatherValues || newAirQualityValues != airQualityValues
+
+            if (valuesChanged) {
+                parentFragmentManager.setFragmentResult(
+                    "settings_result",
+                    Bundle().apply {
+                        putBoolean("values_changed", true)
+                    }
+                )
+            }
+
             savePickerValues(sharedPreferences)
             view.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.retract_in_top))
             parentFragmentManager.popBackStack()
         }
+    }
+
+    private fun loadSavedValues(sharedPreferences: android.content.SharedPreferences, prefix: String): Map<String, Int> {
+        return mapOf(
+            "hours" to sharedPreferences.getInt("${prefix}_hours", 0),
+            "minutes" to sharedPreferences.getInt("${prefix}_minutes", 0),
+            "seconds" to sharedPreferences.getInt("${prefix}_seconds", 0)
+        )
+    }
+
+    private fun setPickerValues(values: Map<String, Int>, hoursPicker: NumberPicker, minutesPicker: NumberPicker, secondsPicker: NumberPicker) {
+        hoursPicker.value = values["hours"] ?: 0
+        minutesPicker.value = values["minutes"] ?: 0
+        secondsPicker.value = values["seconds"] ?: 0
+    }
+
+    private fun getPickerValues(hoursPicker: NumberPicker, minutesPicker: NumberPicker, secondsPicker: NumberPicker): Map<String, Int> {
+        return mapOf(
+            "hours" to hoursPicker.value,
+            "minutes" to minutesPicker.value,
+            "seconds" to secondsPicker.value
+        )
     }
 
     private fun configureNumberPicker(numberPicker: NumberPicker, max: Int) {
@@ -69,26 +103,10 @@ class SettingsFragment : Fragment() {
         numberPicker.maxValue = max
     }
 
-    private fun setSavedValues(
-        sharedPreferences: android.content.SharedPreferences,
-        hoursPicker: NumberPicker,
-        minutesPicker: NumberPicker,
-        secondsPicker: NumberPicker,
-        prefix: String
-    ) {
-        val hours = sharedPreferences.getInt("${prefix}_hours", 0)
-        val minutes = sharedPreferences.getInt("${prefix}_minutes", 0)
-        val seconds = sharedPreferences.getInt("${prefix}_seconds", 0)
-
-        // Log retrieved values for debugging
-        Log.d("SettingsFragment", "Loaded values for $prefix: hours=$hours, minutes=$minutes, seconds=$seconds")
-
-        hoursPicker.value = hours
-        minutesPicker.value = minutes
-        secondsPicker.value = seconds
-    }
-
     private fun savePickerValues(sharedPreferences: android.content.SharedPreferences) {
+        Log.d("SettingsFragment", "Saving weather values: Hours=${binding.WeatherNumberPickerHours.value}, Minutes=${binding.WeatherNumberPickerMinutes.value}, Seconds=${binding.WeatherNumberPickerSeconds.value}")
+        Log.d("SettingsFragment", "Saving air quality values: Hours=${binding.airQualityNumberPickerHours.value}, Minutes=${binding.airQualityNumberPickerMinutes.value}, Seconds=${binding.airQualityNumberPickerSeconds.value}")
+
         sharedPreferences.edit()
             // Save Weather values
             .putInt("weather_hours", binding.WeatherNumberPickerHours.value)
@@ -98,7 +116,7 @@ class SettingsFragment : Fragment() {
             .putInt("air_quality_hours", binding.airQualityNumberPickerHours.value)
             .putInt("air_quality_minutes", binding.airQualityNumberPickerMinutes.value)
             .putInt("air_quality_seconds", binding.airQualityNumberPickerSeconds.value)
-            .apply()
+            .commit()
     }
 
     override fun onDestroyView() {
