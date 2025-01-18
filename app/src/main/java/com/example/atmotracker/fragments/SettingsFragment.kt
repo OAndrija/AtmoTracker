@@ -33,13 +33,13 @@ class SettingsFragment : Fragment() {
         val sharedPreferences = requireContext().getSharedPreferences(MY_SP_FILE_NAME, Context.MODE_PRIVATE)
 
         // Configure NumberPickers
-        configureNumberPicker(binding.WeatherNumberPickerHours, 0, 23)
-        configureNumberPicker(binding.WeatherNumberPickerMinutes, 0, 59)
-        configureNumberPicker(binding.WeatherNumberPickerSeconds, 0, 59)
+        configureNumberPicker(binding.WeatherNumberPickerHours,23)
+        configureNumberPicker(binding.WeatherNumberPickerMinutes,59)
+        configureNumberPicker(binding.WeatherNumberPickerSeconds,59)
 
-        configureNumberPicker(binding.airQualityNumberPickerHours, 0, 23)
-        configureNumberPicker(binding.airQualityNumberPickerMinutes, 0, 59)
-        configureNumberPicker(binding.airQualityNumberPickerSeconds, 0, 59)
+        configureNumberPicker(binding.airQualityNumberPickerHours,23)
+        configureNumberPicker(binding.airQualityNumberPickerMinutes,59)
+        configureNumberPicker(binding.airQualityNumberPickerSeconds,59)
 
         // Load saved values and set them on NumberPickers
         setSavedValues(
@@ -64,8 +64,8 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun configureNumberPicker(numberPicker: NumberPicker, min: Int, max: Int) {
-        numberPicker.minValue = min
+    private fun configureNumberPicker(numberPicker: NumberPicker, max: Int) {
+        numberPicker.minValue = 0
         numberPicker.maxValue = max
     }
 
