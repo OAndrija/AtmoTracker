@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    kotlin("plugin.serialization") version "2.0.20"
 }
 
 android {
@@ -33,9 +34,17 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
+    }
 }
 
 dependencies {
+    implementation("com.mikhaellopez:circularprogressbar:3.1.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("com.github.qamarelsafadi:CurvedBottomNavigation:0.1.3")
+    implementation("org.osmdroid:osmdroid-android:6.1.17")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
