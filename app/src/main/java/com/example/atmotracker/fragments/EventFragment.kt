@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.atmotracker.R
 
-class SensorsFragment : Fragment() {
+class EventFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_sensors, container, false)
+        return inflater.inflate(R.layout.fragment_event, container, false)
     }
 }
