@@ -31,32 +31,24 @@ class SimulationsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Get data from the application
         val app = requireActivity().application as MyApplication
 
-        // Populate items list with Walks, AirQuality, and Weather
         items.clear()
-        items.addAll(app.walks.map { Item.WalkItem(it) })
-        items.addAll(app.airQualitySimulations.map { Item.AirQualityItem(it) })
-        items.addAll(app.weatherSimulations.map { Item.WeatherItem(it) })
+        items.addAll(app.airQualitySimulations.map { Item.AirQualitySimulationItem(it) })
+        items.addAll(app.weatherSimulations.map { Item.WeatherSimulationItem(it) })
 
         // Initialize adapter
         generalAdapter = GeneralAdapter(items) { removedItem ->
             when (removedItem) {
-                is Item.WalkItem -> {
-                    app.walks.remove(removedItem.walk)
-                }
-                is Item.AirQualityItem -> {
+                is Item.AirQualitySimulationItem -> {
                     app.airQualitySimulations.remove(removedItem.airQuality)
                 }
-                is Item.WeatherItem -> {
+                is Item.WeatherSimulationItem -> {
                     app.weatherSimulations.remove(removedItem.weather)
                 }
             }
-            app.saveToFile() // Save changes to file
         }
 
-        // Set up RecyclerView
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = generalAdapter

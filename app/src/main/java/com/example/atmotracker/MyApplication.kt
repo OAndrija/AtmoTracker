@@ -4,8 +4,9 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.atmotracker.model.AirQuality
-import com.example.atmotracker.model.Walk
+import com.example.atmotracker.model.AirQualitySimulation
 import com.example.atmotracker.model.Weather
+import com.example.atmotracker.model.WeatherSimulation
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -16,17 +17,16 @@ const val MY_SP_FILE_NAME = "myshared.data"
 const val MY_JSON_FILE_NAME = "app_data.json"
 
 class MyApplication : Application() {
-    lateinit var walks: MutableList<Walk>
-    lateinit var airQualitySimulations: MutableList<AirQuality>
-    lateinit var weatherSimulations: MutableList<Weather>
+    lateinit var airQualitySimulations: MutableList<AirQualitySimulation>
+    lateinit var weatherSimulations: MutableList<WeatherSimulation>
 
     private lateinit var sharedPref: SharedPreferences
     lateinit var jsonFile: File
 
     override fun onCreate() {
         super.onCreate()
-        walks = mutableListOf()
-        airQualitySimulations = mutableListOf()  // Initialize airQualityData
+
+        airQualitySimulations = mutableListOf()
         weatherSimulations = mutableListOf()
 
         initShared()
@@ -34,7 +34,6 @@ class MyApplication : Application() {
         jsonFile = File(filesDir, MY_JSON_FILE_NAME)
         println("JSON file path: ${jsonFile.absolutePath}")
 
-        generateRandomWalks(10)
         generateRandomAirQuality(5)
         generateRandomWeather(5)
 
@@ -44,7 +43,6 @@ class MyApplication : Application() {
         }
 
         println("Already had ID: ${getID()}")
-
     }
 
     fun initShared() {
@@ -66,75 +64,86 @@ class MyApplication : Application() {
         return sharedPref.getString("ID", "DefaultNoData")
     }
 
-    fun saveToFile() {
-        try {
-            val jsonString = Json.encodeToString(walks)
-            jsonFile.writeText(jsonString)
-            println("Walks data saved successfully.")
-        } catch (e: IOException) {
-            println("Error saving walks data: ${e.message}")
-            e.printStackTrace()
-        }
-    }
-
-    fun deleteData() {
-        try {
-            if (jsonFile.exists()) {
-                jsonFile.writeText("")
-                println("Walks data deleted successfully.")
-            }
-        } catch (e: IOException) {
-            println("Error deleting walks data: ${e.message}")
-        }
-    }
-
     private fun generateRandomAirQuality(count: Int) {
         for (i in 1..count) {
             val randomData = mapOf(
-                "PM2.5" to (5..50).random().toString(),
-                "PM10" to (10..100).random().toString(),
-                "CO" to (0..10).random().toString()
+                "pm10" to (5..50).random().toString(),
+                "pm25" to (10..100).random().toString(),
+                "ozon" to (0..10).random().toString(),
+                "no2" to (0..10).random().toString()
             )
+
             val airQuality = AirQuality(
                 name = "Location $i",
                 data = randomData
             )
-            airQualitySimulations.add(airQuality)
+
+            val airQualitySimulation = AirQualitySimulation(
+                name = "Air Quality",
+                frequencyUpdate = (60..3600).random().toLong(),
+                location = "Location $i",
+                airQuality = airQuality
+            )
+
+            airQualitySimulations.add(airQualitySimulation)
         }
     }
 
     private fun generateRandomWeather(count: Int) {
         for (i in 1..count) {
             val randomData = mapOf(
-                "Temperature" to (15..35).random().toString(),
-                "Humidity" to (30..80).random().toString(),
-                "Wind Speed" to (0..20).random().toString()
+                "temperature" to (-5..35).random().toString(),
+                "precipitation" to (30..80).random().toString(),
+                "windSpeed" to (0..20).random().toString(),
+                "windGusts" to (0..20).random().toString()
             )
             val weather = Weather(
                 name = "City $i",
                 data = randomData
             )
-            weatherSimulations.add(weather)
-        }
-    }
 
-    private fun generateRandomWalks(count: Int) {
-        walks = mutableListOf()
-        for (i in 1..count) {
-            val randomWalk = Walk(
-                date = generateRandomDate(),
-                stepCount = (1000..15000).random(),
-                caloriesBurned = (50..500).random().toDouble(),
-                timeSpent = (400..7200).random().toLong()
+            val weatherSimulation = WeatherSimulation(
+                name = "Weather",
+                frequencyUpdate = (60..3600).random().toLong(),
+                location = "Location $i",
+                weather = weather
             )
-            walks.add(randomWalk)
+
+            weatherSimulations.add(weatherSimulation)
         }
     }
 
-    private fun generateRandomDate(): String {
-        val year = (2024..2025).random()
-        val month = (1..12).random().toString().padStart(2, '0')
-        val day = (1..28).random().toString().padStart(2, '0')
-        return "$day/$month/$year"
+    fun saveSimulations() {
+        try {
+            val data = mapOf(
+                "airQualitySimulations" to airQualitySimulations,
+                "weatherSimulations" to weatherSimulations
+            )
+            jsonFile.writeText(Json.encodeToString(data))
+            println("Simulations saved successfully.")
+        } catch (e: IOException) {
+            println("Failed to save simulations: ${e.message}")
+        }
+    }
+
+    fun loadSimulations() {
+        try {
+            if (jsonFile.exists()) {
+                val data: Map<String, List<*>> = Json.decodeFromString(jsonFile.readText())
+                airQualitySimulations = data["airQualitySimulations"]
+                    ?.filterIsInstance<AirQualitySimulation>()
+                    ?.toMutableList() ?: mutableListOf()
+
+                weatherSimulations = data["weatherSimulations"]
+                    ?.filterIsInstance<WeatherSimulation>()
+                    ?.toMutableList() ?: mutableListOf()
+
+                println("Simulations loaded successfully.")
+            } else {
+                println("No simulation file found to load.")
+            }
+        } catch (e: IOException) {
+            println("Failed to load simulations: ${e.message}")
+        }
     }
 }

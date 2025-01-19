@@ -7,33 +7,180 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:backgroundTint="@color/md_theme_surfaceContainer"
-    app:cardCornerRadius="30dp"
+    app:cardCornerRadius="20dp"
     app:cardElevation="4dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="150dp"
+        android:padding="0dp">
 
         <TextView
-            android:id="@+id/nameTextView"
+            android:id="@+id/weatherTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="City Name"
-            android:textStyle="bold"/>
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
+            android:text="Weather"
+            android:textColor="@color/md_theme_progressGreen"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/timestampTextView"
+            android:id="@+id/weatherFreqLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Timestamp"/>
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="3dp"
+            android:text=" "
+            android:textColor="@color/md_theme_progressGreen_grayer"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:drawableStart="@drawable/ic_time"
+            android:drawableTint="@color/md_theme_progressGreen_grayer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/weatherTitle" />
 
         <TextView
-            android:id="@+id/dataTextView"
+            android:id="@+id/locationLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Weather Data"/>
-    </LinearLayout>
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="3dp"
+            android:text=" "
+            android:drawableStart="@drawable/ic_location"
+            android:drawableTint="@color/md_theme_progressGreen_grayer"
+            android:textColor="@color/md_theme_progressGreen_grayer"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/weatherFreqLabel" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="78dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="78dp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineVertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintGuide_begin="176dp"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/temperatureLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Temperature:"
+            android:layout_marginStart="15dp"
+            android:textColor="@color/md_theme_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/precipitationLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal" />
+
+        <TextView
+            android:id="@+id/precipitationLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="Precipitation:"
+            android:textColor="@color/md_theme_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temperatureLabel" />
+
+        <TextView
+            android:id="@+id/windSpeedLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="Wind Speed:"
+            android:textColor="@color/md_theme_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/windGustsLabel"
+            app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
+            app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal" />
+
+        <TextView
+            android:id="@+id/windGustsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Wind Gusts:"
+            android:layout_marginStart="15dp"
+            android:textColor="@color/md_theme_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
+            app:layout_constraintTop_toBottomOf="@+id/windSpeedLabel" />
+
+        <TextView
+            android:id="@+id/temperatureData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/precipitationData"
+            app:layout_constraintStart_toEndOf="@+id/temperatureLabel"
+            app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal" />
+
+        <TextView
+            android:id="@+id/precipitationData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/precipitationLabel"
+            app:layout_constraintTop_toBottomOf="@+id/temperatureData" />
+
+        <TextView
+            android:id="@+id/windSpeedData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/windGustsData"
+            app:layout_constraintStart_toEndOf="@+id/windSpeedLabel"
+            app:layout_constraintTop_toTopOf="@+id/guidelineHorizontal" />
+
+        <TextView
+            android:id="@+id/windGustsData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/windGustsLabel"
+            app:layout_constraintTop_toBottomOf="@+id/windSpeedData" />
+
+        <Switch
+            android:id="@+id/switchButton"
+            android:layout_width="63dp"
+            android:layout_height="54dp"
+            app:layout_constraintBottom_toTopOf="@+id/guidelineHorizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.79"
+            app:layout_constraintStart_toStartOf="@+id/guidelineVertical"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
