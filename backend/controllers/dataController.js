@@ -278,17 +278,17 @@ module.exports = {
     create: function (req, res) {
         // Log incoming request data
         console.log("Received request body:", req.body);
-
+    
         // Validate incoming data
         if (!req.body.name || !req.body.timestamp || !req.body.data) {
             return res.status(400).json({
                 message: 'Missing required fields'
             });
         }
-
+    
         // Log the name being searched
         console.log("Searching for data series with name:", req.body.name);
-
+    
         // Find dataSeries by name
         DataSeriesModel.findOne({name: req.body.name}, function (err, series) {
             if (err) {
@@ -298,24 +298,25 @@ module.exports = {
                     error: err
                 });
             }
-
+    
             if (!series) {
                 console.log("No data series found with name:", req.body.name);
-                return res.status(404).json({
-                    message: 'No such data series exists'
+                // Instead of returning an error, simply return and skip further processing
+                return res.status(200).json({
+                    message: `Data series not found for ${req.body.name}, skipping file creation.`
                 });
             }
-
+    
             // Proceed with data creation using the found series _id
             var data = new DataModel({
                 data_series_id: series._id,
                 timestamp: new Date(req.body.timestamp), // Ensure timestamp is a Date object
                 data: req.body.data
             });
-
+    
             // Log the data to be saved
             console.log("Creating new data entry with:", data);
-
+    
             data.save(function (err, savedData) {
                 if (err) {
                     console.error('Error when creating data:', err);
@@ -324,7 +325,7 @@ module.exports = {
                         error: err
                     });
                 }
-
+    
                 console.log("Data created successfully:", savedData);
                 return res.status(201).json(savedData);
             });
