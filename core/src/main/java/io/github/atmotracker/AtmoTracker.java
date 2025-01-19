@@ -3,6 +3,7 @@ package io.github.atmotracker;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,9 +21,13 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.github.atmotracker.utility.Constants;
 import io.github.atmotracker.utility.Geolocation;
@@ -42,6 +47,8 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
     private Texture[] mapTiles;
     private ZoomXY beginTile;   // top left tile
 
+    private List<Geolocation> weatherMarkers = new ArrayList<>(); //markers for the weatherData
+    private List<Geolocation> airQualityMarkers = new ArrayList<>();
     // center geolocation
     private final Geolocation CENTER_GEOLOCATION = new Geolocation(46.1512, 14.9955);
 
@@ -50,6 +57,9 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
 
     @Override
     public void create() {
+
+
+        fetchAirQualityData();
         shapeRenderer = new ShapeRenderer();
 
         camera = new OrthographicCamera();
@@ -90,6 +100,89 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
     }
 
+    private void fetchWeatherData() {
+        Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
+        request.setUrl("http://localhost:3001/data/allWeather");
+        request.setHeader("Content-Type", "application/json");
+
+        Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                if (httpResponse.getStatus().getStatusCode() == 200) {
+                    String jsonResponse = httpResponse.getResultAsString();
+                    parseWeatherData(jsonResponse);
+                } else {
+                    Gdx.app.error("HTTP", "Failed to fetch weather data: " + httpResponse.getStatus().getStatusCode());
+                }
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                Gdx.app.error("HTTP", "Failed to fetch weather data: " + t.getMessage());
+            }
+
+            @Override
+            public void cancelled() {
+                Gdx.app.log("HTTP", "Request cancelled");
+            }
+        });
+    }
+    private void fetchAirQualityData() {
+        Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
+        request.setUrl("http://localhost:3001/data/allAirQuality");
+        request.setHeader("Content-Type", "application/json");
+
+        Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+            @Override
+            public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                if (httpResponse.getStatus().getStatusCode() == 200) {
+                    String jsonResponse = httpResponse.getResultAsString();
+                    parseAirQualityData(jsonResponse);
+                } else {
+                    Gdx.app.error("HTTP", "Failed to fetch weather data: " + httpResponse.getStatus().getStatusCode());
+                }
+            }
+
+            @Override
+            public void failed(Throwable t) {
+                Gdx.app.error("HTTP", "Failed to fetch weather data: " + t.getMessage());
+            }
+
+            @Override
+            public void cancelled() {
+                Gdx.app.log("HTTP", "Request cancelled");
+            }
+        });
+    }
+    private void parseWeatherData(String jsonResponse) {
+        JsonReader jsonReader = new JsonReader();
+        JsonValue root = jsonReader.parse(jsonResponse);
+
+        weatherMarkers.clear(); // Clear existing markers
+        for (JsonValue entry : root) {
+            float latitude = entry.get("location").getFloat("latitude", 0);  // Replace with your actual field name
+            float longitude = entry.get("location").getFloat("longitude", 0); // Replace with your actual field name
+
+            if (latitude != 0 && longitude != 0) {
+                weatherMarkers.add(new Geolocation(latitude, longitude));
+            }
+        }
+    }
+    private void parseAirQualityData(String jsonResponse) {
+        JsonReader jsonReader = new JsonReader();
+        JsonValue root = jsonReader.parse(jsonResponse);
+
+        weatherMarkers.clear(); // Clear existing markers
+        for (JsonValue entry : root) {
+            float latitude = entry.get("location").getFloat("latitude", 0);  // Replace with your actual field name
+            float longitude = entry.get("location").getFloat("longitude", 0); // Replace with your actual field name
+
+            if (latitude != 0 && longitude != 0) {
+                weatherMarkers.add(new Geolocation(latitude, longitude));
+            }
+        }
+    }
+
     @Override
     public void render() {
         ScreenUtils.clear(0, 0, 0, 1);
@@ -101,16 +194,31 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
 
-        drawMarkers();
+        drawWeatherDataMarkers();
     }
 
-    private void drawMarkers() {
-        Vector2 marker = MapRasterTiles.getPixelPosition(MARKER_GEOLOCATION.lat, MARKER_GEOLOCATION.lng, beginTile.x, beginTile.y);
-
+    private void drawWeatherDataMarkers() {
         shapeRenderer.setProjectionMatrix(camera.combined);
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.circle(marker.x, marker.y, 10);
+
+        for (Geolocation marker : weatherMarkers) {
+            Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.lat, marker.lng, beginTile.x, beginTile.y);
+            shapeRenderer.circle(markerPosition.x, markerPosition.y, 10);
+        }
+
+        shapeRenderer.end();
+    }
+    private void drawAirQualityDataMarkers() {
+        shapeRenderer.setProjectionMatrix(camera.combined);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        for (Geolocation marker : airQualityMarkers) {
+            Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.lat, marker.lng, beginTile.x, beginTile.y);
+            shapeRenderer.circle(markerPosition.x, markerPosition.y, 10);
+        }
+
         shapeRenderer.end();
     }
 
