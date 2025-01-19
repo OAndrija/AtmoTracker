@@ -6,7 +6,9 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.atmotracker.model.AirQuality
 import com.example.atmotracker.model.Walk
+import com.example.atmotracker.model.Weather
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -18,18 +20,25 @@ const val MY_JSON_FILE_NAME = "app_data.json"
 
 class MyApplication : Application() {
     lateinit var walks: MutableList<Walk>
+    lateinit var airQualityData: MutableList<AirQuality>
+    lateinit var weatherData: MutableList<Weather>
+
     private lateinit var sharedPref: SharedPreferences
     lateinit var jsonFile: File
 
     override fun onCreate() {
         super.onCreate()
         walks = mutableListOf()
+        airQualityData = mutableListOf()  // Initialize airQualityData
+        weatherData = mutableListOf()
         initShared()
 
         jsonFile = File(filesDir, MY_JSON_FILE_NAME)
         println("JSON file path: ${jsonFile.absolutePath}")
 
         generateRandomWalks(10)
+        generateRandomAirQuality(5)
+        generateRandomWeather(5)
 
         if (!containsID()) {
             saveID(UUID.randomUUID().toString().replace("-", ""))
@@ -78,6 +87,36 @@ class MyApplication : Application() {
             }
         } catch (e: IOException) {
             println("Error deleting walks data: ${e.message}")
+        }
+    }
+
+    private fun generateRandomAirQuality(count: Int) {
+        for (i in 1..count) {
+            val randomData = mapOf(
+                "PM2.5" to (5..50).random().toString(),
+                "PM10" to (10..100).random().toString(),
+                "CO" to (0..10).random().toString()
+            )
+            val airQuality = AirQuality(
+                name = "Location $i",
+                data = randomData
+            )
+            airQualityData.add(airQuality)
+        }
+    }
+
+    private fun generateRandomWeather(count: Int) {
+        for (i in 1..count) {
+            val randomData = mapOf(
+                "Temperature" to (15..35).random().toString(),
+                "Humidity" to (30..80).random().toString(),
+                "Wind Speed" to (0..20).random().toString()
+            )
+            val weather = Weather(
+                name = "City $i",
+                data = randomData
+            )
+            weatherData.add(weather)
         }
     }
 

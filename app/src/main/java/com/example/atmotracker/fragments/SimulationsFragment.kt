@@ -1,6 +1,5 @@
 package com.example.atmotracker.fragments
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,19 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.atmotracker.MY_SP_FILE_NAME
 import com.example.atmotracker.MyApplication
 import com.example.atmotracker.R
-import com.example.atmotracker.adapters.WalkAdapter
+import com.example.atmotracker.adapters.GeneralAdapter
+import com.example.atmotracker.adapters.Item
 import com.example.atmotracker.databinding.FragmentSimulationsBinding
-import com.example.atmotracker.model.Walk
 
 
 class SimulationsFragment : Fragment() {
     private var _binding: FragmentSimulationsBinding? = null
     private val binding get() = _binding!!
-    private lateinit var walkAdapter: WalkAdapter
-    private lateinit var appWalks: MutableList<Walk>
+    private lateinit var generalAdapter: GeneralAdapter
+    private val items: MutableList<Item> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,22 +31,38 @@ class SimulationsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Get data from the application
         val app = requireActivity().application as MyApplication
-        appWalks = app.walks
 
-        val sharedPreferences = requireContext().getSharedPreferences(MY_SP_FILE_NAME, Context.MODE_PRIVATE)
+        // Populate items list with Walks, AirQuality, and Weather
+        items.clear()
+        items.addAll(app.walks.map { Item.WalkItem(it) })
+        items.addAll(app.airQualityData.map { Item.AirQualityItem(it) })
+        items.addAll(app.weatherData.map { Item.WeatherItem(it) })
 
-        walkAdapter = WalkAdapter(appWalks, { removedWalk ->
-            app.walks.remove(removedWalk)
-            app.saveToFile()
-            walkAdapter.notifyDataSetChanged()
-        }, sharedPreferences)
-
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = walkAdapter
+        // Initialize adapter
+        generalAdapter = GeneralAdapter(items) { removedItem ->
+            when (removedItem) {
+                is Item.WalkItem -> {
+                    app.walks.remove(removedItem.walk)
+                }
+                is Item.AirQualityItem -> {
+                    app.airQualityData.remove(removedItem.airQuality)
+                }
+                is Item.WeatherItem -> {
+                    app.weatherData.remove(removedItem.weather)
+                }
+            }
+            app.saveToFile() // Save changes to file
         }
 
+        // Set up RecyclerView
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = generalAdapter
+        }
+
+        // Button animation
         val slideIn = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_in_right)
         binding.addButton.startAnimation(slideIn)
 
