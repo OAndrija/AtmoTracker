@@ -9,10 +9,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.atmotracker.MY_SP_FILE_NAME
 import com.example.atmotracker.MyApplication
 import com.example.atmotracker.R
 import com.example.atmotracker.databinding.FragmentSensorsBinding
+import com.example.atmotracker.scraper.WebScraper
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class SensorsFragment : Fragment() {
@@ -129,6 +134,8 @@ class SensorsFragment : Fragment() {
             weatherStartTime = System.currentTimeMillis()
             binding.weatherTimeElapsedText.text = formatElapsedTime(0)
             binding.weatherProgressbar.setProgressWithAnimation(0f)
+
+            fetchWeatherData()
         } else {
             binding.weatherTimeElapsedText.text = formatElapsedTime(elapsedTime)
             binding.weatherProgressbar.setProgressWithAnimation(elapsedTime.toFloat())
@@ -142,6 +149,8 @@ class SensorsFragment : Fragment() {
             airQualityStartTime = System.currentTimeMillis()
             binding.airQualityTimeElapsedText.text = formatElapsedTime(0)
             binding.airQualityProgressbar.setProgressWithAnimation(0f)
+
+            fetchAirQualityData()
         } else {
             binding.airQualityTimeElapsedText.text = formatElapsedTime(elapsedTime)
             binding.airQualityProgressbar.setProgressWithAnimation(elapsedTime.toFloat())
@@ -161,5 +170,53 @@ class SensorsFragment : Fragment() {
         weatherTimeHandler.removeCallbacks(weatherUpdater)
         airQualityTimeHandler.removeCallbacks(airQualityUpdater)
         _binding = null
+    }
+
+    private fun fetchWeatherData() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val weatherResults = WebScraper.scrapeWeatherData()
+
+                if (weatherResults.weatherTableRows.isNotEmpty()) {
+                    val firstWeather = weatherResults.weatherTableRows.first()
+
+                    Log.d("SensorsFragment", "Fetched Weather Data: $firstWeather")
+
+//                    WebScraper.sendWeatherData(firstWeather)
+
+                    CoroutineScope(Dispatchers.Main).launch {
+                        Toast.makeText(requireContext(), "Weather data updated!", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Log.e("SensorsFragment", "No weather data found!")
+                }
+            } catch (e: Exception) {
+                Log.e("SensorsFragment", "Error fetching weather data: ${e.message}")
+            }
+        }
+    }
+
+    private fun fetchAirQualityData() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val qualityResults = WebScraper.scrapeQualityData()
+
+                if (qualityResults.qualityTableRows.isNotEmpty()) {
+                    val firstQuality = qualityResults.qualityTableRows.first()
+                    Log.d("SensorsFragment", "Fetched Air Quality Data: $firstQuality")
+
+
+//                    WebScraper.sendQualityData(firstQuality)
+
+                    CoroutineScope(Dispatchers.Main).launch {
+                        Toast.makeText(requireContext(), "Air quality data updated!", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Log.e("SensorsFragment", "No air quality data found!")
+                }
+            } catch (e: Exception) {
+                Log.e("SensorsFragment", "Error fetching air quality data: ${e.message}")
+            }
+        }
     }
 }
