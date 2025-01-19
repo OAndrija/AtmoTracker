@@ -37,8 +37,8 @@ class SimulationsFragment : Fragment() {
         // Populate items list with Walks, AirQuality, and Weather
         items.clear()
         items.addAll(app.walks.map { Item.WalkItem(it) })
-        items.addAll(app.airQualityData.map { Item.AirQualityItem(it) })
-        items.addAll(app.weatherData.map { Item.WeatherItem(it) })
+        items.addAll(app.airQualitySimulations.map { Item.AirQualityItem(it) })
+        items.addAll(app.weatherSimulations.map { Item.WeatherItem(it) })
 
         // Initialize adapter
         generalAdapter = GeneralAdapter(items) { removedItem ->
@@ -47,10 +47,10 @@ class SimulationsFragment : Fragment() {
                     app.walks.remove(removedItem.walk)
                 }
                 is Item.AirQualityItem -> {
-                    app.airQualityData.remove(removedItem.airQuality)
+                    app.airQualitySimulations.remove(removedItem.airQuality)
                 }
                 is Item.WeatherItem -> {
-                    app.weatherData.remove(removedItem.weather)
+                    app.weatherSimulations.remove(removedItem.weather)
                 }
             }
             app.saveToFile() // Save changes to file

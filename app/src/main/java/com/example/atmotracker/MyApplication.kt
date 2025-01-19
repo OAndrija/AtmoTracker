@@ -1,11 +1,8 @@
 package com.example.atmotracker
 
 import android.app.Application
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatDelegate
 import com.example.atmotracker.model.AirQuality
 import com.example.atmotracker.model.Walk
 import com.example.atmotracker.model.Weather
@@ -20,8 +17,8 @@ const val MY_JSON_FILE_NAME = "app_data.json"
 
 class MyApplication : Application() {
     lateinit var walks: MutableList<Walk>
-    lateinit var airQualityData: MutableList<AirQuality>
-    lateinit var weatherData: MutableList<Weather>
+    lateinit var airQualitySimulations: MutableList<AirQuality>
+    lateinit var weatherSimulations: MutableList<Weather>
 
     private lateinit var sharedPref: SharedPreferences
     lateinit var jsonFile: File
@@ -29,8 +26,9 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         walks = mutableListOf()
-        airQualityData = mutableListOf()  // Initialize airQualityData
-        weatherData = mutableListOf()
+        airQualitySimulations = mutableListOf()  // Initialize airQualityData
+        weatherSimulations = mutableListOf()
+
         initShared()
 
         jsonFile = File(filesDir, MY_JSON_FILE_NAME)
@@ -101,7 +99,7 @@ class MyApplication : Application() {
                 name = "Location $i",
                 data = randomData
             )
-            airQualityData.add(airQuality)
+            airQualitySimulations.add(airQuality)
         }
     }
 
@@ -116,7 +114,7 @@ class MyApplication : Application() {
                 name = "City $i",
                 data = randomData
             )
-            weatherData.add(weather)
+            weatherSimulations.add(weather)
         }
     }
 

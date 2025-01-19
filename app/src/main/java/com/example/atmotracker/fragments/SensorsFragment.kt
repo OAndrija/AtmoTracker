@@ -178,14 +178,15 @@ class SensorsFragment : Fragment() {
                 val weatherResults = WebScraper.scrapeWeatherData()
 
                 if (weatherResults.weatherTableRows.isNotEmpty()) {
-                    val firstWeather = weatherResults.weatherTableRows.first()
+                    Log.d("SensorsFragment", "Fetched Weather Data: ${weatherResults.weatherTableRows}")
 
-                    Log.d("SensorsFragment", "Fetched Weather Data: $firstWeather")
-
-//                    WebScraper.sendWeatherData(firstWeather)
+                    weatherResults.weatherTableRows.forEach { weather ->
+                        WebScraper.sendWeatherData(weather)
+                        Log.d("SensorsFragment", "Sent Weather Data: $weather")
+                    }
 
                     CoroutineScope(Dispatchers.Main).launch {
-                        Toast.makeText(requireContext(), "Weather data updated!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "All weather data updated!", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Log.e("SensorsFragment", "No weather data found!")
@@ -202,14 +203,15 @@ class SensorsFragment : Fragment() {
                 val qualityResults = WebScraper.scrapeQualityData()
 
                 if (qualityResults.qualityTableRows.isNotEmpty()) {
-                    val firstQuality = qualityResults.qualityTableRows.first()
-                    Log.d("SensorsFragment", "Fetched Air Quality Data: $firstQuality")
+                    Log.d("SensorsFragment", "Fetched Air Quality Data: ${qualityResults.qualityTableRows}")
 
-
-//                    WebScraper.sendQualityData(firstQuality)
+                    qualityResults.qualityTableRows.forEach { quality ->
+                        WebScraper.sendQualityData(quality)
+                        Log.d("SensorsFragment", "Sent Weather Data: $quality")
+                    }
 
                     CoroutineScope(Dispatchers.Main).launch {
-                        Toast.makeText(requireContext(), "Air quality data updated!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "All air quality data updated!", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Log.e("SensorsFragment", "No air quality data found!")

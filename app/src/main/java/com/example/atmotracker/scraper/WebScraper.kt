@@ -126,7 +126,7 @@ object WebScraper {
         val body = jsonWeather.toRequestBody(mediaType)
 
         val request = Request.Builder()
-            .url("http://localhost:3001/data")
+            .url("http://192.168.1.162:3002/data")
             .post(body)
             .build()
 
@@ -148,7 +148,7 @@ object WebScraper {
         val body = jsonWeather.toRequestBody(mediaType)
 
         val request = Request.Builder()
-            .url("http://localhost:3001/data")
+            .url("http://192.168.1.162:3002/data")
             .post(body)
             .build()
 
