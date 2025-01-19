@@ -59,7 +59,8 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
     public void create() {
 
 
-        fetchAirQualityData();
+        fetchWeatherData();
+        //fetchAirQualityData();
         shapeRenderer = new ShapeRenderer();
 
         camera = new OrthographicCamera();
@@ -67,7 +68,7 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         camera.position.set(Constants.MAP_WIDTH / 2f, Constants.MAP_HEIGHT / 2f, 0);
         camera.viewportWidth = Constants.MAP_WIDTH / 2f;
         camera.viewportHeight = Constants.MAP_HEIGHT / 2f;
-        camera.zoom = 2f;
+        camera.zoom = 1.9f;
         camera.update();
 
         touchPosition = new Vector3();
@@ -172,13 +173,13 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         JsonReader jsonReader = new JsonReader();
         JsonValue root = jsonReader.parse(jsonResponse);
 
-        weatherMarkers.clear(); // Clear existing markers
+        airQualityMarkers.clear(); // Clear existing markers
         for (JsonValue entry : root) {
             float latitude = entry.get("location").getFloat("latitude", 0);  // Replace with your actual field name
             float longitude = entry.get("location").getFloat("longitude", 0); // Replace with your actual field name
 
             if (latitude != 0 && longitude != 0) {
-                weatherMarkers.add(new Geolocation(latitude, longitude));
+                airQualityMarkers.add(new Geolocation(latitude, longitude));
             }
         }
     }
@@ -194,6 +195,7 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
 
+        //drawAirQualityDataMarkers();
         drawWeatherDataMarkers();
     }
 
