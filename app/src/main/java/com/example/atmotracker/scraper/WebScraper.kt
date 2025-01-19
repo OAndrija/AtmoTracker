@@ -1,7 +1,7 @@
 package com.example.atmotracker.scraper
 
-import com.example.atmotracker.scraper.model.AirQuality
-import com.example.atmotracker.scraper.model.Weather
+import com.example.atmotracker.model.AirQuality
+import com.example.atmotracker.model.Weather
 import kotlinx.serialization.Serializable
 import it.skrape.core.htmlDocument
 import it.skrape.fetcher.HttpFetcher

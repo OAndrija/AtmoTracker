@@ -1,4 +1,4 @@
-package com.example.atmotracker.scraper.util
+package com.example.atmotracker.util
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.*
