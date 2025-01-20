@@ -3,6 +3,7 @@ package io.github.atmotracker;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,14 +22,24 @@ import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import io.github.atmotracker.markers.WeatherMarker;
 import io.github.atmotracker.utility.Constants;
 import io.github.atmotracker.utility.Geolocation;
 import io.github.atmotracker.utility.MapRasterTiles;
@@ -47,11 +58,12 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
     private Texture[] mapTiles;
     private ZoomXY beginTile;   // top left tile
 
-    private List<Geolocation> weatherMarkers = new ArrayList<>(); //markers for the weatherData
+    private List<WeatherMarker> weatherMarkers = new ArrayList<>(); //markers for the weatherData
     private List<Geolocation> airQualityMarkers = new ArrayList<>();
     // center geolocation
     private final Geolocation CENTER_GEOLOCATION = new Geolocation(46.1512, 14.9955);
-
+    private Stage stage;
+    private Skin skin;
     // test marker
     private final Geolocation MARKER_GEOLOCATION = new Geolocation(46.559070, 15.638100);
 
@@ -99,6 +111,11 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         layers.add(layer);
 
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+        stage = new Stage(new ScreenViewport());
+        skin = new Skin(Gdx.files.internal("skins2/comic-ui.json"));
+        Gdx.input.setInputProcessor(stage);
+        GestureDetector gestureDetector = new GestureDetector(this);
+        Gdx.input.setInputProcessor(new InputMultiplexer(stage, gestureDetector));
     }
 
     private void fetchWeatherData() {
@@ -163,11 +180,23 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         for (JsonValue entry : root) {
             float latitude = entry.get("location").getFloat("latitude", 0);  // Replace with your actual field name
             float longitude = entry.get("location").getFloat("longitude", 0); // Replace with your actual field name
-
+            float temperature = entry.getFloat("temperature", 0);
+            String name = entry.getString("name", "Unknown");
+            float windSpeed = entry.getFloat("windSpeed", 0);
+            float windGusts = entry.getFloat("windGusts", 0);
+            //float precipitation = entry.getFloat("precipitation", 0);
             if (latitude != 0 && longitude != 0) {
-                weatherMarkers.add(new Geolocation(latitude, longitude));
+                weatherMarkers.add(new WeatherMarker(
+                    new Geolocation(latitude, longitude),
+                    name,
+                    temperature,
+                    windSpeed,
+                    windGusts
+                ));
+                //System.out.println( "Temp=" + temperature + ", Name=" + name + "windspeed "+  windSpeed + " windgust "+  windGusts + " precipitation ");
             }
         }
+
     }
     private void parseAirQualityData(String jsonResponse) {
         JsonReader jsonReader = new JsonReader();
@@ -197,6 +226,8 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
 
         //drawAirQualityDataMarkers();
         drawWeatherDataMarkers();
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
     }
 
     private void drawWeatherDataMarkers() {
@@ -204,8 +235,8 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        for (Geolocation marker : weatherMarkers) {
-            Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.lat, marker.lng, beginTile.x, beginTile.y);
+        for (WeatherMarker marker : weatherMarkers) {
+            Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.location.lat, marker.location.lng, beginTile.x, beginTile.y);
             shapeRenderer.circle(markerPosition.x, markerPosition.y, 10);
         }
 
@@ -233,12 +264,66 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
     public boolean touchDown(float x, float y, int pointer, int button) {
         touchPosition.set(x, y, 0);
         camera.unproject(touchPosition);
+
+        for (WeatherMarker marker : weatherMarkers) {
+            Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.location.lat, marker.location.lng, beginTile.x, beginTile.y);
+            if (markerPosition.dst(touchPosition.x, touchPosition.y) < 15) {
+                showWeatherDetails(marker);
+                break;
+            }
+        }
+
         return false;
+    }
+
+    private void showWeatherDetails(WeatherMarker marker) {
+        stage.clear();
+
+        Table table = new Table();
+        table.setFillParent(true);
+        table.center();
+
+        Label title = new Label(marker.name, skin, "title");
+        Label temperature = new Label("Temperature: " + marker.temperature + " °C", skin);
+        Label windSpeed = new Label("Wind Speed: " + marker.windSpeed + " m/s", skin);
+        Label windGusts = new Label("Wind Gusts: " + marker.windGusts + " m/s", skin);
+
+
+        TextButton closeButton = new TextButton("Close", skin);
+        closeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                stage.clear();
+            }
+        });
+
+        table.add(title).pad(10).row();
+        table.add(temperature).pad(5).row();
+        table.add(windSpeed).pad(5).row();
+        table.add(windGusts).pad(5).row();
+
+        table.add(closeButton).pad(10);
+
+        stage.addActor(table);
     }
 
     @Override
     public boolean tap(float x, float y, int count, int button) {
-        return false;
+        touchPosition.set(x, y, 0);
+        camera.unproject(touchPosition);
+
+        for (WeatherMarker marker : weatherMarkers) {
+            Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.location.lat, marker.location.lng, beginTile.x, beginTile.y);
+            float distance = markerPosition.dst(touchPosition.x, touchPosition.y);
+
+            if (distance < 20) {  // Adjust distance threshold to match marker size
+                // Show popup or details
+                showWeatherDetails(marker);
+                return true;
+            }
+        }
+
+        return false; // No marker was tapped
     }
 
     @Override
