@@ -7,23 +7,24 @@
     android:layout_height="match_parent"
     android:visibility="visible"
     android:background="@color/md_theme_background"
-    tools:context=".fragments.InputFragment">
+    tools:context=".fragments.InputWeatherFragment">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="520dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="180dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="15dp"
         android:backgroundTint="@color/md_theme_surfaceContainer"
         android:padding="20dp"
         app:cardCornerRadius="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/addButton"
+        app:layout_constraintBottom_toTopOf="@+id/addWeatherButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -36,62 +37,129 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_begin="152dp" />
 
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintGuide_percent="0.69"
+                app:layout_constraintStart_toStartOf="@id/horizontalGuideline" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="112dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintGuide_begin="58dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="300dp"
+                android:layout_marginBottom="66dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintGuide_begin="249dp"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="441dp" />
+
             <TextView
-                android:id="@+id/stepCountLabel"
+                android:id="@+id/dataGenerationLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Random data generation range"
+                android:textColor="@color/md_theme_primaryFixed"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/guideline2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.12"
+                app:layout_constraintStart_toStartOf="@+id/horizontalGuideline"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/weatherTemperatureLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
-                android:padding="15dp"
+                android:padding="5dp"
                 android:text="Temperature:"
                 android:textAlignment="viewStart"
                 android:textColor="@color/md_theme_primary"
                 android:textSize="@dimen/label_font_size"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/caloriesSpentLabel"
+                app:layout_constraintBottom_toTopOf="@+id/weatherWindSpeedLabel"
                 app:layout_constraintEnd_toStartOf="@+id/horizontalGuideline"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
             <EditText
-                android:id="@+id/stepCountInput"
+                android:id="@+id/weatherTemperatureInputStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="15dp"
                 android:backgroundTint="@color/md_theme_onSurfaceVariant"
                 android:ems="15"
-                android:hint="@string/step_hint"
-                android:inputType="text"
+                android:inputType="number"
                 android:padding="15dp"
                 android:textColor="@color/md_theme_onSurface"
-                android:textColorHint="@color/md_theme_outline"
                 android:textSize="@dimen/input_font_size"
-                app:layout_constraintBottom_toBottomOf="@+id/stepCountLabel"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/weatherTemperatureLabel"
+                app:layout_constraintEnd_toEndOf="@id/guideline3"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/horizontalGuideline"
-                app:layout_constraintTop_toTopOf="@+id/stepCountLabel" />
+                app:layout_constraintTop_toTopOf="@+id/weatherTemperatureLabel" />
+
+            <EditText
+                android:id="@+id/weatherTemperatureInputEnd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="15dp"
+                android:backgroundTint="@color/md_theme_onSurfaceVariant"
+                android:ems="15"
+                android:inputType="number"
+                android:padding="15dp"
+                android:textColor="@color/md_theme_onSurface"
+                android:textSize="@dimen/input_font_size"
+                app:layout_constraintBottom_toBottomOf="@+id/weatherTemperatureLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/guideline3"
+                app:layout_constraintTop_toTopOf="@+id/weatherTemperatureLabel" />
 
             <TextView
-                android:id="@+id/caloriesSpentLabel"
+                android:id="@+id/weatherWindSpeedLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:padding="15dp"
-                android:text="@string/calories_label"
+                android:padding="5dp"
+                android:text="Wind Speed:"
                 android:textColor="@color/md_theme_primary"
                 android:textSize="@dimen/label_font_size"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/dateLabel"
+                app:layout_constraintBottom_toTopOf="@+id/weatherWindGustsLabel"
                 app:layout_constraintEnd_toStartOf="@+id/horizontalGuideline"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/stepCountLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/weatherTemperatureLabel" />
 
             <EditText
-                android:id="@+id/caloriesSpentInput"
+                android:id="@+id/weatherWindSpeedInputStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
@@ -99,103 +167,221 @@
                 android:backgroundTint="@color/md_theme_onSurfaceVariant"
                 android:ellipsize="end"
                 android:ems="15"
-                android:hint="@string/calories_hint"
-                android:inputType="text"
+                android:inputType="numberSigned"
                 android:padding="15dp"
                 android:textColor="@color/md_theme_onSurface"
-                android:textColorHint="@color/md_theme_outline"
                 android:textSize="@dimen/input_font_size"
-                app:layout_constraintBottom_toBottomOf="@+id/caloriesSpentLabel"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/weatherWindSpeedLabel"
+                app:layout_constraintEnd_toEndOf="@id/guideline3"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/horizontalGuideline"
-                app:layout_constraintTop_toTopOf="@+id/caloriesSpentLabel" />
+                app:layout_constraintTop_toTopOf="@+id/weatherWindSpeedLabel" />
+
+            <EditText
+                android:id="@+id/weatherWindSpeedInputEnd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="15dp"
+                android:backgroundTint="@color/md_theme_onSurfaceVariant"
+                android:ellipsize="end"
+                android:ems="15"
+                android:inputType="numberSigned"
+                android:padding="15dp"
+                android:textColor="@color/md_theme_onSurface"
+                android:textSize="@dimen/input_font_size"
+                app:layout_constraintBottom_toBottomOf="@+id/weatherWindSpeedLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@id/guideline3"
+                app:layout_constraintTop_toTopOf="@+id/weatherWindSpeedLabel" />
 
             <TextView
-                android:id="@+id/dateLabel"
+                android:id="@+id/weatherWindGustsLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:padding="15dp"
-                android:text="@string/date_label"
+                android:padding="5dp"
+                android:text="Wind Gusts:"
                 android:textColor="@color/md_theme_primary"
                 android:textSize="@dimen/label_font_size"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/timeSpentLabel"
+                app:layout_constraintBottom_toTopOf="@+id/weatherPrecipitationLabel"
                 app:layout_constraintEnd_toStartOf="@+id/horizontalGuideline"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/caloriesSpentLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/weatherWindSpeedLabel" />
 
             <EditText
-                android:id="@+id/dateInput"
+                android:id="@+id/weatherWindGustsInputStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="15dp"
                 android:backgroundTint="@color/md_theme_onSurfaceVariant"
                 android:ems="5"
-                android:hint="@string/date_hint"
-                android:inputType="date"
+                android:inputType="numberSigned"
                 android:padding="15dp"
                 android:textColor="@color/md_theme_onSurface"
-                android:textColorHint="@color/md_theme_outline"
                 android:textSize="@dimen/input_font_size"
-                app:layout_constraintBottom_toBottomOf="@+id/dateLabel"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/weatherWindGustsLabel"
+                app:layout_constraintEnd_toEndOf="@id/guideline3"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/horizontalGuideline"
-                app:layout_constraintTop_toTopOf="@+id/dateLabel" />
+                app:layout_constraintTop_toTopOf="@+id/weatherWindGustsLabel" />
+
+            <EditText
+                android:id="@+id/weatherWindGustsInputEnd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="15dp"
+                android:backgroundTint="@color/md_theme_onSurfaceVariant"
+                android:ems="5"
+                android:inputType="numberSigned"
+                android:padding="15dp"
+                android:textColor="@color/md_theme_onSurface"
+                android:textSize="@dimen/input_font_size"
+                app:layout_constraintBottom_toBottomOf="@+id/weatherWindGustsLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@id/guideline3"
+                app:layout_constraintTop_toTopOf="@+id/weatherWindGustsLabel" />
 
             <TextView
-                android:id="@+id/timeSpentLabel"
+                android:id="@+id/weatherPrecipitationLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:padding="15dp"
-                android:text="@string/time_label"
+                android:padding="5dp"
+                android:text="Precipitation"
                 android:textColor="@color/md_theme_primary"
                 android:textSize="@dimen/label_font_size"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/guideline"
                 app:layout_constraintEnd_toStartOf="@+id/horizontalGuideline"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dateLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/weatherWindGustsLabel" />
 
             <EditText
-                android:id="@+id/timeSpentInput"
+                android:id="@+id/weatherPrecipitationInputStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="15dp"
                 android:backgroundTint="@color/md_theme_onSurfaceVariant"
                 android:ems="10"
-                android:hint="@string/time_hint"
-                android:inputType="number|numberDecimal"
+                android:inputType="numberSigned"
                 android:padding="15dp"
                 android:textColor="@color/md_theme_onSurface"
-                android:textColorHint="@color/md_theme_outline"
                 android:textSize="@dimen/input_font_size"
-                app:layout_constraintBottom_toBottomOf="@+id/timeSpentLabel"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/weatherPrecipitationLabel"
+                app:layout_constraintEnd_toEndOf="@id/guideline3"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/horizontalGuideline"
-                app:layout_constraintTop_toTopOf="@+id/timeSpentLabel" />
+                app:layout_constraintTop_toTopOf="@+id/weatherPrecipitationLabel" />
+
+            <EditText
+                android:id="@+id/weatherPrecipitationInputEnd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="15dp"
+                android:backgroundTint="@color/md_theme_onSurfaceVariant"
+                android:ems="10"
+                android:inputType="numberSigned"
+                android:padding="15dp"
+                android:textColor="@color/md_theme_onSurface"
+                android:textSize="@dimen/input_font_size"
+                app:layout_constraintBottom_toBottomOf="@+id/weatherPrecipitationLabel"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@id/guideline3"
+                app:layout_constraintTop_toTopOf="@+id/weatherPrecipitationLabel" />
+
+            <LinearLayout
+                android:id="@+id/weather_number_picker_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/guideline4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/horizontalGuideline"
+                app:layout_constraintTop_toBottomOf="@id/guideline">
+
+                <NumberPicker
+                    android:id="@+id/WeatherSimNumberPickerHours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp" />
+
+                <NumberPicker
+                    android:id="@+id/WeatherSimNumberPickerMinutes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp" />
+
+                <NumberPicker
+                    android:id="@+id/WeatherSimNumberPickerSeconds"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/frequencyTextLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update Frequency\n     (HH:MM:SS)"
+                android:textColor="@color/md_theme_primary"
+                android:textSize="@dimen/label_font_size"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/guideline4"
+                app:layout_constraintEnd_toStartOf="@+id/horizontalGuideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+            <TextView
+                android:id="@+id/locationTextLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="Choose location"
+                android:textColor="@color/md_theme_primary"
+                android:textSize="@dimen/label_font_size"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline4" />
+
+            <ImageButton
+                android:id="@+id/chooseLocationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:background="@drawable/button_background"
+                android:src="@drawable/ic_location_add"
+                android:padding="18dp"
+                app:tint="@color/md_theme_tertiary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/horizontalGuideline"
+                app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.cardview.widget.CardView>
 
     <Button
-        android:id="@+id/addWalkButton"
+        android:id="@+id/addWeatherButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/button_side_margin"
         android:layout_marginEnd="@dimen/button_side_margin"
         android:background="@drawable/button_style_primary"
         android:padding="@dimen/button_padding"
-        android:text="Add weather"
+        android:text="Create Weather Simulation"
         android:textColor="@color/md_theme_onTertiary"
         android:textStyle="bold"
         app:backgroundTint="@null"
@@ -209,8 +395,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="113dp"
-        android:layout_height="129dp"
+        android:layout_width="90dp"
+        android:layout_height="100dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="-10dp"
         android:src="@drawable/ic_tree"
@@ -219,8 +405,8 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="88dp"
-        android:layout_height="107dp"
+        android:layout_width="70dp"
+        android:layout_height="80dp"
         android:layout_marginBottom="-10dp"
         android:src="@drawable/ic_person"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
@@ -228,16 +414,17 @@
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="79dp"
-        android:layout_height="53dp"
+        android:layout_width="66dp"
+        android:layout_height="40dp"
         android:src="@drawable/ic_bench"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintStart_toEndOf="@+id/imageView2" />
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="126dp"
-        android:layout_height="125dp"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:layout_marginEnd="10dp"
         android:src="@drawable/ic_tree"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent" />

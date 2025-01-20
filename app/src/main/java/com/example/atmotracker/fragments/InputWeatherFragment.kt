@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.NumberPicker
 import android.widget.Toast
 import com.example.atmotracker.MyApplication
 import com.example.atmotracker.R
@@ -26,28 +27,27 @@ class InputWeatherFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.addWalkButton.setOnClickListener {
-            val date = binding.dateInput.text.toString()
-            val stepCount = binding.stepCountInput.text.toString().toIntOrNull() ?: -1
-            val caloriesBurned = binding.caloriesSpentInput.text.toString().toDoubleOrNull() ?: -1.0
-            val timeSpent = binding.timeSpentInput.text.toString().toLongOrNull() ?: -1L
+        configureNumberPicker(binding.WeatherSimNumberPickerHours, 23)
+        configureNumberPicker(binding.WeatherSimNumberPickerMinutes, 59)
+        configureNumberPicker(binding.WeatherSimNumberPickerSeconds, 59)
 
-            if (date.isNotEmpty() && stepCount > 0 && caloriesBurned > 0.0 && timeSpent > 0L) {
-                val newWalk = Walk(date, stepCount, caloriesBurned, timeSpent)
+        binding.addWeatherButton.setOnClickListener {
+            val temperatureStart = binding.weatherTemperatureInputStart.text.toString()
+            val temperatureEnd = binding.weatherTemperatureInputEnd.text.toString()
+            val windSpeedStart = binding.weatherWindSpeedInputStart.text.toString()
+            val windSpeedEnd = binding.weatherWindSpeedInputEnd.text.toString()
+            val windGustsStart = binding.weatherWindGustsInputStart.text.toString()
+            val windGustsEnd = binding.weatherWindGustsInputEnd.text.toString()
+            val precipitationStart = binding.weatherPrecipitationInputStart.text.toString()
+            val precipitationEnd = binding.weatherPrecipitationInputEnd.text.toString()
 
-                val app = requireActivity().application as MyApplication
-                app.walks.add(newWalk)
-                app.saveToFile()
-
-                Toast.makeText(requireContext(), "Walk added successfully!", Toast.LENGTH_SHORT).show()
-                println("walks: ${app.walks}")
-                println("WALKS SIZE: ${app.walks.size}")
-
-                parentFragmentManager.popBackStack()
-            } else {
-                Toast.makeText(requireContext(), "Please fill in all fields correctly.", Toast.LENGTH_SHORT).show()
-            }
+            parentFragmentManager.popBackStack()
         }
+    }
+
+    private fun configureNumberPicker(numberPicker: NumberPicker, max: Int) {
+        numberPicker.minValue = 0
+        numberPicker.maxValue = max
     }
 
     override fun onDestroyView() {
