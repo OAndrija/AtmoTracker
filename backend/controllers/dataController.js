@@ -69,6 +69,93 @@ module.exports = {
             });
         });
     },
+
+
+    listAllWeatherData: function (req, res) {
+        DataModel.find({
+            $or: [
+                { 'data.windGusts': { $exists: true } },
+                { 'data.temperature': { $exists: true } },
+                { 'data.windSpeed': { $exists: true } },
+                { 'data.precipitation': { $exists: true } }
+            ] // Check if at least one of the fields exists under the data object
+        })
+            .sort({ timestamp: -1 }) // Sort by timestamp in descending order
+            .populate('data_series_id')
+            .exec(function (err, weatherData) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when getting weather data.',
+                        error: err
+                    });
+                }
+    
+                if (!weatherData || weatherData.length === 0) {
+                    return res.status(404).json({
+                        message: 'No weather data found.'
+                    });
+                }
+    
+                // Transform data into a unified structure
+                const transformedData = weatherData.map(item => ({
+                    windGusts: item.data?.get('windGusts') || null,
+                    temperature: item.data?.get('temperature') || null,
+                    windSpeed: item.data?.get('windSpeed') || null,
+                    precipitation: item.data?.get('precipitation') || null,
+                    location: item.data_series_id?.location || null,
+                    name: item.data_series_id?.name || null,
+                    timestamp: item.timestamp
+                }));
+    
+                return res.json(transformedData);
+            });
+    },
+
+    listAllAirQualityData: function (req, res) {
+        DataModel.find({
+            $or: [
+                { 'data.pm10': { $exists: true } },
+                { 'data.pm25': { $exists: true } },
+                { 'data.so2': { $exists: true } },
+                { 'data.co': { $exists: true } },
+                { 'data.ozon': { $exists: true } },
+                { 'data.no2': { $exists: true } },
+                { 'data.benzen': { $exists: true } }
+            ] // Check if at least one of the fields exists under the data object
+        })
+            .sort({ timestamp: -1 }) // Sort by timestamp in descending order
+            .populate('data_series_id')
+            .exec(function (err, weatherData) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when getting weather data.',
+                        error: err
+                    });
+                }
+    
+                if (!weatherData || weatherData.length === 0) {
+                    return res.status(404).json({
+                        message: 'No weather data found.'
+                    });
+                }
+    
+                // Transform data into a unified structure
+                const transformedData = weatherData.map(item => ({
+                    pm10: item.data?.get('pm10') || null,
+                    pm25: item.data?.get('pm25') || null,
+                    so2: item.data?.get('so2') || null,
+                    co: item.data?.get('co') || null,
+                    ozon: item.data?.get('ozon') || null,
+                    no2: item.data?.get('no2')|| null,
+                    benzen: item.data?.get('benzen') || null,
+                    location: item.data_series_id?.location || null,
+                    name: item.data_series_id?.name || null,
+                    timestamp: item.timestamp
+                }));
+    
+                return res.json(transformedData);
+            });
+    },
     
     //lists all data and their corresponding data series object in the last hour
     listCurrentData: function (req, res) {
@@ -91,53 +178,65 @@ module.exports = {
 
 
     listCurrentWindSpeedData: function (req, res) {
-        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-
         DataModel.find({
-            timestamp: {$gte: oneHourAgo},
-            'data.windSpeed': {$exists: true} // Check if windSpeed exists under the data object
-        }).populate('data_series_id').select('data.windSpeed').exec(function (err, windSpeedData) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting wind speed data.',
-                    error: err
-                });
-            }
-
-            return res.json(windSpeedData);
-        });
+            'data.windSpeed': { $exists: true } // Check if windSpeed exists under the data object
+        })
+            .sort({ timestamp: -1 }) // Sort by the most recent data
+            .populate('data_series_id')
+            .exec(function (err, windSpeedData) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when getting wind speed data.',
+                        error: err
+                    });
+                }
+    
+                const transformedData = windSpeedData.map(item => ({
+                    windSpeed: item.data?.get('windSpeed'),
+                    location: item.data_series_id.location,
+                    name: item.data_series_id.name,
+                    timestamp: item.timestamp
+                }));
+    
+                return res.json(transformedData);
+            });
     },
-
     listCurrentWindGustsData(req, res) {
-        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-
         DataModel.find({
-            timestamp: {$gte: oneHourAgo},
-            'data.windGusts': {$exists: true} // Check if windSpeed exists under the data object
-        }).populate('data_series_id').exec(function (err, windGustsData) {
-            if (err) {
-                return res.status(500).json({
-                    message: 'Error when getting wind speed data.',
-                    error: err
-                });
-            }
-
-            const transformedData = windGustsData.map(item => ({
-                windGusts: item.data?.get('windGusts'),
-                location: item.data_series_id.location,
-                name: item.data_series_id.name,
-                timestamp: item.timestamp
-            }));
-
-            return res.json(transformedData);
-        });
+            'data.windGusts': { $exists: true } // Check if windGusts exists under the data object
+        })
+            .sort({ timestamp: -1 }) // Sort by timestamp in descending order
+            .populate('data_series_id')
+            .exec(function (err, windGustsData) {
+                if (err) {
+                    return res.status(500).json({
+                        message: 'Error when getting wind gusts data.',
+                        error: err
+                    });
+                }
+    
+                if (!windGustsData) {
+                    return res.status(404).json({
+                        message: 'No wind gusts data found.'
+                    });
+                }
+    
+                const transformedData = windGustsData.map(item => ({
+                    windGusts: item.data?.get('windGusts'),
+                    location: item.data_series_id.location,
+                    name: item.data_series_id.name,
+                    timestamp: item.timestamp
+                }));
+    
+                return res.json(transformedData);
+            });
     },
 
- listCurrentTemperature(req, res) { 
-        DataModel.find({  
+    listCurrentTemperature(req, res) {
+        DataModel.find({
             'data.temperature': { $exists: true } // Check if temperature exists under the data object
         })
-            .sort({ timestamp: -1 }) // Sort by timestamp in descending order, list latest instance OF ALL TIME
+            .sort({ timestamp: -1 }) // Sort by timestamp in descending order
             .populate('data_series_id')
             .exec(function (err, temperatureData) {
                 if (err) {
