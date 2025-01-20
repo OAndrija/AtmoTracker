@@ -146,7 +146,7 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         });
     }
     private void fetchAirQualityData() {
-        Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
+         Net.HttpRequest request = new Net.HttpRequest(Net.HttpMethods.GET);
         request.setUrl("http://localhost:3001/data/allAirQuality");
         request.setHeader("Content-Type", "application/json");
 
