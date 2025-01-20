@@ -130,7 +130,7 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
                     String jsonResponse = httpResponse.getResultAsString();
                     parseWeatherData(jsonResponse);
                 } else {
-                    Gdx.app.error("HTTP", "Failed to fetch weather data: " + httpResponse.getStatus().getStatusCode());
+                     Gdx.app.error("HTTP", "Failed to fetch weather data: " + httpResponse.getStatus().getStatusCode());
                 }
             }
 
