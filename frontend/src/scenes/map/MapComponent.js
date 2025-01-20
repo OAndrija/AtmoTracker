@@ -19,7 +19,7 @@ const MapComponent = () => {
   useEffect(() => {
     const fetchTemperatureData = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/data/temperature'); 
+        const response = await axios.get('http://localhost:3001/data/allAirQuality'); 
         setTemperatureData(response.data);
       } catch (error) {
         console.error('Failed to fetch temperature:', error);
@@ -41,7 +41,13 @@ const MapComponent = () => {
             <Popup>
               <div>
                 <strong>Name:</strong> {data.name}<br/>
-                <strong>Temperature:</strong> {data.temperature} C<br/>
+                <strong>PM10:</strong> {data.pm10} µg/m<sup>3</sup><br/>
+                <strong>PM2.5:</strong> {data.pm25} µg/m<sup>3</sup><br/>
+                <strong>SO<sub>2</sub>:</strong> {data.so2} µg/m<sup>3</sup><br/>
+                <strong>CO:</strong> {data.co} µg/m<sup>3</sup><br/>
+                <strong>Ozone:</strong> {data.ozon} µg/m<sup>3</sup><br/>
+                <strong>NO<sub>2</sub>:</strong> {data.no2} µg/m<sup>3</sup><br/>
+                <strong>Benzen:</strong> {data.benzen} µg/m<sup>3</sup><br/>
                 <strong>Timestamp:</strong> {new Date(data.timestamp).toLocaleString()}
               </div>
             </Popup>
