@@ -20,85 +20,183 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/md_theme_tertiary" />
 
-    <com.mikhaellopez.circularprogressbar.CircularProgressBar
-        android:id="@+id/weather_progressbar"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        app:cpb_background_progressbar_color="@color/md_theme_backgroundProgressGreen"
-        app:cpb_background_progressbar_width="16dp"
-        app:cpb_progressbar_color="@color/md_theme_progressGreen"
-        app:cpb_progressbar_width="10dp"
-        app:cpb_round_border="true"
-        app:layout_constraintBottom_toTopOf="@+id/air_quality_progressbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.mikhaellopez.circularprogressbar.CircularProgressBar
-        android:id="@+id/air_quality_progressbar"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        app:cpb_background_progressbar_color="@color/md_theme_backgroundProgressBlue"
-        app:cpb_background_progressbar_width="16dp"
-        app:cpb_progressbar_color="@color/md_theme_progressBlue"
-        app:cpb_progressbar_width="10dp"
-        app:cpb_round_border="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weather_progressbar" />
-
     <TextView
-        android:id="@+id/weatherTimeElapsedText"
+        android:id="@+id/weatherScraperTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
+        android:drawableStart="@drawable/ic_weather"
+        android:drawableTint="@color/md_theme_progressGreen"
+        android:elevation="10dp"
+        android:text=" Weather"
         android:textColor="@color/md_theme_progressGreen"
-        android:textSize="30sp"
+        android:textSize="36sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/weather_progressbar"
-        app:layout_constraintStart_toStartOf="@+id/weather_progressbar"
-        app:layout_constraintTop_toTopOf="@+id/weather_progressbar" />
+        app:layout_constraintBottom_toBottomOf="@+id/card_view1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.45"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.05" />
 
     <TextView
-        android:id="@+id/airQualityTimeElapsedText"
+        android:id="@+id/airQualityScraperTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:textSize="30sp"
-        android:textStyle="bold"
+        android:drawableStart="@drawable/ic_air"
+        android:drawableTint="@color/md_theme_progressBlue"
+        android:elevation="10dp"
+        android:text=" Air Quality"
         android:textColor="@color/md_theme_progressBlue"
-        app:layout_constraintEnd_toEndOf="@+id/air_quality_progressbar"
-        app:layout_constraintStart_toStartOf="@+id/air_quality_progressbar"
-        app:layout_constraintTop_toTopOf="@+id/air_quality_progressbar" />
-
-    <TextView
-        android:id="@+id/weatherUpdateTimeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textColor="@color/md_theme_backgroundProgressGreen"
-        android:textSize="30sp"
+        android:textSize="36sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/weather_progressbar"
-        app:layout_constraintEnd_toEndOf="@+id/weather_progressbar"
-        app:layout_constraintStart_toStartOf="@+id/weather_progressbar"
-        app:layout_constraintTop_toBottomOf="@+id/weatherTimeElapsedText"
-        app:layout_constraintVertical_bias="0.2" />
+        app:layout_constraintBottom_toBottomOf="@id/card_view2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.45"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_view1"
+        app:layout_constraintVertical_bias="0.05" />
 
-    <TextView
-        android:id="@+id/airQualityUpdateTimeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textColor="@color/md_theme_backgroundProgressBlue"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/air_quality_progressbar"
-        app:layout_constraintEnd_toEndOf="@+id/air_quality_progressbar"
-        app:layout_constraintStart_toStartOf="@+id/air_quality_progressbar"
-        app:layout_constraintTop_toBottomOf="@+id/airQualityTimeElapsedText"
-        app:layout_constraintVertical_bias="0.2" />
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view1"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        app:cardBackgroundColor="@color/md_theme_surfaceContainer"
+        app:cardCornerRadius="300dp"
+        app:cardElevation="3dp"
+        app:layout_constraintBottom_toTopOf="@id/card_view2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                android:id="@+id/weather_progressbar"
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                app:cpb_background_progressbar_color="@color/md_theme_backgroundProgressGreen"
+                app:cpb_background_progressbar_width="16dp"
+                app:cpb_progressbar_color="@color/md_theme_progressGreen"
+                app:cpb_progressbar_width="10dp"
+                app:cpb_round_border="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/weatherTimeElapsedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:textColor="@color/md_theme_progressGreen"
+                android:textSize="33sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/weather_progressbar"
+                app:layout_constraintStart_toStartOf="@+id/weather_progressbar"
+                app:layout_constraintTop_toTopOf="@+id/weather_progressbar" />
+
+            <View
+                android:id="@+id/separator"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:background="@color/md_theme_progressGreen_grayer"
+                app:layout_constraintBottom_toTopOf="@+id/weatherUpdateTimeText"
+                app:layout_constraintEnd_toEndOf="@+id/weatherTimeElapsedText"
+                app:layout_constraintStart_toStartOf="@+id/weatherTimeElapsedText"
+                app:layout_constraintTop_toBottomOf="@+id/weatherTimeElapsedText"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <TextView
+                android:id="@+id/weatherUpdateTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="60dp"
+                android:text=""
+                android:textColor="@color/md_theme_backgroundProgressGreen"
+                android:textSize="33sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/weather_progressbar"
+                app:layout_constraintEnd_toEndOf="@+id/weather_progressbar"
+                app:layout_constraintStart_toStartOf="@+id/weather_progressbar"
+                app:layout_constraintTop_toBottomOf="@+id/weatherTimeElapsedText" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_view2"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        app:cardBackgroundColor="@color/md_theme_surfaceContainer"
+        app:cardCornerRadius="2000dp"
+        app:cardElevation="3dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card_view1"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                android:id="@+id/air_quality_progressbar"
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                app:cpb_background_progressbar_color="@color/md_theme_backgroundProgressBlue"
+                app:cpb_background_progressbar_width="16dp"
+                app:cpb_progressbar_color="@color/md_theme_progressBlue"
+                app:cpb_progressbar_width="10dp"
+                app:cpb_round_border="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/airQualityTimeElapsedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:textSize="33sp"
+                android:textStyle="bold"
+                android:textColor="@color/md_theme_progressBlue"
+                app:layout_constraintEnd_toEndOf="@+id/air_quality_progressbar"
+                app:layout_constraintStart_toStartOf="@+id/air_quality_progressbar"
+                app:layout_constraintTop_toTopOf="@+id/air_quality_progressbar" />
+
+            <View
+                android:id="@+id/separator2"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:background="@color/md_theme_progressBlue_grayer"
+                app:layout_constraintStart_toStartOf="@+id/airQualityTimeElapsedText"
+                app:layout_constraintEnd_toEndOf="@+id/airQualityTimeElapsedText"
+                app:layout_constraintTop_toBottomOf="@+id/airQualityTimeElapsedText"
+                app:layout_constraintBottom_toTopOf="@+id/airQualityUpdateTimeText"
+                app:layout_constraintVertical_bias="0.5" />
+
+            <TextView
+                android:id="@+id/airQualityUpdateTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="60dp"
+                android:text=""
+                android:textColor="@color/md_theme_backgroundProgressBlue"
+                android:textSize="33sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/air_quality_progressbar"
+                app:layout_constraintEnd_toEndOf="@+id/air_quality_progressbar"
+                app:layout_constraintStart_toStartOf="@+id/air_quality_progressbar"
+                app:layout_constraintTop_toBottomOf="@+id/airQualityTimeElapsedText" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

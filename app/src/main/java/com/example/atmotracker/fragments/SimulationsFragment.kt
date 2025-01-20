@@ -69,7 +69,7 @@ class SimulationsFragment : Fragment() {
                     R.anim.slide_in_left,
                     R.anim.slide_out_right
                 )
-                .replace(R.id.fragment_container, InputFragment())
+                .replace(R.id.fragment_container, InputWeatherFragment())
                 .addToBackStack(null)
                 .commit()
         }
