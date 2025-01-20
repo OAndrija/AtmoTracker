@@ -80,7 +80,7 @@ module.exports = {
                 { 'data.precipitation': { $exists: true } }
             ] // Check if at least one of the fields exists under the data object
         })
-            .sort({ timestamp: -1 }) // Sort by timestamp in descending order
+            .sort({ timestamp: 1 }) // Sort by timestamp in descending order
             .populate('data_series_id')
             .exec(function (err, weatherData) {
                 if (err) {
@@ -123,7 +123,7 @@ module.exports = {
                 { 'data.benzen': { $exists: true } }
             ] // Check if at least one of the fields exists under the data object
         })
-            .sort({ timestamp: -1 }) // Sort by timestamp in descending order
+            .sort({ timestamp: 1 }) // Sort by timestamp in descending order
             .populate('data_series_id')
             .exec(function (err, weatherData) {
                 if (err) {
