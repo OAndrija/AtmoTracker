@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class AirQuality(
-    val name: String?,
+    val name: String,
     @Serializable(with = LocalDateTimeSerializer::class) val timestamp: LocalDateTime = LocalDateTime.now(),
-    val data: Map<String, String?>
+    val data: Map<String, String>
 )
