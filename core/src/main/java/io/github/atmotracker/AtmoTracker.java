@@ -65,7 +65,7 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
     private Stage stage;
     private Skin skin;
     // test marker
-    private final Geolocation MARKER_GEOLOCATION = new Geolocation(46.559070, 15.638100);
+
 
     @Override
     public void create() {

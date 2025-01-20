@@ -17,7 +17,5 @@ public class WeatherMarker {
         this.temperature = temperature;
         this.windSpeed = windSpeed;
         this.windGusts = windGusts;
-
-
     }
 }
