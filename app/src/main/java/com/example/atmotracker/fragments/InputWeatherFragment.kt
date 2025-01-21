@@ -10,6 +10,8 @@ import android.widget.Toast
 import com.example.atmotracker.MyApplication
 import com.example.atmotracker.R
 import com.example.atmotracker.databinding.FragmentInputBinding
+import com.example.atmotracker.model.Weather
+import com.example.atmotracker.model.WeatherSimulation
 
 class InputWeatherFragment : Fragment() {
 
@@ -31,17 +33,57 @@ class InputWeatherFragment : Fragment() {
         configureNumberPicker(binding.WeatherSimNumberPickerMinutes, 59)
         configureNumberPicker(binding.WeatherSimNumberPickerSeconds, 59)
 
-        binding.addWeatherButton.setOnClickListener {
-            val temperatureStart = binding.weatherTemperatureInputStart.text.toString()
-            val temperatureEnd = binding.weatherTemperatureInputEnd.text.toString()
-            val windSpeedStart = binding.weatherWindSpeedInputStart.text.toString()
-            val windSpeedEnd = binding.weatherWindSpeedInputEnd.text.toString()
-            val windGustsStart = binding.weatherWindGustsInputStart.text.toString()
-            val windGustsEnd = binding.weatherWindGustsInputEnd.text.toString()
-            val precipitationStart = binding.weatherPrecipitationInputStart.text.toString()
-            val precipitationEnd = binding.weatherPrecipitationInputEnd.text.toString()
+        binding.chooseLocationButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                 .replace(R.id.fragment_container, MapFragment())
+                 .addToBackStack(null)
+                 .commit()
+        }
 
-            parentFragmentManager.popBackStack()
+        binding.addWeatherButton.setOnClickListener {
+            try {
+                val temperatureStart = binding.weatherTemperatureInputStart.text.toString().toInt()
+                val temperatureEnd = binding.weatherTemperatureInputEnd.text.toString().toInt()
+                val windSpeedStart = binding.weatherWindSpeedInputStart.text.toString().toInt()
+                val windSpeedEnd = binding.weatherWindSpeedInputEnd.text.toString().toInt()
+                val windGustsStart = binding.weatherWindGustsInputStart.text.toString().toInt()
+                val windGustsEnd = binding.weatherWindGustsInputEnd.text.toString().toInt()
+                val precipitationStart =
+                    binding.weatherPrecipitationInputStart.text.toString().toInt()
+                val precipitationEnd = binding.weatherPrecipitationInputEnd.text.toString().toInt()
+                val hours = binding.WeatherSimNumberPickerHours.value
+                val minutes = binding.WeatherSimNumberPickerMinutes.value
+                val seconds = binding.WeatherSimNumberPickerSeconds.value
+                val frequencyUpdate = (hours * 3600 + minutes * 60 + seconds).toLong()
+
+                val randomData = mapOf(
+                    "temperature" to (temperatureStart..temperatureEnd).random().toString(),
+                    "precipitation" to (precipitationStart..precipitationEnd).random().toString(),
+                    "windSpeed" to (windSpeedStart..windSpeedEnd).random().toString(),
+                    "windGusts" to (windGustsStart..windGustsEnd).random().toString()
+                )
+
+                val weather = Weather(
+                    name = "Custom Location",
+                    data = randomData
+                )
+
+                val weatherSimulation = WeatherSimulation(
+                    name = "Weather",
+                    frequencyUpdate = frequencyUpdate,
+                    location = "Custom Location",
+                    weather = weather
+                )
+
+                val app = requireActivity().application as MyApplication
+                app.weatherSimulations.add(weatherSimulation)
+                app.saveSimulations()
+
+                parentFragmentManager.popBackStack()
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Please enter valid ranges", Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
     }
 

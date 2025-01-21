@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.PopupMenu
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.atmotracker.MyApplication
 import com.example.atmotracker.R
@@ -37,6 +38,13 @@ class SimulationsFragment : Fragment() {
         items.addAll(app.airQualitySimulations.map { Item.AirQualitySimulationItem(it) })
         items.addAll(app.weatherSimulations.map { Item.WeatherSimulationItem(it) })
 
+        items.sortByDescending {
+            when (it) {
+                is Item.AirQualitySimulationItem -> it.airQuality.airQuality.timestamp
+                is Item.WeatherSimulationItem -> it.weather.weather.timestamp
+            }
+        }
+
         // Initialize adapter
         generalAdapter = GeneralAdapter(items) { removedItem ->
             when (removedItem) {
@@ -47,6 +55,7 @@ class SimulationsFragment : Fragment() {
                     app.weatherSimulations.remove(removedItem.weather)
                 }
             }
+            app.saveSimulations()
         }
 
         binding.recyclerView.apply {
@@ -59,19 +68,39 @@ class SimulationsFragment : Fragment() {
         binding.addButton.startAnimation(slideIn)
 
         binding.addButton.setOnClickListener {
-            val slideLeft = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_out_left)
-            binding.addButton.startAnimation(slideLeft)
+            val popupMenu = PopupMenu(requireContext(), it)
+            popupMenu.menuInflater.inflate(R.menu.add_menu, popupMenu.menu)
 
-            parentFragmentManager.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.slide_in_right,
-                    R.anim.slide_out_left,
-                    R.anim.slide_in_left,
-                    R.anim.slide_out_right
-                )
-                .replace(R.id.fragment_container, InputWeatherFragment())
-                .addToBackStack(null)
-                .commit()
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.action_weather -> {
+                        parentFragmentManager.beginTransaction()
+                            .setCustomAnimations(
+                                R.anim.slide_in_right,
+                                R.anim.slide_out_left,
+                                R.anim.slide_in_left,
+                                R.anim.slide_out_right
+                            )
+                            .replace(R.id.fragment_container, InputWeatherFragment())
+                            .addToBackStack(null)
+                            .commit()
+                    }
+                    R.id.action_air_quality -> {
+                        parentFragmentManager.beginTransaction()
+                            .setCustomAnimations(
+                                R.anim.slide_in_right,
+                                R.anim.slide_out_left,
+                                R.anim.slide_in_left,
+                                R.anim.slide_out_right
+                            )
+                            .replace(R.id.fragment_container, InputAirQualityFragment())
+                            .addToBackStack(null)
+                            .commit()
+                    }
+                }
+                true
+            }
+            popupMenu.show()
         }
     }
 

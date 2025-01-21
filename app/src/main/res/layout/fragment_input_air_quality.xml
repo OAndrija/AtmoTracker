@@ -90,76 +90,76 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/weatherTemperatureLabel"
+                android:id="@+id/airQualityPM10Label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:padding="5dp"
-                android:text="Temperature:"
+                android:text="PM10:"
                 android:textAlignment="viewStart"
                 android:textColor="@color/md_theme_primary"
                 android:textSize="@dimen/label_font_size"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/weatherWindSpeedLabel"
+                app:layout_constraintBottom_toTopOf="@+id/airQualityPM25Label"
                 app:layout_constraintEnd_toStartOf="@+id/horizontalGuideline"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
             <EditText
-                android:id="@+id/weatherTemperatureInputStart"
+                android:id="@+id/airQualityPM10InputStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="15dp"
                 android:backgroundTint="@color/md_theme_onSurfaceVariant"
                 android:ems="15"
-                android:inputType="numberSigned"
+                android:inputType="number"
                 android:padding="15dp"
                 android:textColor="@color/md_theme_onSurface"
                 android:textSize="@dimen/input_font_size"
-                app:layout_constraintBottom_toBottomOf="@+id/weatherTemperatureLabel"
+                app:layout_constraintBottom_toBottomOf="@+id/airQualityPM10Label"
                 app:layout_constraintEnd_toEndOf="@id/guideline3"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/horizontalGuideline"
-                app:layout_constraintTop_toTopOf="@+id/weatherTemperatureLabel" />
+                app:layout_constraintTop_toTopOf="@+id/airQualityPM10Label" />
 
             <EditText
-                android:id="@+id/weatherTemperatureInputEnd"
+                android:id="@+id/airQualityPM10InputEnd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
                 android:layout_marginEnd="15dp"
                 android:backgroundTint="@color/md_theme_onSurfaceVariant"
                 android:ems="15"
-                android:inputType="numberSigned"
+                android:inputType="number"
                 android:padding="15dp"
                 android:textColor="@color/md_theme_onSurface"
                 android:textSize="@dimen/input_font_size"
-                app:layout_constraintBottom_toBottomOf="@+id/weatherTemperatureLabel"
+                app:layout_constraintBottom_toBottomOf="@+id/airQualityPM10Label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/guideline3"
-                app:layout_constraintTop_toTopOf="@+id/weatherTemperatureLabel" />
+                app:layout_constraintTop_toTopOf="@+id/airQualityPM10Label" />
 
             <TextView
-                android:id="@+id/weatherWindSpeedLabel"
+                android:id="@+id/airQualityPM25Label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:padding="5dp"
-                android:text="Wind Speed:"
+                android:text="PM2.5:"
                 android:textColor="@color/md_theme_primary"
                 android:textSize="@dimen/label_font_size"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/weatherWindGustsLabel"
+                app:layout_constraintBottom_toTopOf="@+id/airQualityOzonLabel"
                 app:layout_constraintEnd_toStartOf="@+id/horizontalGuideline"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/weatherTemperatureLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/airQualityPM10Label" />
 
             <EditText
-                android:id="@+id/weatherWindSpeedInputStart"
+                android:id="@+id/airQualityPM25InputStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
@@ -171,14 +171,14 @@
                 android:padding="15dp"
                 android:textColor="@color/md_theme_onSurface"
                 android:textSize="@dimen/input_font_size"
-                app:layout_constraintBottom_toBottomOf="@+id/weatherWindSpeedLabel"
+                app:layout_constraintBottom_toBottomOf="@+id/airQualityPM25Label"
                 app:layout_constraintEnd_toEndOf="@id/guideline3"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/horizontalGuideline"
-                app:layout_constraintTop_toTopOf="@+id/weatherWindSpeedLabel" />
+                app:layout_constraintTop_toTopOf="@+id/airQualityPM25Label" />
 
             <EditText
-                android:id="@+id/weatherWindSpeedInputEnd"
+                android:id="@+id/airQualityPM25InputEnd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
@@ -190,30 +190,30 @@
                 android:padding="15dp"
                 android:textColor="@color/md_theme_onSurface"
                 android:textSize="@dimen/input_font_size"
-                app:layout_constraintBottom_toBottomOf="@+id/weatherWindSpeedLabel"
+                app:layout_constraintBottom_toBottomOf="@+id/airQualityPM25Label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@id/guideline3"
-                app:layout_constraintTop_toTopOf="@+id/weatherWindSpeedLabel" />
+                app:layout_constraintTop_toTopOf="@+id/airQualityPM25Label" />
 
             <TextView
-                android:id="@+id/weatherWindGustsLabel"
+                android:id="@+id/airQualityOzonLabel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:padding="5dp"
-                android:text="Wind Gusts:"
+                android:text="Ozon:"
                 android:textColor="@color/md_theme_primary"
                 android:textSize="@dimen/label_font_size"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/weatherPrecipitationLabel"
+                app:layout_constraintBottom_toTopOf="@+id/airQualityNO2Label"
                 app:layout_constraintEnd_toStartOf="@+id/horizontalGuideline"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/weatherWindSpeedLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/airQualityPM25Label" />
 
             <EditText
-                android:id="@+id/weatherWindGustsInputStart"
+                android:id="@+id/airQualityOzonInputStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
@@ -224,14 +224,14 @@
                 android:padding="15dp"
                 android:textColor="@color/md_theme_onSurface"
                 android:textSize="@dimen/input_font_size"
-                app:layout_constraintBottom_toBottomOf="@+id/weatherWindGustsLabel"
+                app:layout_constraintBottom_toBottomOf="@+id/airQualityOzonLabel"
                 app:layout_constraintEnd_toEndOf="@id/guideline3"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/horizontalGuideline"
-                app:layout_constraintTop_toTopOf="@+id/weatherWindGustsLabel" />
+                app:layout_constraintTop_toTopOf="@+id/airQualityOzonLabel" />
 
             <EditText
-                android:id="@+id/weatherWindGustsInputEnd"
+                android:id="@+id/airQualityOzonInputEnd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
@@ -242,19 +242,19 @@
                 android:padding="15dp"
                 android:textColor="@color/md_theme_onSurface"
                 android:textSize="@dimen/input_font_size"
-                app:layout_constraintBottom_toBottomOf="@+id/weatherWindGustsLabel"
+                app:layout_constraintBottom_toBottomOf="@+id/airQualityOzonLabel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@id/guideline3"
-                app:layout_constraintTop_toTopOf="@+id/weatherWindGustsLabel" />
+                app:layout_constraintTop_toTopOf="@+id/airQualityOzonLabel" />
 
             <TextView
-                android:id="@+id/weatherPrecipitationLabel"
+                android:id="@+id/airQualityNO2Label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:padding="5dp"
-                android:text="Precipitation"
+                android:text="NO2:"
                 android:textColor="@color/md_theme_primary"
                 android:textSize="@dimen/label_font_size"
                 android:textStyle="bold"
@@ -262,10 +262,10 @@
                 app:layout_constraintEnd_toStartOf="@+id/horizontalGuideline"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/weatherWindGustsLabel" />
+                app:layout_constraintTop_toBottomOf="@+id/airQualityOzonLabel" />
 
             <EditText
-                android:id="@+id/weatherPrecipitationInputStart"
+                android:id="@+id/airQualityNO2InputStart"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
@@ -276,14 +276,14 @@
                 android:padding="15dp"
                 android:textColor="@color/md_theme_onSurface"
                 android:textSize="@dimen/input_font_size"
-                app:layout_constraintBottom_toBottomOf="@+id/weatherPrecipitationLabel"
+                app:layout_constraintBottom_toBottomOf="@+id/airQualityNO2Label"
                 app:layout_constraintEnd_toEndOf="@id/guideline3"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@+id/horizontalGuideline"
-                app:layout_constraintTop_toTopOf="@+id/weatherPrecipitationLabel" />
+                app:layout_constraintTop_toTopOf="@+id/airQualityNO2Label" />
 
             <EditText
-                android:id="@+id/weatherPrecipitationInputEnd"
+                android:id="@+id/airQualityNO2InputEnd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="0dp"
@@ -294,14 +294,14 @@
                 android:padding="15dp"
                 android:textColor="@color/md_theme_onSurface"
                 android:textSize="@dimen/input_font_size"
-                app:layout_constraintBottom_toBottomOf="@+id/weatherPrecipitationLabel"
+                app:layout_constraintBottom_toBottomOf="@+id/airQualityNO2Label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="@id/guideline3"
-                app:layout_constraintTop_toTopOf="@+id/weatherPrecipitationLabel" />
+                app:layout_constraintTop_toTopOf="@+id/airQualityNO2Label" />
 
             <LinearLayout
-                android:id="@+id/weather_number_picker_container"
+                android:id="@+id/air_quality_number_picker_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -312,19 +312,19 @@
                 app:layout_constraintTop_toBottomOf="@id/guideline">
 
                 <NumberPicker
-                    android:id="@+id/WeatherSimNumberPickerHours"
+                    android:id="@+id/AirQualitySimNumberPickerHours"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="3dp" />
 
                 <NumberPicker
-                    android:id="@+id/WeatherSimNumberPickerMinutes"
+                    android:id="@+id/AirQualitySimNumberPickerMinutes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="3dp" />
 
                 <NumberPicker
-                    android:id="@+id/WeatherSimNumberPickerSeconds"
+                    android:id="@+id/AirQualitySimNumberPickerSeconds"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="3dp" />
@@ -381,7 +381,7 @@
         android:layout_marginEnd="@dimen/button_side_margin"
         android:background="@drawable/button_style_primary"
         android:padding="@dimen/button_padding"
-        android:text="Create Weather Simulation"
+        android:text="Create Air Quality Simulation"
         android:textColor="@color/md_theme_onTertiary"
         android:textStyle="bold"
         app:backgroundTint="@null"
@@ -397,35 +397,19 @@
         android:id="@+id/imageView"
         android:layout_width="90dp"
         android:layout_height="100dp"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="60dp"
         android:layout_marginBottom="-10dp"
-        android:src="@drawable/ic_tree"
+        android:src="@drawable/ic_factory1"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="70dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="-10dp"
-        android:src="@drawable/ic_person"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
-        app:layout_constraintStart_toEndOf="@+id/imageView" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="66dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_bench"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
-        app:layout_constraintStart_toEndOf="@+id/imageView2" />
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:layout_marginEnd="10dp"
-        android:src="@drawable/ic_tree"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginEnd="60dp"
+        android:src="@drawable/ic_factory2"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintEnd_toEndOf="parent" />
 

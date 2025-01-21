@@ -69,7 +69,7 @@ class GeneralAdapter(
         private val binding = ItemAirQualityBinding.bind(view)
 
         fun bind(airQualitySimulation: AirQualitySimulation) {
-            binding.airQualityFreqLabel.text = "${airQualitySimulation.frequencyUpdate}s"
+            binding.airQualityFreqLabel.text = formatFrequencyUpdate(airQualitySimulation.frequencyUpdate)
             binding.locationLabel.text = "${airQualitySimulation.location}"
 
             val pm10 = airQualitySimulation.airQuality.data["pm10"] ?: "N/A"
@@ -97,7 +97,7 @@ class GeneralAdapter(
         private val binding = ItemWeatherBinding.bind(view)
 
         fun bind(weatherSimulation: WeatherSimulation) {
-            binding.weatherFreqLabel.text = "${weatherSimulation.frequencyUpdate}s"
+            binding.weatherFreqLabel.text = formatFrequencyUpdate(weatherSimulation.frequencyUpdate)
             binding.locationLabel.text = "${weatherSimulation.location}"
 
             val temperature = weatherSimulation.weather.data["temperature"] ?: "N/A"
@@ -131,5 +131,13 @@ class GeneralAdapter(
             }
             .setNegativeButton("No", null)
             .show()
+    }
+
+    private fun formatFrequencyUpdate(seconds: Long): String {
+        val hours = seconds / 3600
+        val minutes = (seconds % 3600) / 60
+        val remainingSeconds = seconds % 60
+
+        return "Every ${hours} hours, ${minutes} minutes and ${remainingSeconds} seconds"
     }
 }
