@@ -36,7 +36,7 @@ class SimulationsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         Log.d("SimulationsFragment", "onViewCreated called")
 
-        viewModel = ViewModelProvider(this)[SimulationsViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[SimulationsViewModel::class.java]
         Log.d("SimulationsFragment", "ViewModel initialized")
 
         val app = requireActivity().application as MyApplication
@@ -71,14 +71,24 @@ class SimulationsFragment : Fragment() {
             adapter = generalAdapter
         }
 
-        app.airQualitySimulations.forEach {
-            Log.d("SimulationsFragment", "Starting updates for AirQuality simulation: ${it.id}")
-            viewModel.startSimulationUpdates(it)
+        viewModel.simulationUpdates.observe(viewLifecycleOwner) { updates ->
+            updates.forEach { (id, status) ->
+                Log.d("SimulationsFragment", "Simulation $id: $status")
+            }
         }
 
-        app.weatherSimulations.forEach {
-            Log.d("SimulationsFragment", "Starting updates for Weather simulation: ${it.id}")
-            viewModel.startSimulationUpdates(it)
+        app.airQualitySimulations.forEach { simulation ->
+            if (!viewModel.isSimulationRunning(simulation.id)) {
+                Log.d("SimulationsFragment", "Starting updates for AirQuality simulation: ${simulation.id}")
+                viewModel.startSimulationUpdates(simulation)
+            }
+        }
+
+        app.weatherSimulations.forEach { simulation ->
+            if (!viewModel.isSimulationRunning(simulation.id)) {
+                Log.d("SimulationsFragment", "Starting updates for Weather simulation: ${simulation.id}")
+                viewModel.startSimulationUpdates(simulation)
+            }
         }
 
         binding.addButton.setOnClickListener {
@@ -87,30 +97,8 @@ class SimulationsFragment : Fragment() {
 
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
-                    R.id.action_weather -> {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.slide_in_right,
-                                R.anim.slide_out_left,
-                                R.anim.slide_in_left,
-                                R.anim.slide_out_right
-                            )
-                            .replace(R.id.fragment_container, InputWeatherFragment())
-                            .addToBackStack(null)
-                            .commit()
-                    }
-                    R.id.action_air_quality -> {
-                        parentFragmentManager.beginTransaction()
-                            .setCustomAnimations(
-                                R.anim.slide_in_right,
-                                R.anim.slide_out_left,
-                                R.anim.slide_in_left,
-                                R.anim.slide_out_right
-                            )
-                            .replace(R.id.fragment_container, InputAirQualityFragment())
-                            .addToBackStack(null)
-                            .commit()
-                    }
+                    R.id.action_weather -> navigateToFragment(InputWeatherFragment())
+                    R.id.action_air_quality -> navigateToFragment(InputAirQualityFragment())
                 }
                 true
             }
@@ -118,15 +106,23 @@ class SimulationsFragment : Fragment() {
         }
     }
 
+    private fun navigateToFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left,
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+            )
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         Log.d("SimulationsFragment", "onDestroyView called")
         _binding = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d("SimulationsFragment", "onDestroy called")
     }
 }
 
