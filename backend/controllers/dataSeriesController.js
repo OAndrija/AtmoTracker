@@ -126,5 +126,41 @@ module.exports = {
 
             return res.status(204).json();
         });
+    },
+
+    sendAllWeatherSeries: function (req, res) {
+        DataSeriesModel.find({tags: 'weather'}, 'tags location', function (err, dataSeriess) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting weather data series.',
+                    error: err
+                });
+            }
+    
+            const result = dataSeriess.map(item => ({
+                location: item.location,
+                tags: item.tags || 'Unknown'
+            }));
+    
+            return res.json(result);
+        });
+    },
+
+    sendAllAirQualitySeries: function (req, res) {
+        DataSeriesModel.find({tags: 'air_quality'}, 'tags location', function (err, dataSeriess) {
+            if (err) {
+                return res.status(500).json({
+                    message: 'Error when getting air quality data series.',
+                    error: err
+                });
+            }
+    
+            const result = dataSeriess.map(item => ({
+                location: item.location,
+                tags: item.tags || 'Unknown'
+            }));
+    
+            return res.json(result);
+        });
     }
 };

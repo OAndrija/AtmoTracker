@@ -6,7 +6,8 @@ var dataSeriesController = require('../controllers/dataSeriesController.js');
  * GET
  */
 router.get('/location', dataSeriesController.list);
-
+router.get('/weather', dataSeriesController.sendAllWeatherSeries);
+router.get('/airquality', dataSeriesController.sendAllAirQualitySeries);
 /*
  * GET
  */
