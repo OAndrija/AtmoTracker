@@ -63,7 +63,8 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
     private TiledMap tiledMap;
     private TiledMapRenderer tiledMapRenderer;
     private OrthographicCamera camera;
-
+    private Texture weatherIcon;
+    private Texture airQualityIcon;
     private Texture[] mapTiles;
     private ZoomXY beginTile;   // top left tile
 
@@ -96,9 +97,10 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         fireEffect = new ParticleEffect();
         fireEffect.load(Gdx.files.internal("particles/fire.p"), Gdx.files.internal("particles"));
         smokeEffect = new ParticleEffect();
-        smokeEffect.load(Gdx.files.internal("particles/smoke.p"), Gdx.files.internal("particles"));
+        smokeEffect.load(Gdx.files.internal("particles/smoke2.p"), Gdx.files.internal("particles"));
 
-
+        weatherIcon = new Texture(Gdx.files.internal("images/weather.png"));
+        airQualityIcon  = new Texture(Gdx.files.internal("images/air.png"));
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Constants.MAP_WIDTH, Constants.MAP_HEIGHT);
         camera.position.set(Constants.MAP_WIDTH / 2f, Constants.MAP_HEIGHT / 2f, 0);
@@ -301,37 +303,36 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
     }
 
     private void drawWeatherDataMarkers() {
-        shapeRenderer.setProjectionMatrix(camera.combined);
+       //shapeRenderer.setProjectionMatrix(camera.combined);
         spriteBatch.setProjectionMatrix(camera.combined);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        spriteBatch.begin();
 
         for (WeatherMarker marker : weatherMarkers) {
             Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.location.lat, marker.location.lng, beginTile.x, beginTile.y);
-            shapeRenderer.circle(markerPosition.x, markerPosition.y, 10);
+            spriteBatch.draw(weatherIcon, markerPosition.x - weatherIcon.getWidth() / 2f, markerPosition.y - weatherIcon.getHeight() / 2f);
 
         }
-        shapeRenderer.end();
+        spriteBatch.end();
 
 
 
     }
     private void drawAirQualityDataMarkers() {
-        shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.setColor(Color.BLUE);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
+        spriteBatch.setProjectionMatrix(camera.combined);
+        spriteBatch.begin();
         for (AirQualityMarker  marker : airQualityMarkers) {
             Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.location.lat, marker.location.lng, beginTile.x, beginTile.y);
-            shapeRenderer.circle(markerPosition.x, markerPosition.y, 10);
+            spriteBatch.draw(airQualityIcon, markerPosition.x - weatherIcon.getWidth() / 2f, markerPosition.y - weatherIcon.getHeight() / 2f);
         }
 
-        shapeRenderer.end();
+        spriteBatch.end();
     }
 
     @Override
     public void dispose() {
         shapeRenderer.dispose();
+        weatherIcon.dispose();
     }
 
     @Override
