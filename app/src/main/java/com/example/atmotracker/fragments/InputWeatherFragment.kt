@@ -17,6 +17,7 @@ class InputWeatherFragment : Fragment() {
 
     private var _binding: FragmentInputBinding? = null
     private val binding get() = _binding!!
+    private var selectedMarkerName: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,6 +34,11 @@ class InputWeatherFragment : Fragment() {
         configureNumberPicker(binding.WeatherSimNumberPickerMinutes, 59)
         configureNumberPicker(binding.WeatherSimNumberPickerSeconds, 59)
 
+        parentFragmentManager.setFragmentResultListener("markerSelectionKey", this) { _, bundle ->
+            selectedMarkerName = bundle.getString("selectedMarkerName")
+            Toast.makeText(requireContext(), "Location selected: $selectedMarkerName", Toast.LENGTH_SHORT).show()
+        }
+
         binding.chooseLocationButton.setOnClickListener {
             parentFragmentManager.beginTransaction()
                  .replace(R.id.fragment_container, MapFragment())
@@ -42,19 +48,52 @@ class InputWeatherFragment : Fragment() {
 
         binding.addWeatherButton.setOnClickListener {
             try {
-                val temperatureStart = binding.weatherTemperatureInputStart.text.toString().toInt()
-                val temperatureEnd = binding.weatherTemperatureInputEnd.text.toString().toInt()
-                val windSpeedStart = binding.weatherWindSpeedInputStart.text.toString().toInt()
-                val windSpeedEnd = binding.weatherWindSpeedInputEnd.text.toString().toInt()
-                val windGustsStart = binding.weatherWindGustsInputStart.text.toString().toInt()
-                val windGustsEnd = binding.weatherWindGustsInputEnd.text.toString().toInt()
-                val precipitationStart =
-                    binding.weatherPrecipitationInputStart.text.toString().toInt()
-                val precipitationEnd = binding.weatherPrecipitationInputEnd.text.toString().toInt()
+                val temperatureStartStr = binding.weatherTemperatureInputStart.text.toString()
+                val temperatureEndStr = binding.weatherTemperatureInputEnd.text.toString()
+                val windSpeedStartStr = binding.weatherWindSpeedInputStart.text.toString()
+                val windSpeedEndStr = binding.weatherWindSpeedInputEnd.text.toString()
+                val windGustsStartStr = binding.weatherWindGustsInputStart.text.toString()
+                val windGustsEndStr = binding.weatherWindGustsInputEnd.text.toString()
+                val precipitationStartStr = binding.weatherPrecipitationInputStart.text.toString()
+                val precipitationEndStr = binding.weatherPrecipitationInputEnd.text.toString()
+
+                if (temperatureStartStr.isBlank() || temperatureEndStr.isBlank() ||
+                    windSpeedStartStr.isBlank() || windSpeedEndStr.isBlank() ||
+                    windGustsStartStr.isBlank() || windGustsEndStr.isBlank() ||
+                    precipitationStartStr.isBlank() || precipitationEndStr.isBlank()) {
+                    Toast.makeText(requireContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                val temperatureStart = temperatureStartStr.toInt()
+                val temperatureEnd = temperatureEndStr.toInt()
+                val windSpeedStart = windSpeedStartStr.toInt()
+                val windSpeedEnd = windSpeedEndStr.toInt()
+                val windGustsStart = windGustsStartStr.toInt()
+                val windGustsEnd = windGustsEndStr.toInt()
+                val precipitationStart = precipitationStartStr.toInt()
+                val precipitationEnd = precipitationEndStr.toInt()
+
+                if (temperatureStart > temperatureEnd || windSpeedStart > windSpeedEnd ||
+                    windGustsStart > windGustsEnd || precipitationStart > precipitationEnd) {
+                    Toast.makeText(requireContext(), "Invalid range: Start values must be <= End values", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (selectedMarkerName == null) {
+                    Toast.makeText(requireContext(), "Please select a location", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
                 val hours = binding.WeatherSimNumberPickerHours.value
                 val minutes = binding.WeatherSimNumberPickerMinutes.value
                 val seconds = binding.WeatherSimNumberPickerSeconds.value
                 val frequencyUpdate = (hours * 3600 + minutes * 60 + seconds).toLong()
+
+                if (frequencyUpdate <= 0) {
+                    Toast.makeText(requireContext(), "Update frequency must be greater than 0", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
                 val randomData = mapOf(
                     "temperature" to (temperatureStart..temperatureEnd).random().toString(),
@@ -64,14 +103,14 @@ class InputWeatherFragment : Fragment() {
                 )
 
                 val weather = Weather(
-                    name = "Custom Location",
+                    name = "Weather $selectedMarkerName",
                     data = randomData
                 )
 
                 val weatherSimulation = WeatherSimulation(
                     name = "Weather",
                     frequencyUpdate = frequencyUpdate,
-                    location = "Custom Location",
+                    location = "$selectedMarkerName",
                     weather = weather
                 )
 
@@ -80,9 +119,9 @@ class InputWeatherFragment : Fragment() {
                 app.saveSimulations()
 
                 parentFragmentManager.popBackStack()
+
             } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Please enter valid ranges", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), "An error occurred: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -27,14 +27,15 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import java.io.IOException
 
-class MapFragment : Fragment() {
+
+class AirQualityMapFragment : Fragment() {
     private lateinit var mapView: MapView
-    private lateinit var chooseMarkedWeatherButton: Button
-    private lateinit var hintWeatherText: TextView
+    private lateinit var chooseMarkedAirQualityButton: Button
+    private lateinit var hintAirQualityText: TextView
     private var selectedMarker: Marker? = null
 
     companion object {
-        private const val TAG = "MapFragment"
+        private const val TAG = "AirQualityMapFragment"
     }
 
     override fun onCreateView(
@@ -45,16 +46,16 @@ class MapFragment : Fragment() {
             requireContext(),
             requireContext().getSharedPreferences("osm_prefs", 0)
         )
-        return inflater.inflate(R.layout.fragment_map, container, false)
+        return inflater.inflate(R.layout.fragment_air_quality_map, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mapView = view.findViewById(R.id.osm_map)
-        chooseMarkedWeatherButton = view.findViewById(R.id.chooseMarkedWeatherButton)
-        hintWeatherText = view.findViewById(R.id.hintWeatherText)
-        chooseMarkedWeatherButton.visibility = View.GONE
+        mapView = view.findViewById(R.id.osm_map_airquality)
+        chooseMarkedAirQualityButton = view.findViewById(R.id.chooseMarkedAirQualityButton)
+        hintAirQualityText = view.findViewById(R.id.hintAirQualityText)
+        chooseMarkedAirQualityButton.visibility = View.GONE
 
         mapView.setMultiTouchControls(true)
         val mapController: IMapController = mapView.controller
@@ -63,7 +64,7 @@ class MapFragment : Fragment() {
 
         fetchWeatherData()
 
-        chooseMarkedWeatherButton.setOnClickListener {
+        chooseMarkedAirQualityButton.setOnClickListener {
             selectedMarker?.let {
                 val result = Bundle().apply {
                     putString("selectedMarkerName", it.title)
@@ -80,7 +81,7 @@ class MapFragment : Fragment() {
         val client = OkHttpClient()
 
         val request = Request.Builder()
-            .url("http://192.168.1.162:3002/dataSeries/weather")
+            .url("http://192.168.1.162:3002/dataSeries/airquality")
             .build()
 
         client.newCall(request).enqueue(object : Callback {
@@ -89,7 +90,7 @@ class MapFragment : Fragment() {
                     val json = response.body?.string()
                     Log.d(TAG, "JSON Response: $json")
 
-                    val dataSeriesList = parseWeatherData(json)
+                    val dataSeriesList = parseAirQualityData(json)
 
                     activity?.runOnUiThread {
                         addMarkersToMap(dataSeriesList)
@@ -111,7 +112,7 @@ class MapFragment : Fragment() {
         })
     }
 
-    private fun parseWeatherData(json: String?): List<LocationData> {
+    private fun parseAirQualityData(json: String?): List<LocationData> {
         val dataSeriesList = mutableListOf<LocationData>()
 
         if (!json.isNullOrEmpty()) {
@@ -169,20 +170,20 @@ class MapFragment : Fragment() {
     }
 
     private fun showButtonWithAnimation() {
-        if (chooseMarkedWeatherButton.visibility == View.GONE) {
+        if (chooseMarkedAirQualityButton.visibility == View.GONE) {
             val fadeIn = AlphaAnimation(0f, 1f)
             fadeIn.duration = 300
-            chooseMarkedWeatherButton.startAnimation(fadeIn)
-            chooseMarkedWeatherButton.visibility = View.VISIBLE
+            chooseMarkedAirQualityButton.startAnimation(fadeIn)
+            chooseMarkedAirQualityButton.visibility = View.VISIBLE
         }
     }
 
     private fun hideHintWithAnimation() {
-        if (hintWeatherText.visibility == View.VISIBLE) {
+        if (hintAirQualityText.visibility == View.VISIBLE) {
             val fadeOut = AlphaAnimation(1f, 0f)
             fadeOut.duration = 300
-            hintWeatherText.startAnimation(fadeOut)
-            hintWeatherText.visibility = View.GONE
+            hintAirQualityText.startAnimation(fadeOut)
+            hintAirQualityText.visibility = View.GONE
         }
     }
 

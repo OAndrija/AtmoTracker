@@ -5,10 +5,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.MapFragment">
+    tools:context=".fragments.AirQualityMapFragment">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/hintWeatherCard"
+        android:id="@+id/hintAirQualityCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -23,13 +23,13 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/hintWeatherText"
+            android:id="@+id/hintAirQualityText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_hint"
             app:drawableTint="@color/md_theme_onTertiary"
             android:gravity="center_vertical"
-            android:text="Choose one of the marked Weather Stations"
+            android:text="Choose one of the marked Air Quality Stations"
             android:textColor="@color/md_theme_onTertiary"
             android:textSize="13sp"
             android:padding="4sp"
@@ -37,7 +37,7 @@
     </androidx.cardview.widget.CardView>
 
     <org.osmdroid.views.MapView
-        android:id="@+id/osm_map"
+        android:id="@+id/osm_map_airquality"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,7 +48,7 @@
     </org.osmdroid.views.MapView>
 
     <Button
-        android:id="@+id/chooseMarkedWeatherButton"
+        android:id="@+id/chooseMarkedAirQualityButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/button_side_margin"
