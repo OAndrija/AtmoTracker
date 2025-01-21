@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -28,6 +29,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
@@ -39,10 +41,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import io.github.atmotracker.markers.AirQualityMarker;
 import io.github.atmotracker.markers.WeatherMarker;
 import io.github.atmotracker.utility.Constants;
 import io.github.atmotracker.utility.Geolocation;
 import io.github.atmotracker.utility.MapRasterTiles;
+import io.github.atmotracker.utility.MarkerType;
 import io.github.atmotracker.utility.ZoomXY;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -59,9 +63,12 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
     private ZoomXY beginTile;   // top left tile
 
     private List<WeatherMarker> weatherMarkers = new ArrayList<>(); //markers for the weatherData
-    private List<Geolocation> airQualityMarkers = new ArrayList<>();
-    // center geolocation
+    private List<AirQualityMarker> airQualityMarkers = new ArrayList<>();
+    private MarkerType currentMarkerType = MarkerType.WEATHER;
     private final Geolocation CENTER_GEOLOCATION = new Geolocation(46.1512, 14.9955);
+
+    private BitmapFont font;
+
     private Stage stage;
     private Skin skin;
     // test marker
@@ -72,7 +79,9 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
 
 
         fetchWeatherData();
-        //fetchAirQualityData();
+        fetchAirQualityData();
+        font = new BitmapFont();
+        font.setColor(Color.BLACK);
         shapeRenderer = new ShapeRenderer();
 
         camera = new OrthographicCamera();
@@ -183,17 +192,18 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
             float temperature = entry.getFloat("temperature", 0);
             String name = entry.getString("name", "Unknown");
             float windSpeed = entry.getFloat("windSpeed", 0);
-            float windGusts = entry.getFloat("windGusts", 0);
-            //float precipitation = entry.getFloat("precipitation", 0);
-            if (latitude != 0 && longitude != 0) {
+            float windGusts = entry.getFloat("windGusts",0);
+            float precipitation = entry.getFloat("precipitation",0);
+            if (Objects.equals(name, "Weather Ljubljana")) {
                 weatherMarkers.add(new WeatherMarker(
                     new Geolocation(latitude, longitude),
                     name,
                     temperature,
                     windSpeed,
-                    windGusts
+                    windGusts,
+                    precipitation
                 ));
-                //System.out.println( "Temp=" + temperature + ", Name=" + name + "windspeed "+  windSpeed + " windgust "+  windGusts + " precipitation ");
+                System.out.println( "Temp=" + temperature + ", Name=" + name + "windspeed "+  windSpeed + " windgust "+  windGusts + " precipitation " + precipitation);
             }
         }
 
@@ -204,15 +214,40 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
 
         airQualityMarkers.clear(); // Clear existing markers
         for (JsonValue entry : root) {
-            float latitude = entry.get("location").getFloat("latitude", 0);  // Replace with your actual field name
-            float longitude = entry.get("location").getFloat("longitude", 0); // Replace with your actual field name
-
+            float latitude = entry.get("location").getFloat("latitude", 0);
+            float longitude = entry.get("location").getFloat("longitude", 0);
+            String name = entry.getString("name", "Unknown");
+            float pm10 = safeParseFloat(entry.getString("pm10", "0"));
+            float pm25 = safeParseFloat(entry.getString("pm25", "0"));
+            float so2 = safeParseFloat(entry.getString("so2", "0"));
+            float co = safeParseFloat(entry.getString("co", "0"));
+            float ozon = safeParseFloat(entry.getString("ozon", "0"));
+            float no2 = safeParseFloat(entry.getString("no2", "0"));
+            float benzen = safeParseFloat(entry.getString("benzen", "0"));
             if (latitude != 0 && longitude != 0) {
-                airQualityMarkers.add(new Geolocation(latitude, longitude));
+                airQualityMarkers.add(new AirQualityMarker(
+                    new Geolocation(latitude, longitude),
+                    name,
+                    pm10,
+                    pm25,
+                    so2,
+                    co,
+                    ozon,
+                    no2,
+                    benzen
+                ));
+                //System.out.println(  jsonResponse);
             }
         }
     }
 
+    private float safeParseFloat(String value) {
+        try {
+            return Float.parseFloat(value);
+        } catch (NumberFormatException e) {
+            return 0; // Default value for invalid floats
+        }
+    }
     @Override
     public void render() {
         ScreenUtils.clear(0, 0, 0, 1);
@@ -224,8 +259,21 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
 
-        //drawAirQualityDataMarkers();
-        drawWeatherDataMarkers();
+
+        if (currentMarkerType == MarkerType.WEATHER) {
+            drawWeatherDataMarkers();
+        } else if (currentMarkerType == MarkerType.AIR_QUALITY) {
+            drawAirQualityDataMarkers();
+        }
+
+        super.render();
+
+        // Render current marker type as a label
+        SpriteBatch batch = new SpriteBatch();
+        batch.begin();
+        font.draw(batch, "Current Mode: " + currentMarkerType, 10, Gdx.graphics.getHeight() - 10);
+        batch.end();
+
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
     }
@@ -244,11 +292,11 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
     }
     private void drawAirQualityDataMarkers() {
         shapeRenderer.setProjectionMatrix(camera.combined);
-        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.setColor(Color.BLUE);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        for (Geolocation marker : airQualityMarkers) {
-            Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.lat, marker.lng, beginTile.x, beginTile.y);
+        for (AirQualityMarker  marker : airQualityMarkers) {
+            Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.location.lat, marker.location.lng, beginTile.x, beginTile.y);
             shapeRenderer.circle(markerPosition.x, markerPosition.y, 10);
         }
 
@@ -265,19 +313,35 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         touchPosition.set(x, y, 0);
         camera.unproject(touchPosition);
 
-        for (WeatherMarker marker : weatherMarkers) {
+       for (WeatherMarker marker : weatherMarkers) {
             Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.location.lat, marker.location.lng, beginTile.x, beginTile.y);
             if (markerPosition.dst(touchPosition.x, touchPosition.y) < 15) {
                 showWeatherDetails(marker);
                 break;
+           }
+        }
+
+        for (AirQualityMarker marker : airQualityMarkers) {
+            Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.location.lat, marker.location.lng, beginTile.x, beginTile.y);
+            if (markerPosition.dst(touchPosition.x, touchPosition.y) < 15) {
+                showAirQualityDetails(marker);
+                return true;
             }
         }
 
         return false;
     }
 
+
+
     private void showWeatherDetails(WeatherMarker marker) {
         stage.clear();
+
+
+
+        Window window = new Window("", skin);
+        window.setMovable(false);
+        window.setResizable(false);
 
         Table table = new Table();
         table.setFillParent(true);
@@ -286,6 +350,7 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         Label title = new Label(marker.name, skin, "title");
         Label temperature = new Label("Temperature: " + marker.temperature + " °C", skin);
         Label windSpeed = new Label("Wind Speed: " + marker.windSpeed + " m/s", skin);
+        Label precipitation = new Label("Precipitation: " + marker.precipitation + " mm", skin);
         Label windGusts = new Label("Wind Gusts: " + marker.windGusts + " m/s", skin);
 
 
@@ -301,10 +366,63 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         table.add(temperature).pad(5).row();
         table.add(windSpeed).pad(5).row();
         table.add(windGusts).pad(5).row();
+        table.add(precipitation).pad(5).row();
+        table.add(closeButton).pad(10);
+        window.add(table);
+        window.pack();
+        window.setPosition(
+            (800- window.getWidth()) / 2,
+            (1600 - window.getHeight()) / 2
+        );
+        stage.addActor(window);
+    }
 
+
+    private void showAirQualityDetails(AirQualityMarker marker) {
+        stage.clear();
+
+        Window window = new Window("", skin);
+        window.setMovable(false);
+        window.setResizable(false);
+
+        Table table = new Table();
+        table.setFillParent(true);
+        table.center();
+
+        Label title = new Label(marker.name, skin, "title");
+        Label pm10 = new Label("PM10: " + marker.pm10 + " µg/m³", skin);
+        Label pm25 = new Label("PM2.5: " + marker.pm25 + " µg/m³", skin);
+        Label so2 = new Label("SO2: " + marker.so2 + " µg/m³", skin);
+        Label co = new Label("CO: " + marker.co + " µg/m³", skin);
+        Label ozon = new Label("Ozon: " + marker.ozon + " µg/m³", skin);
+        Label no2 = new Label("NO2: " + marker.no2 + " µg/m³", skin);
+        Label benzen = new Label("Benzen: " + marker.benzen + " µg/m³", skin);
+
+        TextButton closeButton = new TextButton("Close", skin);
+        closeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                stage.clear();
+            }
+        });
+
+        table.add(title).pad(10).row();
+        table.add(pm10).pad(5).row();
+        table.add(pm25).pad(5).row();
+        table.add(so2).pad(5).row();
+        table.add(co).pad(5).row();
+        table.add(ozon).pad(5).row();
+        table.add(no2).pad(5).row();
+        table.add(benzen).pad(5).row();
         table.add(closeButton).pad(10);
 
-        stage.addActor(table);
+        window.add(table);
+        window.pack();
+        window.setPosition(
+            (800- window.getWidth()) / 2,
+            (1600 - window.getHeight()) / 2
+        );
+        stage.addActor(window);
     }
 
     @Override
@@ -312,18 +430,44 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         touchPosition.set(x, y, 0);
         camera.unproject(touchPosition);
 
-        for (WeatherMarker marker : weatherMarkers) {
-            Vector2 markerPosition = MapRasterTiles.getPixelPosition(marker.location.lat, marker.location.lng, beginTile.x, beginTile.y);
-            float distance = markerPosition.dst(touchPosition.x, touchPosition.y);
-
-            if (distance < 20) {  // Adjust distance threshold to match marker size
-                // Show popup or details
-                showWeatherDetails(marker);
-                return true;
-            }
-        }
 
         return false; // No marker was tapped
+    }
+
+
+    private void drawModeIndicator(SpriteBatch batch, BitmapFont font) {
+        ShapeRenderer shapeRenderer = new ShapeRenderer();
+        String modeText = "Current Mode: " + currentMarkerType;
+
+        // Calculate dimensions
+        float padding = 10;
+        float fontWidth = font.getRegion().getRegionWidth();
+        float fontHeight = font.getLineHeight();
+        float windowWidth = fontWidth + padding * 2;
+        float windowHeight = fontHeight + padding * 2;
+
+        // Window position (bottom-left corner)
+        float windowX = 10;
+        float windowY = 10;
+
+        // Draw the background rectangle
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(0, 0, 0, 0.7f); // Semi-transparent black
+        shapeRenderer.rect(windowX, windowY, windowWidth, windowHeight);
+        shapeRenderer.end();
+
+        // Draw the border (optional)
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(1, 1, 1, 1); // White border
+        shapeRenderer.rect(windowX, windowY, windowWidth, windowHeight);
+        shapeRenderer.end();
+
+        // Render the text
+        batch.begin();
+        font.draw(batch, modeText, windowX + padding, windowY + windowHeight - padding);
+        batch.end();
+
+        shapeRenderer.dispose();
     }
 
     @Override
@@ -384,6 +528,15 @@ public class AtmoTracker extends ApplicationAdapter implements GestureDetector.G
         }
         if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
             camera.translate(0, 3, 0);
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.T)) { // Press 'T' to toggle marker type
+            if (currentMarkerType == MarkerType.WEATHER) {
+                currentMarkerType = MarkerType.AIR_QUALITY;
+            } else {
+                currentMarkerType = MarkerType.WEATHER;
+            }
+            Gdx.app.log("Marker Toggle", "Switched to " + currentMarkerType + " markers.");
         }
 
         camera.zoom = MathUtils.clamp(camera.zoom, 0.5f, 2f);

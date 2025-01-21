@@ -8,14 +8,15 @@ public class WeatherMarker {
     public float temperature;
     public float windSpeed;
     public float windGusts;
+    public float precipitation;
 
 
-
-    public WeatherMarker(Geolocation location, String name, float temperature, float windSpeed, float windGusts) {
+    public WeatherMarker(Geolocation location, String name, float temperature, float windSpeed, float windGusts,float precipitation ) {
         this.location = location;
         this.name = name;
         this.temperature = temperature;
         this.windSpeed = windSpeed;
         this.windGusts = windGusts;
+        this.precipitation=precipitation;
     }
 }
