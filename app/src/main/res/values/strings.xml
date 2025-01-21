@@ -4,7 +4,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string-array name="event_topics">
         <item>weather</item>
-        <item>temperature</item>
+        <item>airQuality</item>
 
     </string-array>
 </resources>
