@@ -97,10 +97,10 @@ class InputWeatherFragment : Fragment() {
 
                 val randomData = mapOf(
                     "temperature" to (temperatureStart..temperatureEnd).random().toString(),
-                    "precipitation" to (precipitationStart..precipitationEnd).random().toString(),
                     "windSpeed" to (windSpeedStart..windSpeedEnd).random().toString(),
-                    "windGusts" to (windGustsStart..windGustsEnd).random().toString()
-                )
+                    "windGusts" to (windGustsStart..windGustsEnd).random().toString(),
+                    "precipitation" to (precipitationStart..precipitationEnd).random().toString(),
+                    )
 
                 val weather = Weather(
                     name = "Weather $selectedMarkerName",

@@ -1,24 +1,15 @@
 package com.example.atmotracker.fragments
 
-import android.content.Context
-import android.os.Bundle
+ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import com.example.atmotracker.MY_SP_FILE_NAME
-import com.example.atmotracker.MyApplication
 import com.example.atmotracker.R
 import com.example.atmotracker.databinding.FragmentSensorsBinding
-import com.example.atmotracker.scraper.WebScraper
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 class SensorsFragment : Fragment() {
